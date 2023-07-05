@@ -2,10 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="assets/css/style.css?20601">
+
+    <script src="assets/js/control.js?80301"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping List</title>
 </head>
 <body>
+    <h1 class="sl-title">Shopping list</h1>
+    <div class="sl-list" id="shopping-list">
+        <div class="sl-list-item">
+            <input type="checkbox" class="sl-list-item-checkbox">
+            <div class="sl-list-item-text">Сыр</div>
+        </div>
+    </div>
+    <div class="sl-footer">
+        <button class="sl-add-item" onclick="add_item()">+</button>
+    </div>
     
 </body>
 </html>
