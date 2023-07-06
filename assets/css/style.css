@@ -59,6 +59,12 @@ body {
 }
 
 
+.sl-list-item-input {
+    font-family: 'Lora', serif;
+    font-size: 24px;
+}
+
+
 .sl-list-item-checkbox {
     width: 20px;
 }
