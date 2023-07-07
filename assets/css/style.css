@@ -1,6 +1,6 @@
 body {
 	margin: 0;
-	font-family: 'Lora', serif;
+	font-family: 'Inter', sans-serif;
 
 	font-size: 15px;
 	line-height: 1.6;
@@ -18,53 +18,3 @@ body {
 }
 
 
-.sl-title {
-    text-align: center;
-}
-
-
-.sl-add-item {
-    width: 40px;
-    height: 40px;
-    background-color: black;
-    color: white;
-    border-radius: 4px;
-    display: block;
-    margin: 0 auto;
-    font-size: 40px;
-    line-height: .9;
-}
-
-
-.sl-footer {
-    position: fixed;
-    bottom: 20px;
-    width: 100%;
-}
-
-
-.sl-list {
-
-}
-
-
-.sl-list-item {
-    display: flex;
-    flex-direction: row;
-}
-
-
-.sl-list-item-text {
-    font-size: 24px;
-}
-
-
-.sl-list-item-input {
-    font-family: 'Lora', serif;
-    font-size: 24px;
-}
-
-
-.sl-list-item-checkbox {
-    width: 20px;
-}
