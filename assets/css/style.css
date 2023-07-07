@@ -18,3 +18,55 @@ body {
 }
 
 
+.shoplist-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+.shoplist-title {
+    text-align: center;
+}
+
+
+.shoplist-list {
+    width: 100%;
+    max-width: 500px;
+    padding: 0 5px;
+}
+
+
+.shoplist-list-item {
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+.shoplist-list-item:hover {
+    background-color: #eee;
+}
+
+
+.shoplist-list-item-element {
+    display: flex;
+    flex-direction: row;
+}
+
+
+.shoplist-list-item-checkbox {
+    width: 24px;
+    height: 24px;
+
+    border-radius: 5px;
+}
+
+
+.shoplist-list-item-name {
+    margin-left: 6px;
+}

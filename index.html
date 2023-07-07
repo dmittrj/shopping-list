@@ -14,16 +14,24 @@
     <title>Shopping List</title>
 </head>
 <body>
-    <h1 class="sl-title">Shopping list</h1>
-    <div class="sl-list" id="shopping-list">
-        <div class="sl-list-item">
-            <input type="checkbox" class="sl-list-item-checkbox">
-            <div class="sl-list-item-text">Сыр</div>
+    <div class="shoplist-container">
+        <h1 class="shoplist-title">Shopping List</h1>
+        <div class="shoplist-list">
+            <div class="shoplist-list-item">
+                <div class="shoplist-list-item-element">
+                    <button class="shoplist-list-item-checkbox"></button>
+                    <div class="shoplist-list-item-name">Cheese</div>
+                </div>
+                <div class="shoplist-list-item-cost">59 ₽</div>
+            </div>
+            <div class="shoplist-list-item">
+                <div class="shoplist-list-item-element">
+                    <button class="shoplist-list-item-checkbox"></button>
+                    <div class="shoplist-list-item-name">Cheese</div>
+                </div>
+                <div class="shoplist-list-item-cost">59 ₽</div>
+            </div>
         </div>
     </div>
-    <div class="sl-footer">
-        <button class="sl-add-item" onclick="add_item()">+</button>
-    </div>
-    
 </body>
 </html>
