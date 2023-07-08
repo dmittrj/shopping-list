@@ -46,6 +46,8 @@ body {
 
     border-radius: 8px;
     margin-bottom: 5px;
+
+    cursor: pointer;
 }
 
 .shoplist-list-item:hover {
@@ -69,4 +71,22 @@ body {
 
 .shoplist-list-item-name {
     margin-left: 6px;
+}
+
+
+.shoplist-list-item-add {
+    margin-left: 6px;
+    color: #999;
+}
+
+
+.shoplist-list-item-textbox {
+    margin-left: 6px;
+    font-size: 15px;
+
+    font-family: 'Inter', sans-serif;
+
+    border: none;
+    outline: none;
+    background-color: inherit;
 }

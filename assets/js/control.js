@@ -1,40 +1,74 @@
-function add_item() {
-    const newItem = document.createElement("div");
-    newItem.classList.add("sl-list-item");
-    newItem.innerHTML = `
-        <input type="checkbox" class="sl-list-item-checkbox">
-        <div class="sl-list-item-text" onclick="edit_item(this)">Хлеб</div>
-    `;
-    const shoppingList = document.getElementById("shopping-list");
-    shoppingList.appendChild(newItem);
+function event_item_edit(textElement) {
+  alert('You are trying to edit item')
 }
 
+function event_item_enter(inputElement, event) {
+  if (event.key === 'Enter') {
+    const text = inputElement.value;
 
-function edit_hhhitem(element) {
-    const inputElement = document.createElement('input'); // создаем новый элемент input
-    inputElement.value = element.innerHTML; // копируем содержимое div в значение input
-    inputElement.classList.add('sl-list-item-input'); // добавляем класс sl-input
-    inputElement.autofocus = true; // устанавливаем фокус на элемент
-
-    element.replaceWith(inputElement); // заменяем div на input
-}
-
-function edit_item(divElement) {
-    const inputElement = document.createElement('input'); // создаем новый элемент input
-    inputElement.value = divElement.innerHTML; // копируем содержимое div в значение input
-    inputElement.classList.add('sl-list-item-input'); // добавляем класс sl-input
-    inputElement.autofocus = true; // устанавливаем фокус на элемент
-  
-    inputElement.addEventListener('blur', function() { // добавляем обработчик события blur
-      const divText = inputElement.value; // получаем текст из input
-      const newDivElement = document.createElement('div'); // создаем новый элемент div
-      newDivElement.innerHTML = divText; // устанавливаем текст из input в div
-      newDivElement.classList.add('sl-list-item-text'); // добавляем класс sl-input
-      newDivElement.addEventListener('click', function() { // добавляем обработчик события click
-        edit_item(newDivElement); // заменяем div на input
+    if (text === '') {
+      document.querySelector('.shoplist-list').innerHTML += `<div class="shoplist-list-item" onclick="add_item(this)">
+          <div class="shoplist-list-item-element">
+              <button class="shoplist-list-item-checkbox"></button>
+              <div class="shoplist-list-item-add">add...</div>
+          </div>
+          <div class="shoplist-list-item-cost"></div>
+      </div>`;
+    } 
+    else 
+    {
+      const textElement = document.createElement('div');
+      textElement.classList.add('shoplist-list-item-name');
+      textElement.textContent = text;
+      textElement.addEventListener('click', event => {
+        event_item_edit(textElement);
       });
-      inputElement.replaceWith(newDivElement); // заменяем input на div
-    });
-  
-    divElement.replaceWith(inputElement); // заменяем div на input
+      inputElement.replaceWith(textElement);
+      textElement.onclick = null;
+      
+
+      // создание элементов
+      const div1 = document.createElement('div');
+      const div2 = document.createElement('div');
+      const button = document.createElement('button');
+      const div3 = document.createElement('input');
+      const div4 = document.createElement('div');
+
+      // добавление классов к элементам
+      div1.classList.add('shoplist-list-item');
+      div2.classList.add('shoplist-list-item-element');
+      button.classList.add('shoplist-list-item-checkbox');
+      div3.classList.add('shoplist-list-item-textbox');
+      div4.classList.add('shoplist-list-item-cost');
+
+      div1.addEventListener('keydown', event => {
+        event_item_enter(inputElement, event);
+      });
+
+      // добавление дочерних элементов
+      div1.appendChild(div2);
+      div1.appendChild(div4);
+      div2.appendChild(button);
+      div2.appendChild(div3);
+
+      // добавление элемента на страницу
+      const parentElement = document.querySelector('.shoplist-list'); // замените на нужный родительский элемент
+      parentElement.appendChild(div1);
+      div3.focus();
+    }
   }
+}
+
+function add_item(element) {
+  const addElement = element.querySelector('.shoplist-list-item-add');
+  const inputElement = document.createElement('input');
+  inputElement.classList.add('shoplist-list-item-textbox');
+  inputElement.setAttribute('spellcheck', 'false');
+  addElement.replaceWith(inputElement);
+  inputElement.focus();
+
+  inputElement.addEventListener('keydown', event => {
+    event_item_enter(inputElement, event);
+  });
+}
+
