@@ -1,30 +1,56 @@
 function event_item_edit(textElement) {
-  alert('You are trying to edit item')
+  const div3 = document.createElement('input');
+  div3.classList.add('shoplist-list-item-textbox');
+  div3.value = textElement.innerHTML;
+  div3.addEventListener('keydown', event => {
+    event_item_enter(div3, event, false);
+  });
+  textElement.replaceWith(div3);
+  div3.focus();
 }
 
-function event_item_enter(inputElement, event) {
+function event_item_enter(inputElement, event, newItems) {
   if (event.key === 'Enter') {
     const text = inputElement.value;
 
     if (text === '') {
-      document.querySelector('.shoplist-list').innerHTML += `<div class="shoplist-list-item" onclick="add_item(this)">
-          <div class="shoplist-list-item-element">
-              <button class="shoplist-list-item-checkbox"></button>
-              <div class="shoplist-list-item-add">add...</div>
-          </div>
-          <div class="shoplist-list-item-cost"></div>
-      </div>`;
+      const divItem = document.createElement('div');
+      divItem.classList.add('shoplist-list-item');
+      divItem.addEventListener('click', add_item);
+      ell = divItem;
+
+      const divElement = document.createElement('div');
+      divElement.classList.add('shoplist-list-item-element');
+      divItem.appendChild(divElement);
+
+      const button = document.createElement('button');
+      button.classList.add('shoplist-list-item-checkbox');
+      divElement.appendChild(button);
+
+      const divAdd = document.createElement('div');
+      divAdd.classList.add('shoplist-list-item-add');
+      divAdd.innerHTML = 'add...';
+      divElement.appendChild(divAdd);
+
+      const divCost = document.createElement('div');
+      divCost.classList.add('shoplist-list-item-cost');
+      //divCost.innerHTML = '59 ₽';
+      divItem.appendChild(divCost);
+      inputElement.parentElement.parentElement.replaceWith(divItem);
     } 
     else 
     {
       const textElement = document.createElement('div');
       textElement.classList.add('shoplist-list-item-name');
       textElement.textContent = text;
-      textElement.addEventListener('click', event => {
+      inputElement.replaceWith(textElement);
+      textElement.parentElement.parentElement.addEventListener('click', () => {
         event_item_edit(textElement);
       });
-      inputElement.replaceWith(textElement);
-      textElement.onclick = null;
+
+      if (!newItems) {
+        return;
+      }
       
 
       // создание элементов
@@ -41,8 +67,8 @@ function event_item_enter(inputElement, event) {
       div3.classList.add('shoplist-list-item-textbox');
       div4.classList.add('shoplist-list-item-cost');
 
-      div1.addEventListener('keydown', event => {
-        event_item_enter(inputElement, event);
+      div3.addEventListener('keydown', event => {
+        event_item_enter(div3, event, true);
       });
 
       // добавление дочерних элементов
@@ -59,16 +85,21 @@ function event_item_enter(inputElement, event) {
   }
 }
 
-function add_item(element) {
+var ell;
+
+function add_item() {
+  element = ell;
+  console.log('add');
   const addElement = element.querySelector('.shoplist-list-item-add');
   const inputElement = document.createElement('input');
   inputElement.classList.add('shoplist-list-item-textbox');
   inputElement.setAttribute('spellcheck', 'false');
+  element.removeEventListener('click', add_item);
   addElement.replaceWith(inputElement);
   inputElement.focus();
 
   inputElement.addEventListener('keydown', event => {
-    event_item_enter(inputElement, event);
+    event_item_enter(inputElement, event, true);
   });
 }
 
@@ -76,9 +107,8 @@ function add_item(element) {
 function event_load() {
   const divItem = document.createElement('div');
   divItem.classList.add('shoplist-list-item');
-  divItem.addEventListener('click', () => {
-    add_item(divItem);
-  });
+  divItem.addEventListener('click', add_item);
+  ell = divItem;
 
   const divElement = document.createElement('div');
   divElement.classList.add('shoplist-list-item-element');
