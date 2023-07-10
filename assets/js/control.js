@@ -72,3 +72,35 @@ function add_item(element) {
   });
 }
 
+
+function event_load() {
+  const divItem = document.createElement('div');
+  divItem.classList.add('shoplist-list-item');
+  divItem.addEventListener('click', () => {
+    add_item(divItem);
+  });
+
+  const divElement = document.createElement('div');
+  divElement.classList.add('shoplist-list-item-element');
+  divItem.appendChild(divElement);
+
+  const button = document.createElement('button');
+  button.classList.add('shoplist-list-item-checkbox');
+  divElement.appendChild(button);
+
+  const divAdd = document.createElement('div');
+  divAdd.classList.add('shoplist-list-item-add');
+  divAdd.innerHTML = 'add...';
+  divElement.appendChild(divAdd);
+
+  const divCost = document.createElement('div');
+  divCost.classList.add('shoplist-list-item-cost');
+  //divCost.innerHTML = '59 ₽';
+  divItem.appendChild(divCost);
+
+  const parentElement = document.querySelector('.shoplist-list'); // замените на нужный родительский элемент
+  parentElement.appendChild(divItem);
+}
+
+document.addEventListener('DOMContentLoaded', event_load);
+
