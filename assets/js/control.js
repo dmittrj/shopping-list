@@ -1,3 +1,55 @@
+function get_shopping_list() {
+  var shopping_list_items = document.getElementsByClassName('shoplist-list-item');
+  var shopping_list = [];
+  for (let i = 0; i < shopping_list_items.length; i++) {
+    const element = shopping_list_items[i].querySelector('.shoplist-list-item-element');
+    if (element.querySelector('.shoplist-list-item-name')) {
+      shopping_list[shopping_list.length] = element.querySelector('.shoplist-list-item-name').innerHTML;
+    }
+  }
+
+  return shopping_list;
+}
+
+function save() {
+  const shopping_list_string = JSON.stringify(get_shopping_list());
+  document.cookie = `shopping_list=${shopping_list_string}`;
+}
+
+function open() {
+  // получение массива из куки
+  const cookies = document.cookie.split("; ");
+  const cookieName = "shopping_list=";
+  let slist = null;
+
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i];
+    if (cookie.indexOf(cookieName) === 0) {
+      const cookieValue = cookie.substring(cookieName.length);
+      slist = JSON.parse(cookieValue);
+      break;
+    }
+  }
+
+  let html = "";
+
+  slist.forEach(element => {
+    html += `<div class="shoplist-list-item">
+      <div class="shoplist-list-item-element">
+          <button class="shoplist-list-item-checkbox"></button>
+          <div class="shoplist-list-item-name">` + element + `</div>
+      </div>
+      <div class="shoplist-list-item-cost">59 ₽</div>
+    </div>`;
+  });
+  
+
+  document.querySelector('.shoplist-list').innerHTML = html + document.querySelector('.shoplist-list').innerHTML;
+
+  console.log(slist);
+}
+
+
 function event_item_edit(textElement) {
   const div3 = document.createElement('input');
   div3.classList.add('shoplist-list-item-textbox');
@@ -37,6 +89,8 @@ function event_item_enter(inputElement, event, newItems) {
       //divCost.innerHTML = '59 ₽';
       divItem.appendChild(divCost);
       inputElement.parentElement.parentElement.replaceWith(divItem);
+
+      save();
     } 
     else 
     {
@@ -47,6 +101,8 @@ function event_item_enter(inputElement, event, newItems) {
       textElement.parentElement.parentElement.addEventListener('click', () => {
         event_item_edit(textElement);
       });
+
+      save();
 
       if (!newItems) {
         return;
@@ -101,6 +157,8 @@ function add_item() {
   inputElement.addEventListener('keydown', event => {
     event_item_enter(inputElement, event, true);
   });
+
+  save();
 }
 
 
@@ -130,6 +188,8 @@ function event_load() {
 
   const parentElement = document.querySelector('.shoplist-list'); // замените на нужный родительский элемент
   parentElement.appendChild(divItem);
+
+  open();
 }
 
 document.addEventListener('DOMContentLoaded', event_load);
