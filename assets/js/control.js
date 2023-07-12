@@ -13,7 +13,7 @@ function get_shopping_list() {
 
 function save() {
   const shopping_list_string = JSON.stringify(get_shopping_list());
-  document.cookie = `shopping_list=${shopping_list_string}`;
+  document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
 }
 
 function open() {
