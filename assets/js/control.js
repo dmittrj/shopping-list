@@ -64,6 +64,7 @@ function create_item(name, cost, amount) {
   let ele_ListItemText = document.createElement('div');
   ele_ListItemText.className = 'shoplist-list-item-text';
   ele_ListItemText.innerText = name;
+  ele_ListItemText.addEventListener('click', display_new_item_field);
   ele_ListItem.appendChild(ele_ListItemText);
 
   let ele_ListItemRight = document.createElement('div');
@@ -204,13 +205,19 @@ function add_item() {
 function display_new_item_field() {
   const ele_ListItemAdd = document.querySelector('#shoplist-add-pseudoitem');
   const ele_ListItemAddText = ele_ListItemAdd.querySelector('.shoplist-list-item-text');
-  const ele_ListItemTextInput = document.createElement('input');
-  ele_ListItemTextInput.classList.add('shoplist-list-item-textbox');
-  ele_ListItemTextInput.setAttribute('spellcheck', 'false');
-  ele_ListItemAdd.style.opacity = '1';
 
-  ele_ListItemAddText.replaceWith(ele_ListItemTextInput);
-  ele_ListItemTextInput.focus();
+  if (ele_ListItemAddText) {
+    const ele_ListItemTextInput = document.createElement('input');
+    ele_ListItemTextInput.classList.add('shoplist-list-item-textbox');
+    ele_ListItemTextInput.setAttribute('spellcheck', 'false');
+    ele_ListItemAdd.style.opacity = '1';
+
+    ele_ListItemAddText.replaceWith(ele_ListItemTextInput);
+    ele_ListItemTextInput.focus();
+  } else {
+
+  }
+  
 }
 
 
