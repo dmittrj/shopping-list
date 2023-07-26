@@ -53,7 +53,15 @@ function open() {
   console.log(slist);
 }
 
-function create_item(name, cost, amount) {
+
+function parse_item(str) {
+  return {"name": str,
+          "cost":  '1', 
+          "amount": '1'};
+}
+
+
+function ui_create_item(name, cost, amount) {
   var ele_ListItem = document.createElement('div');
   ele_ListItem.className = 'shoplist-list-item';
 
@@ -74,19 +82,25 @@ function create_item(name, cost, amount) {
   return ele_ListItem;
 }
 
-function draw_append_item(item) {
-  var ele_ListItem = create_item(item, '0', '1');
+
+function ui_append_item(item) {
+  var ele_ListItem = ui_create_item(item.name, item.cost, item.amount);
 
   document.querySelector(".shoplist-list").appendChild(ele_ListItem);
 }
 
 
-function draw_append_add() {
-  var ele_ListItem = create_item('Add...', '0', '1');
+function ui_append_add() {
+  var ele_ListItem = ui_create_item('Add...', '0', '1');
   ele_ListItem.style.opacity = '.5'
   ele_ListItem.id = 'shoplist-add-pseudoitem'
 
   document.querySelector(".shoplist-list").appendChild(ele_ListItem);
+}
+
+
+function sl_append_item(item) {
+  SHOPPING_LIST.push(item);
 }
 
 
@@ -100,6 +114,7 @@ function event_item_edit(textElement) {
   textElement.replaceWith(div3);
   div3.focus();
 }
+
 
 function event_item_enter(inputElement, event, newItems) {
   if (event.key === 'Enter') {
@@ -181,7 +196,6 @@ function event_item_enter(inputElement, event, newItems) {
   }
 }
 
-var ell;
 
 function add_item() {
   element = ell;
@@ -210,6 +224,12 @@ function display_new_item_field() {
     const ele_ListItemTextInput = document.createElement('input');
     ele_ListItemTextInput.classList.add('shoplist-list-item-textbox');
     ele_ListItemTextInput.setAttribute('spellcheck', 'false');
+    ele_ListItemTextInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        let new_item_content = parse_item(ele_ListItemTextInput.value);
+        sl_append_item(new_item_content);
+      }
+    });
     ele_ListItemAdd.style.opacity = '1';
 
     ele_ListItemAddText.replaceWith(ele_ListItemTextInput);
@@ -225,9 +245,9 @@ function event_load() {
   SHOPPING_LIST = open();
   for (let i = 0; i < SHOPPING_LIST.length; i++) {
     const shopping_list_item = SHOPPING_LIST[i];
-    draw_append_item(shopping_list_item);
+    ui_append_item(shopping_list_item);
   }
-  draw_append_add();
+  ui_append_add();
 
   return;
 
