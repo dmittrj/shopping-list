@@ -62,8 +62,8 @@ body {
 
 
 .shoplist-list-item-checkbox {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
 
     border-radius: 5px;
 }
@@ -77,6 +77,10 @@ body {
 .shoplist-list-item-add {
     margin-left: 6px;
     color: #999;
+}
+
+.shoplist-list-item-text {
+    text-align: left;
 }
 
 

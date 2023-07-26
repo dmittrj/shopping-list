@@ -69,10 +69,14 @@ function ui_create_item(name, cost, amount) {
   ele_ListItemCB.className = 'shoplist-list-item-cb';
   ele_ListItem.appendChild(ele_ListItemCB);
 
+  let ele_listItemCB_cb = document.createElement('button');
+  ele_listItemCB_cb.className = 'shoplist-list-item-checkbox';
+  //ele_listItemCB_cb.type = 'checkbox';
+  ele_ListItemCB.appendChild(ele_listItemCB_cb);
+
   let ele_ListItemText = document.createElement('div');
   ele_ListItemText.className = 'shoplist-list-item-text';
   ele_ListItemText.innerText = name;
-  ele_ListItemText.addEventListener('click', display_new_item_field);
   ele_ListItem.appendChild(ele_ListItemText);
 
   let ele_ListItemRight = document.createElement('div');
@@ -121,6 +125,7 @@ function ui_create_add() {
   let ele_ListItemAdd = ui_create_item('Add...', '', '');
   ele_ListItemAdd.style.opacity = '.5';
   ele_ListItemAdd.id = 'shoplist-add-pseudoitem';
+  ele_ListItemAdd.querySelector('.shoplist-list-item-text').addEventListener('click', display_new_item_field);
   return ele_ListItemAdd;
 }
 
@@ -283,7 +288,12 @@ function stop_inputing() {
 
   for (let i = 0; i < eles_ListItemTB.length; i++) {
     const ele_ListItemTB = eles_ListItemTB[i];
-    ui_turn_input_to_item(ele_ListItemTB.parentElement);
+    if (ele_ListItemTB.value === '') {
+      ele_ListItemTB.parentElement.remove();
+    } else {
+      ui_turn_input_to_item(ele_ListItemTB.parentElement);
+    }
+    
   }
 }
 
