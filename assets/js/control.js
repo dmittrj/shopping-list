@@ -83,6 +83,22 @@ function ui_create_item(name, cost, amount) {
 }
 
 
+function ui_create_input() {
+  const ele_ListItemTextInput = document.createElement('input');
+  ele_ListItemTextInput.classList.add('shoplist-list-item-textbox');
+  ele_ListItemTextInput.setAttribute('spellcheck', 'false');
+  ele_ListItemTextInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      let new_item_content = parse_item(ele_ListItemTextInput.value);
+      sl_append_item(new_item_content);
+      ui_append_item(new_item_content);
+    }
+  });
+
+  return ele_ListItemTextInput;
+}
+
+
 function ui_append_item(item) {
   var ele_ListItem = ui_create_item(item.name, item.cost, item.amount);
 
@@ -91,6 +107,7 @@ function ui_append_item(item) {
   if (document.querySelector('#shoplist-add-pseudoitem')) {
     document.querySelector('#shoplist-add-pseudoitem').remove();
     ui_append_add();
+    ui_turn_add_to_input();
   }
 }
 
@@ -101,7 +118,22 @@ function ui_append_add() {
   ele_ListItem.id = 'shoplist-add-pseudoitem'
 
   document.querySelector(".shoplist-list").appendChild(ele_ListItem);
+
+  return ele_ListItem;
 }
+
+
+function ui_turn_add_to_input() {
+  const ele_ListItemAdd = document.querySelector('#shoplist-add-pseudoitem');
+  const ele_ListItemAddText = ele_ListItemAdd.querySelector('.shoplist-list-item-text');
+  
+  const ele_ListItemTextInput = ui_create_input();
+  ele_ListItemAdd.style.opacity = '1';
+
+  ele_ListItemAddText.replaceWith(ele_ListItemTextInput);
+  ele_ListItemTextInput.focus();
+}
+
 
 
 function sl_append_item(item) {
@@ -226,20 +258,7 @@ function display_new_item_field() {
   const ele_ListItemAddText = ele_ListItemAdd.querySelector('.shoplist-list-item-text');
 
   if (ele_ListItemAddText) {
-    const ele_ListItemTextInput = document.createElement('input');
-    ele_ListItemTextInput.classList.add('shoplist-list-item-textbox');
-    ele_ListItemTextInput.setAttribute('spellcheck', 'false');
-    ele_ListItemTextInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        let new_item_content = parse_item(ele_ListItemTextInput.value);
-        sl_append_item(new_item_content);
-        ui_append_item(new_item_content);
-      }
-    });
-    ele_ListItemAdd.style.opacity = '1';
-
-    ele_ListItemAddText.replaceWith(ele_ListItemTextInput);
-    ele_ListItemTextInput.focus();
+    ui_turn_add_to_input();
   } else {
 
   }
