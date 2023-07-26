@@ -89,9 +89,14 @@ function ui_create_input() {
   ele_ListItemTextInput.setAttribute('spellcheck', 'false');
   ele_ListItemTextInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-      let new_item_content = parse_item(ele_ListItemTextInput.value);
-      sl_append_item(new_item_content);
-      ui_append_item(new_item_content);
+      if (ele_ListItemTextInput.value === '') {
+        ui_turn_input_to_add(ele_ListItemTextInput.parentElement);
+      } else {
+        let new_item_content = parse_item(ele_ListItemTextInput.value);
+        sl_append_item(new_item_content);
+        ui_append_item(new_item_content);
+      }
+      
     }
   });
 
@@ -112,10 +117,16 @@ function ui_append_item(item) {
 }
 
 
+function ui_create_add() {
+  let ele_ListItemAdd = ui_create_item('Add...', '', '');
+  ele_ListItemAdd.style.opacity = '.5';
+  ele_ListItemAdd.id = 'shoplist-add-pseudoitem';
+  return ele_ListItemAdd;
+}
+
+
 function ui_append_add() {
-  var ele_ListItem = ui_create_item('Add...', '0', '1');
-  ele_ListItem.style.opacity = '.5'
-  ele_ListItem.id = 'shoplist-add-pseudoitem'
+  var ele_ListItem = ui_create_add();
 
   document.querySelector(".shoplist-list").appendChild(ele_ListItem);
 
@@ -134,6 +145,20 @@ function ui_turn_add_to_input() {
   ele_ListItemTextInput.focus();
 }
 
+
+function ui_turn_input_to_add(input_item) {
+  let ele_ListItem = ui_create_add();
+
+  input_item.replaceWith(ele_ListItem);
+}
+
+
+function ui_turn_input_to_item(input_item) {
+  let parsed = parse_item(input_item.querySelector('.shoplist-list-item-textbox').value);
+  let ele_ListItem = ui_create_item(parsed.name, parsed.cost, parsed.amount);
+
+  input_item.replaceWith(ele_ListItem);
+}
 
 
 function sl_append_item(item) {
@@ -253,6 +278,16 @@ function add_item() {
 }
 
 
+function stop_inputing() {
+  let eles_ListItemTB = document.querySelectorAll('.shoplist-list-item-textbox');
+
+  for (let i = 0; i < eles_ListItemTB.length; i++) {
+    const ele_ListItemTB = eles_ListItemTB[i];
+    ui_turn_input_to_item(ele_ListItemTB.parentElement);
+  }
+}
+
+
 function display_new_item_field() {
   const ele_ListItemAdd = document.querySelector('#shoplist-add-pseudoitem');
   const ele_ListItemAddText = ele_ListItemAdd.querySelector('.shoplist-list-item-text');
@@ -260,7 +295,9 @@ function display_new_item_field() {
   if (ele_ListItemAddText) {
     ui_turn_add_to_input();
   } else {
-
+    stop_inputing();
+    ui_append_add();
+    ui_turn_add_to_input();
   }
   
 }
