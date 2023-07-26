@@ -1,3 +1,7 @@
+// GLOBAL VARS
+var SHOPPING_LIST;
+
+
 function get_shopping_list() {
   var shopping_list_items = document.getElementsByClassName('shoplist-list-item');
   var shopping_list = [];
@@ -17,7 +21,6 @@ function save() {
 }
 
 function open() {
-  // получение массива из куки
   const cookies = document.cookie.split("; ");
   const cookieName = "shopping_list=";
   let slist = null;
@@ -26,10 +29,11 @@ function open() {
     const cookie = cookies[i];
     if (cookie.indexOf(cookieName) === 0) {
       const cookieValue = cookie.substring(cookieName.length);
-      slist = JSON.parse(cookieValue);
-      break;
+      return JSON.parse(cookieValue);
     }
   }
+
+  return new Array();
 
   let html = "";
 
@@ -47,6 +51,41 @@ function open() {
   document.querySelector('.shoplist-list').innerHTML = html + document.querySelector('.shoplist-list').innerHTML;
 
   console.log(slist);
+}
+
+function create_item(name, cost, amount) {
+  var ele_ListItem = document.createElement('div');
+  ele_ListItem.className = 'shoplist-list-item';
+
+  let ele_ListItemCB = document.createElement('div');
+  ele_ListItemCB.className = 'shoplist-list-item-cb';
+  ele_ListItem.appendChild(ele_ListItemCB);
+
+  let ele_ListItemText = document.createElement('div');
+  ele_ListItemText.className = 'shoplist-list-item-text';
+  ele_ListItemText.innerText = name;
+  ele_ListItem.appendChild(ele_ListItemText);
+
+  let ele_ListItemRight = document.createElement('div');
+  ele_ListItemRight.className = 'shoplist-list-item-right';
+  ele_ListItem.appendChild(ele_ListItemRight);
+
+  return ele_ListItem;
+}
+
+function draw_append_item(item) {
+  var ele_ListItem = create_item(item, '0', '1');
+
+  document.querySelector(".shoplist-list").appendChild(ele_ListItem);
+}
+
+
+function draw_append_add() {
+  var ele_ListItem = create_item('Add...', '0', '1');
+  ele_ListItem.style.opacity = '.5'
+  ele_ListItem.id = 'shoplist-add-pseudoitem'
+
+  document.querySelector(".shoplist-list").appendChild(ele_ListItem);
 }
 
 
@@ -162,7 +201,35 @@ function add_item() {
 }
 
 
+function display_new_item_field() {
+  const ele_ListItemAdd = document.querySelector('#shoplist-add-pseudoitem');
+  const ele_ListItemAddText = ele_ListItemAdd.querySelector('.shoplist-list-item-text');
+  const ele_ListItemTextInput = document.createElement('input');
+  ele_ListItemTextInput.classList.add('shoplist-list-item-textbox');
+  ele_ListItemTextInput.setAttribute('spellcheck', 'false');
+  ele_ListItemAdd.style.opacity = '1';
+
+  ele_ListItemAddText.replaceWith(ele_ListItemTextInput);
+  ele_ListItemTextInput.focus();
+}
+
+
 function event_load() {
+  SHOPPING_LIST = open();
+  for (let i = 0; i < SHOPPING_LIST.length; i++) {
+    const shopping_list_item = SHOPPING_LIST[i];
+    draw_append_item(shopping_list_item);
+  }
+  draw_append_add();
+
+  return;
+
+
+
+
+
+
+
   const divItem = document.createElement('div');
   divItem.classList.add('shoplist-list-item');
   divItem.addEventListener('click', add_item);
@@ -192,5 +259,5 @@ function event_load() {
   open();
 }
 
-document.addEventListener('DOMContentLoaded', event_load);
+document.addEventListener('DOMContentLoaded', event_load); 
 

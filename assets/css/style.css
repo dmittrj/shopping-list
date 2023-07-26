@@ -90,3 +90,28 @@ body {
     outline: none;
     background-color: inherit;
 }
+
+
+.shoplist-footer {
+    position: absolute;
+    bottom: 0;
+    padding: 10px 5px;
+}
+
+
+.shoplist-button {
+    background-color: black;
+    color: white;
+    font-size: 15px;
+
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.shoplist-button:hover {
+    background-color: #444;
+}
