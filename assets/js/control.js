@@ -87,6 +87,11 @@ function ui_append_item(item) {
   var ele_ListItem = ui_create_item(item.name, item.cost, item.amount);
 
   document.querySelector(".shoplist-list").appendChild(ele_ListItem);
+  
+  if (document.querySelector('#shoplist-add-pseudoitem')) {
+    document.querySelector('#shoplist-add-pseudoitem').remove();
+    ui_append_add();
+  }
 }
 
 
@@ -228,6 +233,7 @@ function display_new_item_field() {
       if (event.key === 'Enter') {
         let new_item_content = parse_item(ele_ListItemTextInput.value);
         sl_append_item(new_item_content);
+        ui_append_item(new_item_content);
       }
     });
     ele_ListItemAdd.style.opacity = '1';
