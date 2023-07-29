@@ -66,6 +66,7 @@ body {
     height: 22px;
 
     border-radius: 5px;
+    border: 2px solid black;
 }
 
 
@@ -81,12 +82,14 @@ body {
 
 .shoplist-list-item-text {
     text-align: left;
+    margin-left: .75em;
 }
 
 
 .shoplist-list-item-textbox {
-    margin-left: 6px;
+    margin-left: .6em;
     font-size: 15px;
+    line-height: 1.5;
 
     font-family: 'Inter', sans-serif;
 
@@ -118,4 +121,14 @@ body {
 
 .shoplist-button:hover {
     background-color: #444;
+} 
+
+.shoplist-list-item-cb {
+    line-height: 1;
+}
+
+
+.shoplist-list-item-left {
+    display: flex;
+    flex-direction: row;
 }

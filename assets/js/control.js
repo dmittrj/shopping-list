@@ -65,9 +65,13 @@ function ui_create_item(name, cost, amount) {
   var ele_ListItem = document.createElement('div');
   ele_ListItem.className = 'shoplist-list-item';
 
+  let ele_ListItemLeft = document.createElement('div');
+  ele_ListItemLeft.className = 'shoplist-list-item-left';
+  ele_ListItem.appendChild(ele_ListItemLeft);
+
   let ele_ListItemCB = document.createElement('div');
   ele_ListItemCB.className = 'shoplist-list-item-cb';
-  ele_ListItem.appendChild(ele_ListItemCB);
+  ele_ListItemLeft.appendChild(ele_ListItemCB);
 
   let ele_listItemCB_cb = document.createElement('button');
   ele_listItemCB_cb.className = 'shoplist-list-item-checkbox';
@@ -77,7 +81,7 @@ function ui_create_item(name, cost, amount) {
   let ele_ListItemText = document.createElement('div');
   ele_ListItemText.className = 'shoplist-list-item-text';
   ele_ListItemText.innerText = name;
-  ele_ListItem.appendChild(ele_ListItemText);
+  ele_ListItemLeft.appendChild(ele_ListItemText);
 
   let ele_ListItemRight = document.createElement('div');
   ele_ListItemRight.className = 'shoplist-list-item-right';
@@ -94,7 +98,7 @@ function ui_create_input() {
   ele_ListItemTextInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
       if (ele_ListItemTextInput.value === '') {
-        ui_turn_input_to_add(ele_ListItemTextInput.parentElement);
+        ui_turn_input_to_add(ele_ListItemTextInput.parentElement.parentElement);
       } else {
         let new_item_content = parse_item(ele_ListItemTextInput.value);
         sl_append_item(new_item_content);
@@ -289,9 +293,9 @@ function stop_inputing() {
   for (let i = 0; i < eles_ListItemTB.length; i++) {
     const ele_ListItemTB = eles_ListItemTB[i];
     if (ele_ListItemTB.value === '') {
-      ele_ListItemTB.parentElement.remove();
+      ele_ListItemTB.parentElement.parentElement.remove();
     } else {
-      ui_turn_input_to_item(ele_ListItemTB.parentElement);
+      ui_turn_input_to_item(ele_ListItemTB.parentElement.parentElement);
     }
     
   }
