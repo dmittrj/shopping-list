@@ -69,7 +69,11 @@ function ui_create_input(action_by_enter) {
   ele_ListItemTextInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
       if (ele_ListItemTextInput.value === '') {
-        ui_turn_input_to_add(ele_ListItemTextInput.parentElement.parentElement);
+        if (action_by_enter == 'add') {
+          ui_turn_input_to_add(ele_ListItemTextInput.parentElement.parentElement);
+        } else if (action_by_enter == 'edit') {
+          ele_ListItemTextInput.parentElement.parentElement.remove();
+        }
       } else {
         if (action_by_enter == 'add') {
           let new_item_content = parse_item(ele_ListItemTextInput.value);
@@ -77,8 +81,6 @@ function ui_create_input(action_by_enter) {
           ui_append_item(new_item_content);
         } else if (action_by_enter == 'edit') {
           let edited_item = ui_turn_input_to_item(ele_ListItemTextInput.parentElement.parentElement);
-          let edited_item_text = edited_item.querySelector('.shoplist-list-item-text');
-          //edited_item_text.addEventListener('click', () => { display_edit_item_field(edited_item) });
         }
       }
     }
