@@ -185,11 +185,12 @@ function stop_inputing() {
 function display_new_item_field() {
   const ele_ListItemAdd = document.querySelector('#shoplist-add-pseudoitem');
   const ele_ListItemAddText = ele_ListItemAdd.querySelector('.shoplist-list-item-text');
+  stop_inputing();
 
   if (ele_ListItemAddText) {
     ui_turn_add_to_input();
   } else {
-    stop_inputing();
+    
     ui_append_add();
     ui_turn_add_to_input();
   }
