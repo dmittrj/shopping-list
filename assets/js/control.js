@@ -1,4 +1,5 @@
 // GLOBAL VARS
+const OPACITY_LEVEL = '.4';
 var SHOPPING_LIST;
 
 function save() {
@@ -96,7 +97,7 @@ function ui_append_item(item) {
 
 function ui_create_add() {
   let ele_ListItemAdd = ui_create_item('Add...', '', '');
-  ele_ListItemAdd.style.opacity = '.5';
+  ele_ListItemAdd.style.opacity = OPACITY_LEVEL;
   ele_ListItemAdd.id = 'shoplist-add-pseudoitem';
   ele_ListItemAdd.querySelector('.shoplist-list-item-text').addEventListener('click', display_new_item_field);
   return ele_ListItemAdd;
