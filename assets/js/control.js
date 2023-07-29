@@ -1,6 +1,7 @@
 // GLOBAL VARS
 const OPACITY_LEVEL = '.4';
 var SHOPPING_LIST;
+var LAST_ID = 1;
 
 function save() {
   const shopping_list_string = JSON.stringify(SHOPPING_LIST);
@@ -27,9 +28,12 @@ function open() {
 
 
 function parse_item(str) {
-  return {"name": str,
+  return {
+          "id": '',
+          "name": str,
           "cost":  '1', 
-          "amount": '1'};
+          "amount": '1'
+        };
 }
 
 
@@ -77,8 +81,8 @@ function ui_create_input(action_by_enter) {
       } else {
         if (action_by_enter == 'add') {
           let new_item_content = parse_item(ele_ListItemTextInput.value);
-          sl_append_item(new_item_content);
-          ui_append_item(new_item_content);
+          let assigned_id = sl_append_item(new_item_content);
+          ui_append_item(new_item_content, assigned_id);
         } else if (action_by_enter == 'edit') {
           let edited_item = ui_turn_input_to_item(ele_ListItemTextInput.parentElement.parentElement);
         }
@@ -90,8 +94,9 @@ function ui_create_input(action_by_enter) {
 }
 
 
-function ui_append_item(item) {
+function ui_append_item(item, item_id) {
   var ele_ListItem = ui_create_item(item.name, item.cost, item.amount);
+  ele_ListItem.id = 'shopping-list-item-' + item_id;
   ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {display_edit_item_field(ele_ListItem)});
 
   document.querySelector(".shoplist-list").appendChild(ele_ListItem);
@@ -156,6 +161,7 @@ function ui_turn_input_to_item(input_item) {
   let parsed = parse_item(input_item.querySelector('.shoplist-list-item-textbox').value);
   let ele_ListItem = ui_create_item(parsed.name, parsed.cost, parsed.amount);
   ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {display_edit_item_field(ele_ListItem)});
+  ele_ListItem.id = input_item.id;
 
 
   input_item.replaceWith(ele_ListItem);
@@ -165,8 +171,11 @@ function ui_turn_input_to_item(input_item) {
 
 
 function sl_append_item(item) {
+  item.id = LAST_ID++;
   SHOPPING_LIST.push(item);
   save();
+
+  return item.id;
 }
 
 
@@ -212,7 +221,7 @@ function event_load() {
   SHOPPING_LIST = open();
   for (let i = 0; i < SHOPPING_LIST.length; i++) {
     const shopping_list_item = SHOPPING_LIST[i];
-    ui_append_item(shopping_list_item);
+    ui_append_item(shopping_list_item, shopping_list_item.id);
   }
   ui_append_add();
 
