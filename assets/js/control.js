@@ -85,6 +85,7 @@ function ui_create_input(action_by_enter) {
           ui_append_item(new_item_content, assigned_id);
         } else if (action_by_enter == 'edit') {
           let edited_item = ui_turn_input_to_item(ele_ListItemTextInput.parentElement.parentElement);
+          sl_edid_item(ele_ListItemTextInput.value, edited_item.id.substring(19));
         }
       }
     }
@@ -176,6 +177,12 @@ function sl_append_item(item) {
   save();
 
   return item.id;
+}
+
+
+
+function sl_edid_item(item, item_id) {
+  SHOPPING_LIST.find((w) => w.id === +item_id).name = item;
 }
 
 
