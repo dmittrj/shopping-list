@@ -16,7 +16,7 @@ function get_shopping_list() {
 }
 
 function save() {
-  const shopping_list_string = JSON.stringify(get_shopping_list());
+  const shopping_list_string = JSON.stringify(SHOPPING_LIST);
   document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
 }
 
@@ -29,11 +29,16 @@ function open() {
     const cookie = cookies[i];
     if (cookie.indexOf(cookieName) === 0) {
       const cookieValue = cookie.substring(cookieName.length);
-      return JSON.parse(cookieValue);
+      try {
+        return JSON.parse(cookieValue);
+      } catch (error) {
+        return new Array();
+      }
+      
     }
   }
 
-  return new Array();
+  return [];
 
   let html = "";
 
@@ -172,6 +177,7 @@ function ui_turn_input_to_item(input_item) {
 
 function sl_append_item(item) {
   SHOPPING_LIST.push(item);
+  save();
 }
 
 
