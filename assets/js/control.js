@@ -76,6 +76,8 @@ function ui_create_input(action_by_enter) {
         if (action_by_enter == 'add') {
           ui_turn_input_to_add(ele_ListItemTextInput.parentElement.parentElement);
         } else if (action_by_enter == 'edit') {
+          sl_drop_item(ele_ListItemTextInput.parentElement.parentElement.id.substring(19));
+          save();
           ele_ListItemTextInput.parentElement.parentElement.remove();
         }
       } else {
@@ -85,7 +87,8 @@ function ui_create_input(action_by_enter) {
           ui_append_item(new_item_content, assigned_id);
         } else if (action_by_enter == 'edit') {
           let edited_item = ui_turn_input_to_item(ele_ListItemTextInput.parentElement.parentElement);
-          sl_edid_item(ele_ListItemTextInput.value, edited_item.id.substring(19));
+          sl_edit_item(ele_ListItemTextInput.value, edited_item.id.substring(19));
+          save();
         }
       }
     }
@@ -181,8 +184,13 @@ function sl_append_item(item) {
 
 
 
-function sl_edid_item(item, item_id) {
+function sl_edit_item(item, item_id) {
   SHOPPING_LIST.find((w) => w.id === +item_id).name = item;
+}
+
+
+function sl_drop_item(item_id) {
+  SHOPPING_LIST = SHOPPING_LIST.filter((w) => w.id != +item_id)
 }
 
 
@@ -194,7 +202,9 @@ function stop_inputing() {
     if (ele_ListItemTB.value === '') {
       ele_ListItemTB.parentElement.parentElement.remove();
     } else {
-      ui_turn_input_to_item(ele_ListItemTB.parentElement.parentElement);
+      let edited_item = ui_turn_input_to_item(ele_ListItemTB.parentElement.parentElement);
+      sl_edit_item(ele_ListItemTB.value, edited_item.id.substring(19));
+      save();
     }
   }
 }
@@ -228,6 +238,9 @@ function event_load() {
   SHOPPING_LIST = open();
   for (let i = 0; i < SHOPPING_LIST.length; i++) {
     const shopping_list_item = SHOPPING_LIST[i];
+    if (!shopping_list_item.id) {
+      shopping_list_item.id = LAST_ID++; // F I X ! ! !
+    }
     ui_append_item(shopping_list_item, shopping_list_item.id);
   }
   ui_append_add();
