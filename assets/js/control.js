@@ -77,8 +77,8 @@ function ui_create_input(action_by_enter) {
           ui_append_item(new_item_content);
         } else if (action_by_enter == 'edit') {
           let edited_item = ui_turn_input_to_item(ele_ListItemTextInput.parentElement.parentElement);
-          let edited_item_text = edited_item.querySelector('.shoplist-list-item-text')
-          edited_item_text.addEventListener('click', () => { display_edit_item_field(edited_item) });
+          let edited_item_text = edited_item.querySelector('.shoplist-list-item-text');
+          //edited_item_text.addEventListener('click', () => { display_edit_item_field(edited_item) });
         }
       }
     }
@@ -153,6 +153,8 @@ function ui_turn_input_to_add(input_item) {
 function ui_turn_input_to_item(input_item) {
   let parsed = parse_item(input_item.querySelector('.shoplist-list-item-textbox').value);
   let ele_ListItem = ui_create_item(parsed.name, parsed.cost, parsed.amount);
+  ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {display_edit_item_field(ele_ListItem)});
+
 
   input_item.replaceWith(ele_ListItem);
 
@@ -176,7 +178,6 @@ function stop_inputing() {
     } else {
       ui_turn_input_to_item(ele_ListItemTB.parentElement.parentElement);
     }
-    
   }
 }
 
@@ -196,6 +197,10 @@ function display_new_item_field() {
 
 
 function display_edit_item_field(item) {
+  stop_inputing();
+  if (!document.querySelector('#shoplist-add-pseudoitem')) {
+    ui_append_add();
+  }
   ui_turn_item_to_input(item);
 }
 
