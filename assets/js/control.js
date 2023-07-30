@@ -213,6 +213,7 @@ function stop_inputing() {
     if (ele_ListItemTB.value === '') {
       if (!(get_list_item_by_its_input(ele_ListItemTB).id == 'shoplist-add-pseudoitem')) {
         sl_drop_item(get_list_item_by_its_input(ele_ListItemTB).id.substring(19));
+        save();
       }
       get_list_item_by_its_input(ele_ListItemTB).remove();
     } else {
