@@ -70,29 +70,34 @@ function ui_create_input(action_by_enter) {
   const ele_ListItemTextInput = document.createElement('input');
   ele_ListItemTextInput.classList.add('shoplist-list-item-textbox');
   ele_ListItemTextInput.setAttribute('spellcheck', 'false');
-  ele_ListItemTextInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      if (ele_ListItemTextInput.value === '') {
-        if (action_by_enter == 'add') {
+
+  if (action_by_enter == 'add') {
+    ele_ListItemTextInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        if (ele_ListItemTextInput.value === '') {
           ui_turn_input_to_add(ele_ListItemTextInput.parentElement.parentElement);
-        } else if (action_by_enter == 'edit') {
-          sl_drop_item(ele_ListItemTextInput.parentElement.parentElement.id.substring(19));
-          save();
-          ele_ListItemTextInput.parentElement.parentElement.remove();
-        }
-      } else {
-        if (action_by_enter == 'add') {
+        } else {
           let new_item_content = parse_item(ele_ListItemTextInput.value);
           let assigned_id = sl_append_item(new_item_content);
           ui_append_item(new_item_content, assigned_id);
-        } else if (action_by_enter == 'edit') {
+        }
+      }
+    });
+  } else if (action_by_enter == 'edit') {
+    ele_ListItemTextInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        if (ele_ListItemTextInput.value === '') {
+          sl_drop_item(ele_ListItemTextInput.parentElement.parentElement.id.substring(19));
+          save();
+          ele_ListItemTextInput.parentElement.parentElement.remove();
+        } else {
           let edited_item = ui_turn_input_to_item(ele_ListItemTextInput.parentElement.parentElement);
           sl_edit_item(ele_ListItemTextInput.value, edited_item.id.substring(19));
           save();
         }
       }
-    }
-  });
+    });
+  }
 
   return ele_ListItemTextInput;
 }
@@ -200,6 +205,9 @@ function stop_inputing() {
   for (let i = 0; i < eles_ListItemTB.length; i++) {
     const ele_ListItemTB = eles_ListItemTB[i];
     if (ele_ListItemTB.value === '') {
+      if (!(ele_ListItemTB.parentElement.parentElement.id == 'shoplist-add-pseudoitem')) {
+        sl_drop_item(ele_ListItemTB.parentElement.parentElement.id.substring(19));
+      }
       ele_ListItemTB.parentElement.parentElement.remove();
     } else {
       let edited_item = ui_turn_input_to_item(ele_ListItemTB.parentElement.parentElement);
