@@ -4,7 +4,8 @@ var SHOPPING_LIST;
 var LAST_ID = 1;
 
 function save() {
-  const shopping_list_string = JSON.stringify(SHOPPING_LIST);
+  const cookie_shopping_list = SHOPPING_LIST.map(({ id, ...item }) => item);
+  const shopping_list_string = JSON.stringify(cookie_shopping_list);
   document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
 }
 
@@ -251,9 +252,7 @@ function event_load() {
   SHOPPING_LIST = open();
   for (let i = 0; i < SHOPPING_LIST.length; i++) {
     const shopping_list_item = SHOPPING_LIST[i];
-    if (!shopping_list_item.id) {
-      shopping_list_item.id = LAST_ID++; // F I X ! ! !
-    }
+    shopping_list_item.id = LAST_ID++;
     ui_append_item(shopping_list_item, shopping_list_item.id);
   }
   ui_append_add();
