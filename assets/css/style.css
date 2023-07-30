@@ -125,6 +125,19 @@ body {
 
 .shoplist-list-item-cb {
     line-height: 1;
+
+    position: relative;
+}
+
+
+.shoplist-list-item-cb-tick {
+    width: 16px;
+    height: 8px;
+    border-bottom: 2px solid black;
+    border-left: 2px solid black;
+    transform: rotate(315deg) translate(-1px, 6px);
+    transform-origin: center;
+    position: absolute;
 }
 
 

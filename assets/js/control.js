@@ -38,8 +38,24 @@ function parse_item(str) {
           "id": '',
           "name": str,
           "cost":  '1', 
-          "amount": '1'
+          "amount": '1',
+          "checked": false
         };
+}
+
+
+function mark_item(item) {
+  let item_id = +item.id.substring(19)
+  let checked_status = SHOPPING_LIST.find((w) => w.id === +item_id).checked;
+  SHOPPING_LIST.find((w) => w.id === +item_id).checked = !checked_status;
+
+  if (checked_status) {
+    item.querySelector('.shoplist-list-item-cb-tick').remove();
+  } else {
+    let tick = document.createElement('div');
+    tick.className = 'shoplist-list-item-cb-tick';
+    item.querySelector('.shoplist-list-item-checkbox').parentElement.insertBefore(tick, item.querySelector('.shoplist-list-item-checkbox'))
+  }
 }
 
 
@@ -57,6 +73,9 @@ function ui_create_item(name, cost, amount) {
 
   let ele_listItemCB_cb = document.createElement('button');
   ele_listItemCB_cb.className = 'shoplist-list-item-checkbox';
+  ele_listItemCB_cb.addEventListener('click', () => {
+    mark_item(ele_listItemCB_cb.parentElement.parentElement.parentElement);
+  })
   ele_ListItemCB.appendChild(ele_listItemCB_cb);
 
   let ele_ListItemText = document.createElement('div');
@@ -254,6 +273,9 @@ function event_load() {
   for (let i = 0; i < SHOPPING_LIST.length; i++) {
     const shopping_list_item = SHOPPING_LIST[i];
     shopping_list_item.id = LAST_ID++;
+    if (!shopping_list_item.checked) {
+      shopping_list_item.checked = false;
+    }
     ui_append_item(shopping_list_item, shopping_list_item.id);
   }
   ui_append_add();
