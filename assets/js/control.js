@@ -140,6 +140,8 @@ function ui_append_item(item, item_id) {
     ui_append_add();
     ui_turn_add_to_input();
   }
+
+  return ele_ListItem;
 }
 
 
@@ -276,7 +278,10 @@ function event_load() {
     if (!shopping_list_item.checked) {
       shopping_list_item.checked = false;
     }
-    ui_append_item(shopping_list_item, shopping_list_item.id);
+    let _appended = ui_append_item(shopping_list_item, shopping_list_item.id);
+    if (shopping_list_item.checked) {
+      mark_item(_appended);
+    }
   }
   ui_append_add();
 
