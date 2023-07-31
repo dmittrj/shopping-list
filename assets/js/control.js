@@ -54,7 +54,7 @@ function mark_item(item) {
   } else {
     let tick = document.createElement('div');
     tick.className = 'shoplist-list-item-cb-tick';
-    item.querySelector('.shoplist-list-item-checkbox').parentElement.insertBefore(tick, item.querySelector('.shoplist-list-item-checkbox'))
+    item.querySelector('.shoplist-list-item-checkbox').appendChild(tick, item.querySelector('.shoplist-list-item-checkbox'))
   }
 }
 

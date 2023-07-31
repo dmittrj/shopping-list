@@ -135,9 +135,8 @@ body {
     height: 8px;
     border-bottom: 2px solid black;
     border-left: 2px solid black;
-    transform: rotate(315deg) translate(-1px, 6px);
+    transform: rotate(315deg) translate(-1.5px, -4.5px);
     transform-origin: center;
-    position: absolute;
 }
 
 
