@@ -75,6 +75,7 @@ function ui_create_item(name, cost, amount) {
   ele_listItemCB_cb.className = 'shoplist-list-item-checkbox';
   ele_listItemCB_cb.addEventListener('click', () => {
     mark_item(ele_listItemCB_cb.parentElement.parentElement.parentElement);
+    save();
   })
   ele_ListItemCB.appendChild(ele_listItemCB_cb);
 
