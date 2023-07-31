@@ -44,18 +44,28 @@ function parse_item(str) {
 }
 
 
-function mark_item(item) {
-  let item_id = +item.id.substring(19)
-  let checked_status = SHOPPING_LIST.find((w) => w.id === +item_id).checked;
-  SHOPPING_LIST.find((w) => w.id === +item_id).checked = !checked_status;
-
+function ui_mark_item(item, checked_status) {
   if (checked_status) {
-    item.querySelector('.shoplist-list-item-cb-tick').remove();
-  } else {
     let tick = document.createElement('div');
     tick.className = 'shoplist-list-item-cb-tick';
-    item.querySelector('.shoplist-list-item-checkbox').appendChild(tick, item.querySelector('.shoplist-list-item-checkbox'))
+    item.querySelector('.shoplist-list-item-checkbox').appendChild(tick, item.querySelector('.shoplist-list-item-checkbox'));
+  } else {
+    item.querySelector('.shoplist-list-item-cb-tick').remove();
   }
+}
+
+
+function sl_mark_item(item_id, checked_status) {
+  SHOPPING_LIST.find((w) => w.id === +item_id).checked = checked_status;
+}
+
+
+function toggle_mark_item(item) {
+  let item_id = +item.id.substring(19);
+  let checked_status = SHOPPING_LIST.find((w) => w.id === +item_id).checked;
+  sl_mark_item(item_id, !checked_status);
+
+  ui_mark_item(item, !checked_status);
 }
 
 
@@ -74,7 +84,7 @@ function ui_create_item(name, cost, amount) {
   let ele_listItemCB_cb = document.createElement('button');
   ele_listItemCB_cb.className = 'shoplist-list-item-checkbox';
   ele_listItemCB_cb.addEventListener('click', () => {
-    mark_item(ele_listItemCB_cb.parentElement.parentElement.parentElement);
+    toggle_mark_item(ele_listItemCB_cb.parentElement.parentElement.parentElement);
     save();
   })
   ele_ListItemCB.appendChild(ele_listItemCB_cb);
@@ -281,7 +291,7 @@ function event_load() {
     }
     let _appended = ui_append_item(shopping_list_item, shopping_list_item.id);
     if (shopping_list_item.checked) {
-      mark_item(_appended);
+      ui_mark_item(_appended, true);
     }
   }
   ui_append_add();
