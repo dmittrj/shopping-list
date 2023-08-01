@@ -97,9 +97,12 @@ function toggle_mark_item(item) {
 }
 
 
-function ui_create_item(name, cost, amount) {
+function ui_create_item(name, cost, amount, translucent) {
   var ele_ListItem = document.createElement('div');
   ele_ListItem.className = 'shoplist-list-item';
+  ele_ListItem.addEventListener('mousedown', () => {
+    console.log('h');
+  });
 
   let ele_ListItemLeft = document.createElement('div');
   ele_ListItemLeft.className = 'shoplist-list-item-left';
@@ -111,10 +114,13 @@ function ui_create_item(name, cost, amount) {
 
   let ele_listItemCB_cb = document.createElement('button');
   ele_listItemCB_cb.className = 'shoplist-list-item-checkbox';
-  ele_listItemCB_cb.addEventListener('click', () => {
-    toggle_mark_item(ele_listItemCB_cb.parentElement.parentElement.parentElement);
-    save();
-  })
+  if (!translucent) {
+    ele_listItemCB_cb.addEventListener('click', () => {
+      toggle_mark_item(ele_listItemCB_cb.parentElement.parentElement.parentElement);
+      save();
+    });
+  }
+  
   ele_ListItemCB.appendChild(ele_listItemCB_cb);
 
   let ele_ListItemText = document.createElement('div');
@@ -168,7 +174,7 @@ function ui_create_input(action_by_enter) {
 
 
 function ui_append_item(item, item_id) {
-  var ele_ListItem = ui_create_item(item.name, item.cost, item.amount);
+  var ele_ListItem = ui_create_item(item.name, item.cost, item.amount, false);
   ele_ListItem.id = 'shopping-list-item-' + item_id;
   ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {display_edit_item_field(ele_ListItem)});
 
@@ -185,7 +191,7 @@ function ui_append_item(item, item_id) {
 
 
 function ui_create_add() {
-  let ele_ListItemAdd = ui_create_item('Add...', '', '');
+  let ele_ListItemAdd = ui_create_item('Add...', '', '', true);
   ele_ListItemAdd.style.opacity = OPACITY_LEVEL;
   ele_ListItemAdd.id = 'shoplist-add-pseudoitem';
   ele_ListItemAdd.querySelector('.shoplist-list-item-text').addEventListener('click', display_new_item_field);
@@ -234,7 +240,7 @@ function ui_turn_input_to_add(input_item) {
 
 function ui_turn_input_to_item(input_item) {
   let parsed = parse_item(input_item.querySelector('.shoplist-list-item-textbox').value);
-  let ele_ListItem = ui_create_item(parsed.name, parsed.cost, parsed.amount);
+  let ele_ListItem = ui_create_item(parsed.name, parsed.cost, parsed.amount, false);
   ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {display_edit_item_field(ele_ListItem)});
   ele_ListItem.id = input_item.id;
 
