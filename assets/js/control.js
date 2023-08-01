@@ -35,6 +35,14 @@ function get_list_item_by_its_input(input_item) {
 }
 
 
+function unremove_ticked(right_side, shopping_list_item) {
+  right_side.innerHTML = '';
+  shopping_list_item.removed = false;
+  delete_ticked_toggle_visibility();
+  save();
+}
+
+
 function parse_item(str) {
   return {
           "id": '',
@@ -57,6 +65,9 @@ function ui_mark_item(item, checked_status) {
     item.querySelector('.shoplist-list-item-checkbox').classList.add('sl-item-checkbox-ticked');
   } else {
     item.querySelector('.shoplist-list-item-checkbox').classList.remove('sl-item-checkbox-ticked');
+    if (SHOPPING_LIST.find((w) => w.id === +item.id.substring(19)).removed) {
+      unremove_ticked(item.querySelector('.shoplist-list-item-right'), SHOPPING_LIST.find((w) => w.id === +item.id.substring(19)));
+    }
   }
 
   delete_ticked_toggle_visibility();
@@ -298,10 +309,7 @@ function delete_ticked() {
       let ele_ListItemRight_a = document.createElement('a');
       ele_ListItemRight_a.innerText = 'Unremove';
       ele_ListItemRight_a.addEventListener('click', () => {
-        right_side.innerHTML = '';
-        shopping_list_item.removed = false;
-        delete_ticked_toggle_visibility();
-        save();
+        unremove_ticked(right_side, shopping_list_item);
       })
       right_side.appendChild(ele_ListItemRight_a);
     }
