@@ -85,13 +85,13 @@ function ui_mark_item(item, checked_status) {
 
 
 function sl_mark_item(item_id, checked_status) {
-  SHOPPING_LIST.find((w) => w.id === +item_id).checked = checked_status;
+  get_sl_item_by_id(item_id).checked = checked_status;
 }
 
 
 function toggle_mark_item(item) {
   let item_id = get_id_by_ui_item(item);
-  let checked_status = SHOPPING_LIST.find((w) => w.id === +item_id).checked;
+  let checked_status = get_sl_item_by_id(item_id).checked;
   sl_mark_item(item_id, !checked_status);
   ui_mark_item(item, !checked_status);
 }
@@ -256,7 +256,7 @@ function sl_append_item(item) {
 
 
 function sl_edit_item(item, item_id) {
-  SHOPPING_LIST.find((w) => w.id === +item_id).name = item;
+  get_sl_item_by_id(item_id).name = item;
 }
 
 
