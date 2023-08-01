@@ -5,6 +5,8 @@ var LAST_ID = 1;
 
 function save() {
   const cookie_shopping_list = SHOPPING_LIST.map(({ id, ...item }) => item);
+  cookie_shopping_list = cookie_shopping_list.filter((w) => !w.removed);
+  cookie_shopping_list = SHOPPING_LIST.map(({ removed, ...item }) => item);
   const shopping_list_string = JSON.stringify(cookie_shopping_list);
   document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
 }
