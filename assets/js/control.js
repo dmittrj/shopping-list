@@ -36,11 +36,17 @@ function get_list_item_by_its_input(input_item) {
 function parse_item(str) {
   return {
           "id": '',
+          "removed": false,
           "name": str,
           "cost":  '1', 
           "amount": '1',
           "checked": false
         };
+}
+
+
+function delete_ticked_toggle_visibility() {
+  document.querySelector('#shoplist-delete-ticked').style.display = (SHOPPING_LIST.find((w) => w.checked && !w.removed)) ? 'inline-block' : 'none';
 }
 
 
@@ -50,6 +56,8 @@ function ui_mark_item(item, checked_status) {
   } else {
     item.querySelector('.shoplist-list-item-checkbox').classList.remove('sl-item-checkbox-ticked');
   }
+
+  delete_ticked_toggle_visibility();
 }
 
 
@@ -279,6 +287,28 @@ function display_edit_item_field(item) {
 }
 
 
+function delete_ticked() {
+  SHOPPING_LIST.forEach(shopping_list_item => {
+    if (shopping_list_item.checked) {
+      shopping_list_item.removed = true;
+      let right_side = document.querySelector('#shopping-list-item-' + String(shopping_list_item.id)).querySelector('.shoplist-list-item-right');
+      right_side.innerHTML = '';
+      
+      let ele_ListItemRight_a = document.createElement('a');
+      ele_ListItemRight_a.innerText = 'Unremove';
+      ele_ListItemRight_a.addEventListener('click', () => {
+        right_side.innerHTML = '';
+        shopping_list_item.removed = false;
+        delete_ticked_toggle_visibility();
+      })
+      right_side.appendChild(ele_ListItemRight_a);
+    }
+  });
+
+  delete_ticked_toggle_visibility();
+}
+
+
 function event_load() {
   SHOPPING_LIST = open();
   for (let i = 0; i < SHOPPING_LIST.length; i++) {
@@ -296,6 +326,7 @@ function event_load() {
 
   return;
 }
+
 
 document.addEventListener('DOMContentLoaded', event_load); 
 
