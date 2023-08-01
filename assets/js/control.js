@@ -100,9 +100,43 @@ function toggle_mark_item(item) {
 function ui_create_item(name, cost, amount, translucent) {
   var ele_ListItem = document.createElement('div');
   ele_ListItem.className = 'shoplist-list-item';
-  ele_ListItem.addEventListener('mousedown', () => {
-    console.log('h');
-  });
+  // if (!translucent) {
+  //   ele_ListItem.addEventListener('mousedown', (event) => {
+  //     let shiftX = event.clientX - ele_ListItem.getBoundingClientRect().left;
+  //     let shiftY = event.clientY - ele_ListItem.getBoundingClientRect().top;
+
+  //     ele_ListItem.style.position = 'absolute';
+  //     ele_ListItem.style.zIndex = 1000;
+  //     // переместим в body, чтобы мяч был точно не внутри position:relative
+  //     document.body.append(ele_ListItem);
+  //     // и установим абсолютно спозиционированный мяч под курсор
+  //     console.log(event.target.closest('.shoplist-list-item'));
+
+  //     moveAt(event.pageX, event.pageY);
+
+  //     // передвинуть мяч под координаты курсора
+  //     // и сдвинуть на половину ширины/высоты для центрирования
+  //     function moveAt(pageX, pageY) {
+  //       ele_ListItem.style.left = pageX - shiftX + 'px';
+  //       ele_ListItem.style.top = pageY - shiftY + 'px';
+  //     }
+
+  //     function onMouseMove(event) {
+  //       moveAt(event.pageX, event.pageY);
+  //     }
+
+  //     // (3) перемещать по экрану
+  //     document.addEventListener('mousemove', onMouseMove);
+
+  //     // (4) положить мяч, удалить более ненужные обработчики событий
+  //     ele_ListItem.onmouseup = function() {
+  //       document.removeEventListener('mousemove', onMouseMove);
+  //       ele_ListItem.onmouseup = null;
+  //     };
+
+  //   });
+  // }
+  
 
   let ele_ListItemLeft = document.createElement('div');
   ele_ListItemLeft.className = 'shoplist-list-item-left';
