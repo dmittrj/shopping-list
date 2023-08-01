@@ -35,6 +35,16 @@ function get_list_item_by_its_input(input_item) {
 }
 
 
+function get_id_by_ui_item(item) {
+  return +item.id.substring(19);
+}
+
+
+function get_sl_item_by_id(item_id) {
+  return SHOPPING_LIST.find((w) => w.id === +item_id);
+}
+
+
 function unremove_ticked(right_side, shopping_list_item) {
   right_side.innerHTML = '';
   shopping_list_item.removed = false;
@@ -65,8 +75,8 @@ function ui_mark_item(item, checked_status) {
     item.querySelector('.shoplist-list-item-checkbox').classList.add('sl-item-checkbox-ticked');
   } else {
     item.querySelector('.shoplist-list-item-checkbox').classList.remove('sl-item-checkbox-ticked');
-    if (SHOPPING_LIST.find((w) => w.id === +item.id.substring(19)).removed) {
-      unremove_ticked(item.querySelector('.shoplist-list-item-right'), SHOPPING_LIST.find((w) => w.id === +item.id.substring(19)));
+    if (SHOPPING_LIST.find((w) => w.id === get_id_by_ui_item(item)).removed) {
+      unremove_ticked(item.querySelector('.shoplist-list-item-right'), SHOPPING_LIST.find((w) => w.id === get_id_by_ui_item(item)));
     }
   }
 
@@ -80,7 +90,7 @@ function sl_mark_item(item_id, checked_status) {
 
 
 function toggle_mark_item(item) {
-  let item_id = +item.id.substring(19);
+  let item_id = get_id_by_ui_item(item);
   let checked_status = SHOPPING_LIST.find((w) => w.id === +item_id).checked;
   sl_mark_item(item_id, !checked_status);
   ui_mark_item(item, !checked_status);
