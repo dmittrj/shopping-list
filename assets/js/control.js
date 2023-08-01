@@ -4,9 +4,9 @@ var SHOPPING_LIST;
 var LAST_ID = 1;
 
 function save() {
-  const cookie_shopping_list = SHOPPING_LIST.map(({ id, ...item }) => item);
+  var cookie_shopping_list = SHOPPING_LIST.map(({ id, ...item }) => item);
   cookie_shopping_list = cookie_shopping_list.filter((w) => !w.removed);
-  cookie_shopping_list = SHOPPING_LIST.map(({ removed, ...item }) => item);
+  cookie_shopping_list = cookie_shopping_list.map(({ removed, ...item }) => item);
   const shopping_list_string = JSON.stringify(cookie_shopping_list);
   document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
 }
@@ -72,7 +72,6 @@ function toggle_mark_item(item) {
   let item_id = +item.id.substring(19);
   let checked_status = SHOPPING_LIST.find((w) => w.id === +item_id).checked;
   sl_mark_item(item_id, !checked_status);
-
   ui_mark_item(item, !checked_status);
 }
 
@@ -302,12 +301,14 @@ function delete_ticked() {
         right_side.innerHTML = '';
         shopping_list_item.removed = false;
         delete_ticked_toggle_visibility();
+        save();
       })
       right_side.appendChild(ele_ListItemRight_a);
     }
   });
 
   delete_ticked_toggle_visibility();
+  save();
 }
 
 
@@ -318,6 +319,9 @@ function event_load() {
     shopping_list_item.id = LAST_ID++;
     if (!shopping_list_item.checked) {
       shopping_list_item.checked = false;
+    }
+    if (!shopping_list_item.removed) {
+      shopping_list_item.removed = false;
     }
     let _appended = ui_append_item(shopping_list_item, shopping_list_item.id);
     if (shopping_list_item.checked) {
