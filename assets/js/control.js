@@ -46,11 +46,9 @@ function parse_item(str) {
 
 function ui_mark_item(item, checked_status) {
   if (checked_status) {
-    let tick = document.createElement('div');
-    tick.className = 'shoplist-list-item-cb-tick';
-    item.querySelector('.shoplist-list-item-checkbox').appendChild(tick, item.querySelector('.shoplist-list-item-checkbox'));
+    item.querySelector('.shoplist-list-item-checkbox').classList.add('sl-item-checkbox-ticked');
   } else {
-    item.querySelector('.shoplist-list-item-cb-tick').remove();
+    item.querySelector('.shoplist-list-item-checkbox').classList.remove('sl-item-checkbox-ticked');
   }
 }
 

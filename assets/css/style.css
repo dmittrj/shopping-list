@@ -70,6 +70,18 @@ body {
 }
 
 
+.sl-item-checkbox-ticked::before {
+    content: "";
+    display: block;
+    width: 16px;
+    height: 8px;
+    border-bottom: 2px solid black;
+    border-left: 2px solid black;
+    transform: rotate(315deg) translate(-1.5px, -4.5px);
+    transform-origin: center;
+}
+
+
 .shoplist-list-item-name {
     margin-left: 6px;
 }
