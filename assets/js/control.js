@@ -187,6 +187,16 @@ function ui_create_input(action_by_enter) {
         }
       }
     });
+    // ele_ListItemTextInput.addEventListener('focusout', (event) => {
+    //   if (ele_ListItemTextInput.value === '') {
+    //     ui_turn_input_to_add(get_list_item_by_its_input(ele_ListItemTextInput));
+    //   } else {
+    //     let new_item_content = parse_item(ele_ListItemTextInput.value);
+    //     let assigned_id = sl_append_item(new_item_content);
+    //     ui_append_item(new_item_content, assigned_id);
+    //     ui_turn_input_to_add(document.querySelector('#shoplist-add-pseudoitem'));
+    //   }
+    // });
   } else if (action_by_enter == 'edit') {
     ele_ListItemTextInput.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
