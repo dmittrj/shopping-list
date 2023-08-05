@@ -12,16 +12,18 @@ class ShoppingList {
 
     append(sl_item) {
         this.SL_Items.push(sl_item);
+        return sl_item;
     }
 }
   
 
 class ShoppingListItem {
-    constructor(name, cost, amount, checked) {
+    constructor(name, cost, amount, checked, id) {
       this.SLI_Name = name;
       this.SLI_Cost = cost;
       this.SLI_Amount = amount;
       this.SLI_Checked = checked;
+      this.SLI_Id = id;
   
       this.Removed = false;
     }
@@ -31,6 +33,15 @@ class ShoppingListItem {
 class UI {
     static clear_list() {
       document.querySelector('#shoplist-list').innerHTML = '';
+    }
+
+
+    static parse_item(str) {
+      return {
+        "name": str,
+        "amount": 1,
+        "cost": 0
+      };
     }
 
 
@@ -140,7 +151,6 @@ class UI {
       if (ele_ListItemAddText) {
         UI.turn_add_to_input();
       } else {
-        
         UI.append_add();
         UI.turn_add_to_input();
       }
@@ -165,11 +175,11 @@ class UI {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             if (ele_ListItemTextInput.value === '') {
-              ui_turn_input_to_add(get_list_item_by_its_input(ele_ListItemTextInput));
+              UI.turn_input_to_add(get_list_item_by_its_input(ele_ListItemTextInput));
             } else {
-              let new_item_content = parse_item(ele_ListItemTextInput.value);
-              let assigned_id = sl_append_item(new_item_content);
-              ui_append_item(new_item_content, assigned_id);
+              let new_item_content = UI.parse_item(ele_ListItemTextInput.value);
+              let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
+              UI.append_item(new_item);
             }
           }
         });
@@ -191,7 +201,7 @@ class UI {
               save();
               get_list_item_by_its_input(ele_ListItemTextInput).remove();
             } else {
-              let edited_item = ui_turn_input_to_item(get_list_item_by_its_input(ele_ListItemTextInput));
+              let edited_item = UI.turn_input_to_item(get_list_item_by_its_input(ele_ListItemTextInput));
               sl_edit_item(ele_ListItemTextInput.value, edited_item.id.substring(19));
               save();
             }
