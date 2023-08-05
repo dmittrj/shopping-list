@@ -38,6 +38,11 @@ class ShoppingListItem {
       this.SLI_Cost = cost;
       this.SLI_Amount = amount;
     }
+
+
+    drop() {
+
+    }
 }
   
   
@@ -140,7 +145,7 @@ class UI {
     static append_item(list_item) {
       var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, false);
       ele_ListItem.id = 'shopping-list-item-' + list_item.SLI_Id;
-      ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
+      ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => { UI.display_edit_item_field(ele_ListItem) });
 
       document.querySelector(".shoplist-list").appendChild(ele_ListItem);
       
@@ -267,7 +272,7 @@ class UI {
     
     
     static turn_input_to_item(input_item) {
-      let parsed = parse_item(input_item.querySelector('.shoplist-list-item-textbox').value);
+      let parsed = UI.parse_item(input_item.querySelector('.shoplist-list-item-textbox').value);
       let ele_ListItem = UI.create_item(parsed.name, parsed.cost, parsed.amount, false);
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
       ele_ListItem.id = input_item.id;
@@ -298,15 +303,15 @@ class UI {
       for (let i = 0; i < eles_ListItemTB.length; i++) {
         const ele_ListItemTB = eles_ListItemTB[i];
         if (ele_ListItemTB.value === '') {
-          if (!(get_list_item_by_its_input(ele_ListItemTB).id == 'shoplist-add-pseudoitem')) {
-            sl_drop_item(get_list_item_by_its_input(ele_ListItemTB).id.substring(19));
-            save();
+          if (!(UI.get_list_item_by_its_input(ele_ListItemTB).id == 'shoplist-add-pseudoitem')) {
+            hub.get_current_list().get_item_by_id(+UI.get_list_item_by_its_input(ele_ListItemTB).id.substring(19)).drop();
+            hub.save();
           }
-          get_list_item_by_its_input(ele_ListItemTB).remove();
+          UI.get_list_item_by_its_input(ele_ListItemTB).remove();
         } else {
-          let edited_item = UI.turn_input_to_item(get_list_item_by_its_input(ele_ListItemTB));
-          sl_edit_item(ele_ListItemTB.value, edited_item.id.substring(19));
-          save();
+          let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTB));
+          hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTB.value, null, null);
+          hub.save();
         }
       }
     }
