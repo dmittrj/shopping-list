@@ -14,6 +14,10 @@ class ShoppingList {
         this.SL_Items.push(sl_item);
         return sl_item;
     }
+
+    get_item_by_id(id) {
+      return this.SL_Items.find((w) => w.SLI_Id === id);
+    }
 }
   
 
@@ -27,6 +31,13 @@ class ShoppingListItem {
   
       this.Removed = false;
     }
+
+
+    edit(name, cost, amount) {
+      this.SLI_Name = name;
+      this.SLI_Cost = cost;
+      this.SLI_Amount = amount;
+    }
 }
   
   
@@ -37,11 +48,11 @@ class UI {
 
 
     static parse_item(str) {
-      return {
-        "name": str,
-        "amount": 1,
-        "cost": 0
-      };
+        return {
+          "name": str,
+          "amount": 1,
+          "cost": 0
+        };
     }
 
 
@@ -143,6 +154,11 @@ class UI {
     }
 
 
+    static get_list_item_by_its_input(input_item) {
+      return input_item.parentElement.parentElement;
+    }
+
+
     static display_new_item_field() {
       const ele_ListItemAdd = document.querySelector('#shoplist-add-pseudoitem');
       const ele_ListItemAddText = ele_ListItemAdd.querySelector('.shoplist-list-item-text');
@@ -175,7 +191,7 @@ class UI {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             if (ele_ListItemTextInput.value === '') {
-              UI.turn_input_to_add(get_list_item_by_its_input(ele_ListItemTextInput));
+              UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
             } else {
               let new_item_content = UI.parse_item(ele_ListItemTextInput.value);
               let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
@@ -198,12 +214,12 @@ class UI {
           if (event.key === 'Enter') {
             if (ele_ListItemTextInput.value === '') {
               sl_drop_item(get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
-              save();
+              hub.save();
               get_list_item_by_its_input(ele_ListItemTextInput).remove();
             } else {
-              let edited_item = UI.turn_input_to_item(get_list_item_by_its_input(ele_ListItemTextInput));
-              sl_edit_item(ele_ListItemTextInput.value, edited_item.id.substring(19));
-              save();
+              let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTextInput));
+              hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTextInput.value, null, null);
+              hub.save();
             }
           }
         });
@@ -307,6 +323,10 @@ class Hub {
     open() {
       this.add_list('Shopping List');
       this.CurrentList = 0;
+    }
+
+    save() {
+      
     }
 
     add_list(name) {
