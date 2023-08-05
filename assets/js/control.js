@@ -13,6 +13,10 @@ class ShoppingList {
   save() {
 
   }
+
+  append(sl_item) {
+    this.SL_Items.push(sl_item);
+  }
 }
 
 class ShoppingListItem {
@@ -25,6 +29,17 @@ class ShoppingListItem {
     this.SLI_Id = shopping_list.SL_LastID++;
 
     this.Removed = false;
+  }
+}
+
+
+class UI {
+  constructor() {
+    
+  }
+
+  static m() {
+
   }
 }
 
