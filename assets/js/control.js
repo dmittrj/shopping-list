@@ -3,6 +3,27 @@ const OPACITY_LEVEL = '.4';
 var SHOPPING_LIST;
 var LAST_ID = 1;
 
+class ShoppingList {
+  constructor(name) {
+    this.SL_Name = name;
+    this.SL_Items = [];
+    this.SL_LastID = 1;
+  }
+}
+
+class ShoppingListItem {
+  constructor(name, cost, amount, checked, shopping_list) {
+    this.SLI_Name = name;
+    this.SLI_Cost = cost;
+    this.SLI_Amount = amount;
+    this.SLI_Checked = checked;
+    shopping_list.SL_Items.push(this);
+    this.SLI_Id = shopping_list.SL_LastID++;
+    
+    this.Removed = false;
+  }
+}
+
 function save() {
   var cookie_shopping_list = SHOPPING_LIST.map(({ id, ...item }) => item);
   cookie_shopping_list = cookie_shopping_list.filter((w) => !w.removed);
