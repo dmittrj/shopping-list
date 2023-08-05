@@ -386,6 +386,7 @@ function delete_ticked() {
 function event_load() {
   hub = new Hub();
   hub.open();
+  UI.draw_list(hub.get_current_list());
   return;
 
   SHOPPING_LIST = sl_open();
