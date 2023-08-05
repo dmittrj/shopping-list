@@ -9,6 +9,10 @@ class ShoppingList {
     this.SL_Items = [];
     this.SL_LastID = 1;
   }
+
+  save() {
+
+  }
 }
 
 class ShoppingListItem {
@@ -19,7 +23,7 @@ class ShoppingListItem {
     this.SLI_Checked = checked;
     shopping_list.SL_Items.push(this);
     this.SLI_Id = shopping_list.SL_LastID++;
-    
+
     this.Removed = false;
   }
 }
@@ -32,7 +36,7 @@ function save() {
   document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
 }
 
-function open() {
+function sl_open() {
   const cookies = document.cookie.split("; ");
   const cookieName = "shopping_list=";
 
@@ -402,7 +406,7 @@ function delete_ticked() {
 
 
 function event_load() {
-  SHOPPING_LIST = open();
+  SHOPPING_LIST = sl_open();
   for (let i = 0; i < SHOPPING_LIST.length; i++) {
     const shopping_list_item = SHOPPING_LIST[i];
     shopping_list_item.id = LAST_ID++;
@@ -423,5 +427,4 @@ function event_load() {
 }
 
 
-document.addEventListener('DOMContentLoaded', event_load); 
-
+document.addEventListener('DOMContentLoaded', event_load);
