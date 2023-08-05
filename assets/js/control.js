@@ -2,46 +2,9 @@
 const OPACITY_LEVEL = '.4';
 var SHOPPING_LIST;
 var LAST_ID = 1;
-
-class ShoppingList {
-  constructor(name) {
-    this.SL_Name = name;
-    this.SL_Items = [];
-    this.SL_LastID = 1;
-  }
-
-  save() {
-
-  }
-
-  append(sl_item) {
-    this.SL_Items.push(sl_item);
-  }
-}
-
-class ShoppingListItem {
-  constructor(name, cost, amount, checked, shopping_list) {
-    this.SLI_Name = name;
-    this.SLI_Cost = cost;
-    this.SLI_Amount = amount;
-    this.SLI_Checked = checked;
-    shopping_list.SL_Items.push(this);
-    this.SLI_Id = shopping_list.SL_LastID++;
-
-    this.Removed = false;
-  }
-}
+var hub;
 
 
-class UI {
-  constructor() {
-    
-  }
-
-  static m() {
-
-  }
-}
 
 function save() {
   var cookie_shopping_list = SHOPPING_LIST.map(({ id, ...item }) => item);
@@ -421,6 +384,10 @@ function delete_ticked() {
 
 
 function event_load() {
+  hub = new Hub();
+  hub.open();
+  return;
+
   SHOPPING_LIST = sl_open();
   for (let i = 0; i < SHOPPING_LIST.length; i++) {
     const shopping_list_item = SHOPPING_LIST[i];
