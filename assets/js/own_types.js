@@ -12,6 +12,7 @@ class ShoppingList {
 
     append(sl_item) {
         this.SL_Items.push(sl_item);
+        hub.save();
         return sl_item;
     }
 
@@ -114,7 +115,7 @@ class UI {
       if (!translucent) {
         ele_listItemCB_cb.addEventListener('click', () => {
           UI.toggle_mark_item(ele_listItemCB_cb.parentElement.parentElement.parentElement);
-          save();
+          hub.save();
         });
       }
       
@@ -331,7 +332,18 @@ class Hub {
     }
 
     save() {
-      
+      let temp_shopping_lists = [];
+      this.ShoppingLists.forEach(sl => {
+        let temp_shopping_list = [];
+        sl.SL_Items.forEach(sl_item => {
+          temp_shopping_list.push({"name": sl_item.SLI_Name,
+                                   "cost": sl_item.SLI_Cost,
+                                   "amount": sl_item.SLI_Amount});
+        });
+        temp_shopping_lists.push({"name": sl.SL_Name,
+                                  "items": temp_shopping_list});
+      });
+      console.log(JSON.stringify(temp_shopping_lists));
     }
 
     add_list(name) {
