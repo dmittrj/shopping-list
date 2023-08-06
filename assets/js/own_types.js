@@ -325,6 +325,25 @@ class Hub {
       this.CurrentList = 0;
       this.LastID = 0;
     }
+
+
+    get_cookies() {
+      const cookies = document.cookie.split("; ");
+      const cookieName = "shopping_list=";
+
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        if (cookie.indexOf(cookieName) === 0) {
+          const cookieValue = cookie.substring(cookieName.length);
+          try {
+            return JSON.parse(cookieValue);
+          } catch (error) {
+            return [];
+          }
+        }
+      }
+      return [];
+    }
   
     open() {
       this.add_list('Shopping List');
@@ -343,7 +362,9 @@ class Hub {
         temp_shopping_lists.push({"name": sl.SL_Name,
                                   "items": temp_shopping_list});
       });
-      console.log(JSON.stringify(temp_shopping_lists));
+      const shopping_list_string = JSON.stringify(temp_shopping_lists);
+
+      document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
     }
 
     add_list(name) {
