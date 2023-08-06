@@ -218,7 +218,7 @@ class UI {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             if (ele_ListItemTextInput.value === '') {
-              sl_drop_item(get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
+              hub.get_current_list().get_item_by_id(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19)).drop();
               hub.save();
               get_list_item_by_its_input(ele_ListItemTextInput).remove();
             } else {
