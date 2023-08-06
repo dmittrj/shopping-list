@@ -15,6 +15,11 @@ class ShoppingList {
         return sl_item;
     }
 
+
+    drop(id) {
+      this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id !== id);
+    }
+
     get_item_by_id(id) {
       return this.SL_Items.find((w) => w.SLI_Id === id);
     }
@@ -37,11 +42,6 @@ class ShoppingListItem {
       this.SLI_Name = name;
       this.SLI_Cost = cost;
       this.SLI_Amount = amount;
-    }
-
-
-    drop() {
-
     }
 }
   
@@ -218,7 +218,7 @@ class UI {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             if (ele_ListItemTextInput.value === '') {
-              hub.get_current_list().get_item_by_id(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19)).drop();
+              hub.get_current_list().drop(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
               hub.save();
               get_list_item_by_its_input(ele_ListItemTextInput).remove();
             } else {
@@ -304,7 +304,7 @@ class UI {
         const ele_ListItemTB = eles_ListItemTB[i];
         if (ele_ListItemTB.value === '') {
           if (!(UI.get_list_item_by_its_input(ele_ListItemTB).id == 'shoplist-add-pseudoitem')) {
-            hub.get_current_list().get_item_by_id(+UI.get_list_item_by_its_input(ele_ListItemTB).id.substring(19)).drop();
+            hub.get_current_list().drop(+UI.get_list_item_by_its_input(ele_ListItemTB).id.substring(19));
             hub.save();
           }
           UI.get_list_item_by_its_input(ele_ListItemTB).remove();
