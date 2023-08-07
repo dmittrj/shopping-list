@@ -170,6 +170,10 @@ class UI {
         UI.turn_add_to_input();
       }
 
+      if (list_item.SLI_Checked) {
+        UI.mark_item(ele_ListItem, true);
+      }
+
       return ele_ListItem;
     }
 
@@ -369,12 +373,16 @@ class Hub {
       cookies.content.forEach(sl => {
         let new_item = this.add_list(sl.name);
         sl.items.forEach(sl_item => {
-          new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount));
+          new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
         });
       });
 
-      this.add_list('Shopping List');
-      this.CurrentList = 0;
+      if (cookies.content.length == 0) {
+        this.add_list('Shopping List');
+        this.CurrentList = 0;
+      }
+
+      
     }
 
     save() {
@@ -384,7 +392,8 @@ class Hub {
         sl.SL_Items.forEach(sl_item => {
           temp_shopping_list.push({"name": sl_item.SLI_Name,
                                    "cost": sl_item.SLI_Cost,
-                                   "amount": sl_item.SLI_Amount});
+                                   "amount": sl_item.SLI_Amount,
+                                   "checked": sl_item.SLI_Checked});
         });
         temp_shopping_lists.push({"name": sl.SL_Name,
                                   "items": temp_shopping_list});

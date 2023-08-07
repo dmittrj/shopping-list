@@ -138,25 +138,6 @@ function event_load() {
   hub.open();
   UI.draw_list(hub.get_current_list());
   return;
-
-  SHOPPING_LIST = sl_open();
-  for (let i = 0; i < SHOPPING_LIST.length; i++) {
-    const shopping_list_item = SHOPPING_LIST[i];
-    shopping_list_item.id = LAST_ID++;
-    if (!shopping_list_item.checked) {
-      shopping_list_item.checked = false;
-    }
-    if (!shopping_list_item.removed) {
-      shopping_list_item.removed = false;
-    }
-    let _appended = ui_append_item(shopping_list_item, shopping_list_item.id);
-    if (shopping_list_item.checked) {
-      ui_mark_item(_appended, true);
-    }
-  }
-  ui_append_add();
-
-  return;
 }
 
 
