@@ -68,9 +68,9 @@ class UI {
         item.querySelector('.shoplist-list-item-checkbox').classList.add('sl-item-checkbox-ticked');
       } else {
         item.querySelector('.shoplist-list-item-checkbox').classList.remove('sl-item-checkbox-ticked');
-        // if (SHOPPING_LIST.find((w) => w.id === get_id_by_ui_item(item)).removed) {
-        //   unremove_ticked(item.querySelector('.shoplist-list-item-right'), SHOPPING_LIST.find((w) => w.id === get_id_by_ui_item(item)));
-        // }
+        if (hub.get_current_list().get_item_by_id(get_id_by_ui_item(item)).SLI_Removed) {
+          unremove_ticked(item.querySelector('.shoplist-list-item-right'), hub.get_current_list().get_item_by_id(get_id_by_ui_item(item)));
+        }
       }
       UI.delete_ticked_toggle_visibility();
     }

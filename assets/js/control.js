@@ -45,9 +45,9 @@ function get_sl_item_by_id(item_id) {
 
 function unremove_ticked(right_side, shopping_list_item) {
   right_side.innerHTML = '';
-  shopping_list_item.removed = false;
-  delete_ticked_toggle_visibility();
-  save();
+  shopping_list_item.SLI_Removed = false;
+  UI.delete_ticked_toggle_visibility();
+  hub.save();
 }
 
 
@@ -113,10 +113,10 @@ function sl_drop_item(item_id) {
 
 
 function delete_ticked() {
-  SHOPPING_LIST.forEach(shopping_list_item => {
-    if (shopping_list_item.checked) {
-      shopping_list_item.removed = true;
-      let right_side = document.querySelector('#shopping-list-item-' + String(shopping_list_item.id)).querySelector('.shoplist-list-item-right');
+  hub.get_current_list().SL_Items.forEach(shopping_list_item => {
+    if (shopping_list_item.SLI_Checked) {
+      shopping_list_item.SLI_Removed = true;
+      let right_side = document.querySelector('#shopping-list-item-' + String(shopping_list_item.SLI_Id)).querySelector('.shoplist-list-item-right');
       right_side.innerHTML = '';
       
       let ele_ListItemRight_a = document.createElement('a');
@@ -128,8 +128,8 @@ function delete_ticked() {
     }
   });
 
-  delete_ticked_toggle_visibility();
-  save();
+  UI.delete_ticked_toggle_visibility();
+  hub.save();
 }
 
 
