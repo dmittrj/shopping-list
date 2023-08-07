@@ -24,6 +24,11 @@ class ShoppingList {
     get_item_by_id(id) {
       return this.SL_Items.find((w) => w.SLI_Id === id);
     }
+
+
+    get_checked() {
+      return this.SL_Items.find((w) => w.SLI_Checked && !w.SLI_Removed);
+    }
 }
   
 
@@ -35,7 +40,7 @@ class ShoppingListItem {
       this.SLI_Checked = checked;
       this.SLI_Id = id;
   
-      this.Removed = false;
+      this.SLI_Removed = false;
     }
 
 
@@ -50,6 +55,24 @@ class ShoppingListItem {
 class UI {
     static clear_list() {
       document.querySelector('#shoplist-list').innerHTML = '';
+    }
+
+
+    static delete_ticked_toggle_visibility() {
+      document.querySelector('#shoplist-delete-ticked').style.display = (hub.get_current_list().get_checked()) ? 'inline-block' : 'none';
+    }
+
+
+    static mark_item(item, checked_status) {
+      if (checked_status) {
+        item.querySelector('.shoplist-list-item-checkbox').classList.add('sl-item-checkbox-ticked');
+      } else {
+        item.querySelector('.shoplist-list-item-checkbox').classList.remove('sl-item-checkbox-ticked');
+        // if (SHOPPING_LIST.find((w) => w.id === get_id_by_ui_item(item)).removed) {
+        //   unremove_ticked(item.querySelector('.shoplist-list-item-right'), SHOPPING_LIST.find((w) => w.id === get_id_by_ui_item(item)));
+        // }
+      }
+      UI.delete_ticked_toggle_visibility();
     }
 
 
@@ -105,7 +128,7 @@ class UI {
       ele_listItemCB_cb.className = 'shoplist-list-item-checkbox';
       if (!translucent) {
         ele_listItemCB_cb.addEventListener('click', () => {
-          UI.toggle_mark_item(ele_listItemCB_cb.parentElement.parentElement.parentElement);
+          toggle_mark_item(ele_listItemCB_cb.parentElement.parentElement.parentElement);
           hub.save();
         });
       }
