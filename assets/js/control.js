@@ -44,7 +44,8 @@ function get_sl_item_by_id(item_id) {
 
 
 function unremove_ticked(right_side, shopping_list_item) {
-  right_side.innerHTML = '';
+  let ele_ListItem = UI.create_item(shopping_list_item.SLI_Name, shopping_list_item.SLI_Cost, shopping_list_item.SLI_Amount, shopping_list_item.SLI_Checked, false);
+  right_side.parentElement.replaceWith(ele_ListItem);
   shopping_list_item.SLI_Removed = false;
   UI.delete_ticked_toggle_visibility();
   hub.save();
