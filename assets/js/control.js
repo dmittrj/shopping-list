@@ -94,25 +94,6 @@ function delete_ticked_toggle_visibility() {
 }
 
 
-function ui_mark_item(item, checked_status) {
-  if (checked_status) {
-    item.querySelector('.shoplist-list-item-checkbox').classList.add('sl-item-checkbox-ticked');
-  } else {
-    item.querySelector('.shoplist-list-item-checkbox').classList.remove('sl-item-checkbox-ticked');
-    if (SHOPPING_LIST.find((w) => w.id === get_id_by_ui_item(item)).removed) {
-      unremove_ticked(item.querySelector('.shoplist-list-item-right'), SHOPPING_LIST.find((w) => w.id === get_id_by_ui_item(item)));
-    }
-  }
-
-  delete_ticked_toggle_visibility();
-}
-
-
-function sl_mark_item(item_id, checked_status) {
-  get_sl_item_by_id(item_id).checked = checked_status;
-}
-
-
 function toggle_mark_item(item) {
   let item_id = get_id_by_ui_item(item);
   let checked_status = hub.get_current_list().get_item_by_id(item_id).SLI_Checked;

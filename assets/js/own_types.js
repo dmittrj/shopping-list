@@ -50,8 +50,11 @@ class ShoppingListItem {
       if (!isNaN(cost)) {
         this.SLI_Cost = cost;
       }
+
+      if (!isNaN(amount)) {
+        this.SLI_Amount = amount;
+      }
       
-      this.SLI_Amount = amount;
     }
 }
   
@@ -151,7 +154,7 @@ class UI {
       ele_ListItemRightCost.innerText = cost;
 
       let ele_ListItemRightAmount = document.createElement('div');
-      ele_ListItemRightAmount.innerText = amount;
+      ele_ListItemRightAmount.innerText = amount.length === 0 ? '' : 'x' + amount;
 
       ele_ListItemRight.appendChild(ele_ListItemRightCost);
       ele_ListItemRight.appendChild(ele_ListItemRightAmount);
@@ -306,7 +309,7 @@ class UI {
     
     static turn_input_to_item(input_item) {
       let id = +input_item.id.substring(19);
-      let ele_ListItem = UI.create_item(input_item.value, hub.get_current_list().get_item_by_id(id).SLI_Cost, hub.get_current_list().get_item_by_id(id).SLI_Amount, false);
+      let ele_ListItem = UI.create_item(input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Cost, hub.get_current_list().get_item_by_id(id).SLI_Amount, false);
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
       ele_ListItem.id = input_item.id;
     
