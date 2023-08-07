@@ -122,6 +122,12 @@ body {
     border-bottom: 1px solid #ccc;
 }
 
+.shoplist-list-item-right div {
+    line-height: 1.1;
+    text-align: right;
+    font-size: .75em;
+}
+
 
 .shoplist-footer {
     position: absolute;

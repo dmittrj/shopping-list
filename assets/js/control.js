@@ -51,11 +51,40 @@ function unremove_ticked(right_side, shopping_list_item) {
 }
 
 
-function parse_item(str) {
+function parse_item(inputString) {
+  let name = "";
+  let cost = "0";
+  let amount = "1";
+
+  const currencies = ["$", "€", "₽", "rub", "р.", "£", "dollar"];
+  const units = ["units"];
+
+  var words = inputString.split(" ");
+
+  if (!isNaN(parseInt(words[0]))) {
+    amount = words[0];
+    words[0] = "";
+  }
+
+  for (let i = 0; i < words.length; i++) {
+    if (currencies.includes(words[i])) {
+      cost = words[i - 1] + words[i];
+      words[i - 1] = "";
+      words[i] = "";
+    }
+  }
+
+  for (let i = 0; i < words.length; i++) {
+    name += String(words[i]) + " ";
+  }
+
+  name = name.trim();
+  name = name.charAt(0).toUpperCase() + name.slice(1);
+
   return {
-    "name": str,
-    "amount": 1,
-    "cost": 0
+    "name": name,
+    "amount": amount,
+    "cost": cost
   };
 }
 

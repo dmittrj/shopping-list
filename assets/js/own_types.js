@@ -46,7 +46,11 @@ class ShoppingListItem {
 
     edit(name, cost, amount) {
       this.SLI_Name = name;
-      this.SLI_Cost = cost;
+
+      if (!isNaN(cost)) {
+        this.SLI_Cost = cost;
+      }
+      
       this.SLI_Amount = amount;
     }
 }
@@ -142,6 +146,16 @@ class UI {
 
       let ele_ListItemRight = document.createElement('div');
       ele_ListItemRight.className = 'shoplist-list-item-right';
+
+      let ele_ListItemRightCost = document.createElement('div');
+      ele_ListItemRightCost.innerText = cost;
+
+      let ele_ListItemRightAmount = document.createElement('div');
+      ele_ListItemRightAmount.innerText = amount;
+
+      ele_ListItemRight.appendChild(ele_ListItemRightCost);
+      ele_ListItemRight.appendChild(ele_ListItemRightAmount);
+
       ele_ListItem.appendChild(ele_ListItemRight);
 
       return ele_ListItem;
@@ -242,7 +256,7 @@ class UI {
               UI.get_list_item_by_its_input(ele_ListItemTextInput).remove();
             } else {
               let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTextInput));
-              hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTextInput.value, null, null);
+              hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTextInput.value, NaN, NaN);
               hub.save();
             }
           }
@@ -291,8 +305,8 @@ class UI {
     
     
     static turn_input_to_item(input_item) {
-      let parsed = parse_item(input_item.querySelector('.shoplist-list-item-textbox').value);
-      let ele_ListItem = UI.create_item(parsed.name, parsed.cost, parsed.amount, false);
+      let id = +input_item.id.substring(19);
+      let ele_ListItem = UI.create_item(input_item.value, hub.get_current_list().get_item_by_id(id).SLI_Cost, hub.get_current_list().get_item_by_id(id).SLI_Amount, false);
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
       ele_ListItem.id = input_item.id;
     
@@ -329,7 +343,7 @@ class UI {
           UI.get_list_item_by_its_input(ele_ListItemTB).remove();
         } else {
           let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTB));
-          hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTB.value, null, null);
+          hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTB.value, NaN, NaN);
           hub.save();
         }
       }
