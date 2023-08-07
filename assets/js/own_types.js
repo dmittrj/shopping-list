@@ -53,15 +53,6 @@ class UI {
     }
 
 
-    static parse_item(str) {
-        return {
-          "name": str,
-          "amount": 1,
-          "cost": 0
-        };
-    }
-
-
     static create_item(name, cost, amount, checked, translucent) {
       var ele_ListItem = document.createElement('div');
       ele_ListItem.className = 'shoplist-list-item';
@@ -199,7 +190,7 @@ class UI {
             if (ele_ListItemTextInput.value === '') {
               UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
             } else {
-              let new_item_content = UI.parse_item(ele_ListItemTextInput.value);
+              let new_item_content = parse_item(ele_ListItemTextInput.value);
               let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
               UI.append_item(new_item);
             }
@@ -273,7 +264,7 @@ class UI {
     
     
     static turn_input_to_item(input_item) {
-      let parsed = UI.parse_item(input_item.querySelector('.shoplist-list-item-textbox').value);
+      let parsed = parse_item(input_item.querySelector('.shoplist-list-item-textbox').value);
       let ele_ListItem = UI.create_item(parsed.name, parsed.cost, parsed.amount, false);
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
       ele_ListItem.id = input_item.id;
