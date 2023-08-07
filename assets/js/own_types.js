@@ -390,6 +390,9 @@ class Hub {
       this.ShoppingLists.forEach(sl => {
         let temp_shopping_list = [];
         sl.SL_Items.forEach(sl_item => {
+          if (sl_item.SLI_Removed) {
+            return;
+          }
           temp_shopping_list.push({"name": sl_item.SLI_Name,
                                    "cost": sl_item.SLI_Cost,
                                    "amount": sl_item.SLI_Amount,
