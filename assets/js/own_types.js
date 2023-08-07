@@ -235,7 +235,7 @@ class UI {
             if (ele_ListItemTextInput.value === '') {
               hub.get_current_list().drop(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
               hub.save();
-              get_list_item_by_its_input(ele_ListItemTextInput).remove();
+              UI.get_list_item_by_its_input(ele_ListItemTextInput).remove();
             } else {
               let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTextInput));
               hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTextInput.value, null, null);
@@ -303,8 +303,8 @@ class UI {
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
       UI.clear_list();
 
-      for (let i = 0; i < list.length; i++) {
-        const list_item = list[i];
+      for (let i = 0; i < list.SL_Items.length; i++) {
+        const list_item = list.SL_Items[i];
         UI.append_item(list_item);
       }
 
@@ -360,6 +360,19 @@ class Hub {
     }
   
     open() {
+      let cookies = hub.get_cookies();
+      if (cookies.version != 'v1') {
+        this.add_list('Shopping List');
+        this.CurrentList = 0;
+        return;
+      }
+      cookies.content.forEach(sl => {
+        let new_item = this.add_list(sl.name);
+        sl.items.forEach(sl_item => {
+          new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount));
+        });
+      });
+
       this.add_list('Shopping List');
       this.CurrentList = 0;
     }
@@ -376,13 +389,21 @@ class Hub {
         temp_shopping_lists.push({"name": sl.SL_Name,
                                   "items": temp_shopping_list});
       });
-      const shopping_list_string = JSON.stringify(temp_shopping_lists);
+      let cookie_to_save = {
+        "version": 'v1',
+        "current_list": this.CurrentList,
+        "content": temp_shopping_lists
+      }
+      const shopping_list_string = JSON.stringify(cookie_to_save);
+      console.log(shopping_list_string);
 
       document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
     }
 
     add_list(name) {
-      this.ShoppingLists.push(new ShoppingList(name, this.LastID++));
+      let new_list = new ShoppingList(name, this.LastID++);
+      this.ShoppingLists.push(new_list);
+      return new_list;
     }
 
     get_current_list() {
