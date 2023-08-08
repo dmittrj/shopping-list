@@ -153,11 +153,11 @@ class UI {
       let ele_ListItemRightCost = document.createElement('div');
       ele_ListItemRightCost.innerText = cost;
 
-      let ele_ListItemRightAmount = document.createElement('div');
-      ele_ListItemRightAmount.innerText = amount.length === 0 ? '' : 'x' + amount;
+      // let ele_ListItemRightAmount = document.createElement('div');
+      // ele_ListItemRightAmount.innerText = amount.length === 0 ? '' : 'x' + amount;
 
       ele_ListItemRight.appendChild(ele_ListItemRightCost);
-      ele_ListItemRight.appendChild(ele_ListItemRightAmount);
+      // ele_ListItemRight.appendChild(ele_ListItemRightAmount);
 
       ele_ListItem.appendChild(ele_ListItemRight);
 

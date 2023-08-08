@@ -62,11 +62,6 @@ function parse_item(inputString) {
 
   var words = inputString.split(" ");
 
-  if (!isNaN(parseInt(words[0]))) {
-    amount = words[0];
-    words[0] = "";
-  }
-
   for (let i = 0; i < words.length; i++) {
     if (currencies.includes(words[i])) {
       cost = words[i - 1] + words[i];
@@ -80,7 +75,6 @@ function parse_item(inputString) {
   }
 
   name = name.trim();
-  name = name.charAt(0).toUpperCase() + name.slice(1);
 
   return {
     "name": name,

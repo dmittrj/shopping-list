@@ -123,9 +123,9 @@ body {
 }
 
 .shoplist-list-item-right div {
-    line-height: 1.1;
     text-align: right;
-    font-size: .75em;
+    font-size: 1em;
+    color: #666;
 }
 
 
