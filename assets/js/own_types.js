@@ -139,6 +139,9 @@ class UI {
           hub.save();
         });
       }
+      if (checked) {
+        ele_listItemCB_cb.classList.add('sl-item-checkbox-ticked');
+      }
       
       ele_ListItemCB.appendChild(ele_listItemCB_cb);
 
