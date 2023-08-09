@@ -45,9 +45,14 @@ class ShoppingListItem {
 
 
     edit(name, cost, amount) {
-      this.SLI_Name = name;
-
+      if (!isNaN(name)) {
+        this.SLI_Name = name;
+      }
+      
+      console.log('j:' + cost);
+      console.log(isNaN(cost));
       if (!isNaN(cost)) {
+        console.log(String(cost));
         this.SLI_Cost = cost;
       }
 
@@ -180,8 +185,13 @@ class UI {
     static append_item(list_item) {
       var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, false);
       ele_ListItem.id = 'shopping-list-item-' + list_item.SLI_Id;
-      ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => { UI.display_edit_item_field(ele_ListItem) });
-
+      ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => { 
+        UI.display_edit_item_field(ele_ListItem);
+      });
+      ele_ListItem.querySelector('.shoplist-list-item-right div').addEventListener('click', () => {
+        UI.display_edit_cost_field(ele_ListItem);
+      })
+      
       document.querySelector(".shoplist-list").appendChild(ele_ListItem);
       
       if (document.querySelector('#shoplist-add-pseudoitem')) {
@@ -226,6 +236,15 @@ class UI {
     }
 
 
+    static display_edit_cost_field(item) {
+      UI.stop_inputing();
+      if (!document.querySelector('#shoplist-add-pseudoitem')) {
+        UI.append_add();
+      }
+      UI.turn_cost_to_input(item);
+    }
+
+
     static create_input(action_by_enter) {
       const ele_ListItemTextInput = document.createElement('input');
       ele_ListItemTextInput.classList.add('shoplist-list-item-textbox');
@@ -253,7 +272,7 @@ class UI {
         //     ui_turn_input_to_add(document.querySelector('#shoplist-add-pseudoitem'));
         //   }
         // });
-      } else if (action_by_enter == 'edit') {
+      } else if (action_by_enter == 'edit-name') {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             if (ele_ListItemTextInput.value === '') {
@@ -265,6 +284,14 @@ class UI {
               hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTextInput.value, NaN, NaN);
               hub.save();
             }
+          }
+        });
+      } else if (action_by_enter == 'edit-cost') {
+        ele_ListItemTextInput.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            let edited_item = UI.turn_input_to_cost(UI.get_list_item_by_its_input(ele_ListItemTextInput));
+            hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(NaN, ele_ListItemTextInput.value, NaN);
+            hub.save();
           }
         });
       }
@@ -295,7 +322,18 @@ class UI {
     static turn_item_to_input(item) {
       const ele_ListItemText = item.querySelector('.shoplist-list-item-text');
       
-      const ele_ListItemTextInput = UI.create_input('edit');
+      const ele_ListItemTextInput = UI.create_input('edit-name');
+      ele_ListItemTextInput.value = ele_ListItemText.innerText;
+    
+      ele_ListItemText.replaceWith(ele_ListItemTextInput);
+      ele_ListItemTextInput.focus();
+    }
+
+
+    static turn_cost_to_input(item) {
+      const ele_ListItemText = item.querySelector('.shoplist-list-item-right div');
+      
+      const ele_ListItemTextInput = UI.create_input('edit-cost');
       ele_ListItemTextInput.value = ele_ListItemText.innerText;
     
       ele_ListItemText.replaceWith(ele_ListItemTextInput);
@@ -314,6 +352,22 @@ class UI {
       let id = +input_item.id.substring(19);
       let ele_ListItem = UI.create_item(input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Cost, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, false);
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
+      ele_ListItem.id = input_item.id;
+    
+    
+      input_item.replaceWith(ele_ListItem);
+    
+      return ele_ListItem;
+    }
+
+
+    static turn_input_to_cost(input_item) {
+      console.log('console.log');
+      let id = +input_item.id.substring(19);
+      let ele_ListItem = UI.create_item(hub.get_current_list().get_item_by_id(id).SLI_Name, input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, false);
+      ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
+      ele_ListItem.querySelector('.shoplist-list-item-right div').addEventListener('click', () => {UI.display_edit_cost_field(ele_ListItem)});
+
       ele_ListItem.id = input_item.id;
     
     
