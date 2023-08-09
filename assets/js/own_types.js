@@ -437,26 +437,27 @@ class Hub {
       return [];
     }
   
+
     open() {
-      let cookies = hub.get_cookies();
-      if (cookies.version != 'v1') {
-        this.add_list('Shopping List');
+      let cookies = this.get_cookies();
+
+      if (cookies?.version != 'v1') {
+        this.add_list('Shopping List', this.LastID++);
         this.CurrentList = 0;
         return;
       }
-      cookies.content.forEach(sl => {
-        let new_item = this.add_list(sl.name);
+
+      cookies?.content.forEach(sl => {
+        let new_item = this.add_list(sl.name, this.LastID++);
         sl.items.forEach(sl_item => {
           new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
         });
       });
 
-      if (cookies.content.length == 0) {
-        this.add_list('Shopping List');
+      if (cookies?.content.length == 0) {
+        this.add_list('Shopping List', this.LastID++);
         this.CurrentList = 0;
       }
-
-      
     }
 
     save() {
