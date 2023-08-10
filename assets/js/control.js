@@ -44,8 +44,8 @@ function get_sl_item_by_id(item_id) {
 
 
 function unremove_ticked(right_side, shopping_list_item) {
-  let ele_ListItem = UI.create_item(shopping_list_item.SLI_Name, shopping_list_item.SLI_Cost, shopping_list_item.SLI_Amount, shopping_list_item.SLI_Checked, false);
-  ele_ListItem.id = 'shopping-list-item-' + shopping_list_item.SLI_Id;
+  let ele_ListItem = UI.create_item(shopping_list_item.SLI_Name, shopping_list_item.SLI_Cost, shopping_list_item.SLI_Amount, shopping_list_item.SLI_Checked, 'shopping-list-item-' + shopping_list_item.SLI_Id, false);
+
   ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => { UI.display_edit_item_field(ele_ListItem) });
   right_side.parentElement.replaceWith(ele_ListItem);
   shopping_list_item.SLI_Removed = false;

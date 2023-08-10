@@ -88,7 +88,7 @@ class UI {
     }
 
 
-    static create_item(name, cost, amount, checked, translucent) {
+    static create_item(name, cost, amount, checked, id, translucent) {
       var ele_ListItem = document.createElement('div');
       ele_ListItem.className = 'shoplist-list-item';
       // if (!translucent) {
@@ -174,17 +174,16 @@ class UI {
 
 
     static create_add() {
-      let ele_ListItemAdd = UI.create_item('Add...', '', '', false, true);
+      let ele_ListItemAdd = UI.create_item('Add...', '', '', false, 'shoplist-add-pseudoitem', true);
       ele_ListItemAdd.style.opacity = OPACITY_LEVEL;
-      ele_ListItemAdd.id = 'shoplist-add-pseudoitem';
       ele_ListItemAdd.querySelector('.shoplist-list-item-text').addEventListener('click', UI.display_new_item_field);
       return ele_ListItemAdd;
     }
 
 
     static append_item(list_item) {
-      var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, false);
-      ele_ListItem.id = 'shopping-list-item-' + list_item.SLI_Id;
+      var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, false);
+
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => { 
         UI.display_edit_item_field(ele_ListItem);
       });
@@ -350,10 +349,9 @@ class UI {
     
     static turn_input_to_item(input_item) {
       let id = +input_item.id.substring(19);
-      let ele_ListItem = UI.create_item(input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Cost, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, false);
+      let ele_ListItem = UI.create_item(input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Cost, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, input_item.id, false);
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
-      ele_ListItem.id = input_item.id;
-    
+
     
       input_item.replaceWith(ele_ListItem);
     
@@ -364,11 +362,9 @@ class UI {
     static turn_input_to_cost(input_item) {
       console.log('console.log');
       let id = +input_item.id.substring(19);
-      let ele_ListItem = UI.create_item(hub.get_current_list().get_item_by_id(id).SLI_Name, input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, false);
+      let ele_ListItem = UI.create_item(hub.get_current_list().get_item_by_id(id).SLI_Name, input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, input_item.id, false);
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
       ele_ListItem.querySelector('.shoplist-list-item-right div').addEventListener('click', () => {UI.display_edit_cost_field(ele_ListItem)});
-
-      ele_ListItem.id = input_item.id;
     
     
       input_item.replaceWith(ele_ListItem);
@@ -442,8 +438,9 @@ class Hub {
       let cookies = this.get_cookies();
 
       if (cookies?.version != 'v1') {
-        this.add_list('Shopping List', this.LastID++);
-        this.CurrentList = 0;
+        
+        this.add_list('Shopping List');
+        this.CurrentList = this.LastID - 1;
         return;
       }
 
@@ -455,7 +452,7 @@ class Hub {
       });
 
       if (cookies?.content.length == 0) {
-        this.add_list('Shopping List', this.LastID++);
+        this.add_list('Shopping List');
         this.CurrentList = 0;
       }
     }
