@@ -324,6 +324,7 @@ class UI {
       
       const ele_ListItemTextInput = UI.create_input('edit-cost');
       ele_ListItemTextInput.value = ele_ListItemText.innerText;
+      ele_ListItemTextInput.style.textAlign = 'right';
     
       ele_ListItemText.replaceWith(ele_ListItemTextInput);
       ele_ListItemTextInput.focus();
