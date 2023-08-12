@@ -91,6 +91,7 @@ class UI {
     static create_item(name, cost, amount, checked, id, translucent) {
       var ele_ListItem = document.createElement('div');
       ele_ListItem.className = 'shoplist-list-item';
+      ele_ListItem.id = id;
       // if (!translucent) {
       //   ele_ListItem.addEventListener('mousedown', (event) => {
       //     let shiftX = event.clientX - ele_ListItem.getBoundingClientRect().left;
@@ -185,10 +186,10 @@ class UI {
       var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, false);
 
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => { 
-        UI.display_edit_item_field(ele_ListItem);
+        UI.make_item_editable(ele_ListItem, 'name');
       });
       ele_ListItem.querySelector('.shoplist-list-item-right div').addEventListener('click', () => {
-        UI.display_edit_cost_field(ele_ListItem);
+        UI.make_item_editable(ele_ListItem, 'cost');
       })
       
       document.querySelector(".shoplist-list").appendChild(ele_ListItem);
@@ -214,15 +215,13 @@ class UI {
 
     static display_new_item_field() {
       const ele_ListItemAdd = document.querySelector('#shoplist-add-pseudoitem');
-      const ele_ListItemAddText = ele_ListItemAdd.querySelector('.shoplist-list-item-text');
+      const ele_ListItemAddText = ele_ListItemAdd?.querySelector('.shoplist-list-item-text');
       UI.stop_inputing();
     
-      if (ele_ListItemAddText) {
-        UI.turn_add_to_input();
-      } else {
+      if (ele_ListItemAddText === null) {
         UI.append_add();
-        UI.turn_add_to_input();
       }
+      UI.turn_add_to_input();
     }
 
 
@@ -231,7 +230,7 @@ class UI {
       if (!document.querySelector('#shoplist-add-pseudoitem')) {
         UI.append_add();
       }
-      UI.turn_item_to_input(item);
+      UI.make_item_editable(item, 'name');
     }
 
 
@@ -337,6 +336,15 @@ class UI {
     
       ele_ListItemText.replaceWith(ele_ListItemTextInput);
       ele_ListItemTextInput.focus();
+    }
+
+
+    static make_item_editable(item, element_to_edit) {
+      if (element_to_edit == 'name') {
+        UI.turn_item_to_input(item);
+      } else if (element_to_edit == 'cost') {
+        UI.turn_cost_to_input(item);
+      }
     }
     
     
