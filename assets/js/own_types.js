@@ -344,12 +344,18 @@ class UI {
     
       input_item.replaceWith(ele_ListItem);
     }
+
+
+    static make_item_uneditable(item) {
+
+    }
     
     
     static turn_input_to_item(input_item) {
       let id = +input_item.id.substring(19);
       let ele_ListItem = UI.create_item(input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Cost, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, input_item.id, false);
       ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
+      ele_ListItem.querySelector('.shoplist-list-item-right div').addEventListener('click', () => {UI.display_edit_cost_field(ele_ListItem)});
 
     
       input_item.replaceWith(ele_ListItem);
