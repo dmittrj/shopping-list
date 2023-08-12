@@ -451,6 +451,7 @@ class Hub {
 
       cookies?.content.forEach(sl => {
         let new_item = this.add_list(sl.name, this.LastID++);
+        this.CurrentList = this.LastID - 1;
         sl.items.forEach(sl_item => {
           new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
         });
