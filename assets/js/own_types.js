@@ -44,22 +44,13 @@ class ShoppingListItem {
     }
 
 
-    edit(name, cost, amount) {
-      if (!isNaN(name)) {
-        this.SLI_Name = name;
-      }
-      
-      console.log('j:' + cost);
-      console.log(isNaN(cost));
-      if (!isNaN(cost)) {
-        console.log(String(cost));
-        this.SLI_Cost = cost;
-      }
+    edit_name(new_name) {
+      this.SLI_Name = new_name;
+    }
 
-      if (!isNaN(amount)) {
-        this.SLI_Amount = amount;
-      }
-      
+
+    edit_cost(new_cost) {
+      this.SLI_Cost = new_cost;
     }
 }
   
@@ -279,7 +270,7 @@ class UI {
               UI.get_list_item_by_its_input(ele_ListItemTextInput).remove();
             } else {
               let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTextInput));
-              hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTextInput.value, NaN, NaN);
+              hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_name(ele_ListItemTextInput.value);
               hub.save();
             }
           }
@@ -288,7 +279,7 @@ class UI {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             let edited_item = UI.turn_input_to_cost(UI.get_list_item_by_its_input(ele_ListItemTextInput));
-            hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(NaN, ele_ListItemTextInput.value, NaN);
+            hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_cost(ele_ListItemTextInput.value);
             hub.save();
           }
         });
@@ -407,7 +398,7 @@ class UI {
           UI.get_list_item_by_its_input(ele_ListItemTB).remove();
         } else {
           let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTB));
-          hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit(ele_ListItemTB.value, NaN, NaN);
+          hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_name(ele_ListItemTB.value);
           hub.save();
         }
       }
