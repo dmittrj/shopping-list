@@ -245,6 +245,7 @@ class UI {
       if (action_by_enter == 'add') {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
+            ele_ListItemTextInput.onblur = null;
             if (ele_ListItemTextInput.value === '') {
               UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
             } else {
@@ -254,19 +255,26 @@ class UI {
             }
           }
         });
-        // ele_ListItemTextInput.addEventListener('focusout', (event) => {
-        //   if (ele_ListItemTextInput.value === '') {
-        //     ui_turn_input_to_add(get_list_item_by_its_input(ele_ListItemTextInput));
-        //   } else {
-        //     let new_item_content = parse_item(ele_ListItemTextInput.value);
-        //     let assigned_id = sl_append_item(new_item_content);
-        //     ui_append_item(new_item_content, assigned_id);
-        //     ui_turn_input_to_add(document.querySelector('#shoplist-add-pseudoitem'));
-        //   }
-        // });
+
+        ele_ListItemTextInput.onblur = function() {
+          if (ele_ListItemTextInput.value === '') {
+            UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
+          } else {
+            let new_item_content = parse_item(ele_ListItemTextInput.value);
+            let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
+            UI.append_item(new_item);
+            if (document.querySelector('#shoplist-add-pseudoitem')) {
+              document.querySelector('#shoplist-add-pseudoitem input').onblur = null;
+              document.querySelector('#shoplist-add-pseudoitem').remove();
+            }
+            UI.append_add();
+          }
+        }
+
       } else if (action_by_enter == 'edit-name') {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
+            ele_ListItemTextInput.onblur = null;
             if (ele_ListItemTextInput.value === '') {
               hub.get_current_list().drop(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
               hub.save();
@@ -278,14 +286,34 @@ class UI {
             }
           }
         });
+
+        ele_ListItemTextInput.onblur = function() {
+          if (ele_ListItemTextInput.value === '') {
+            hub.get_current_list().drop(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
+            hub.save();
+            UI.get_list_item_by_its_input(ele_ListItemTextInput).remove();
+          } else {
+            let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTextInput));
+            hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_name(ele_ListItemTextInput.value);
+            hub.save();
+          }
+        };
       } else if (action_by_enter == 'edit-cost') {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
+            ele_ListItemTextInput.onblur = null;
             let edited_item = UI.turn_input_to_cost(UI.get_list_item_by_its_input(ele_ListItemTextInput));
             hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_cost(ele_ListItemTextInput.value);
             hub.save();
           }
         });
+
+        ele_ListItemTextInput.onblur = function() {
+          ele_ListItemTextInput.onblur = null;
+          let edited_item = UI.turn_input_to_cost(UI.get_list_item_by_its_input(ele_ListItemTextInput));
+          hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_cost(ele_ListItemTextInput.value);
+          hub.save();
+        };
       }
     
       return ele_ListItemTextInput;
