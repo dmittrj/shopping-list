@@ -35,6 +35,9 @@ body {
     width: 100%;
     max-width: 500px;
     padding: 0 5px;
+
+    overflow-y: auto;
+    height: calc(100vh - 140px);
 }
 
 
