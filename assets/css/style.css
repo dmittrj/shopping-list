@@ -129,6 +129,11 @@ body {
 }
 
 
+.shoplist-list-item-right input {
+    width: 100px;
+}
+
+
 .shoplist-footer {
     position: absolute;
     bottom: 0;
