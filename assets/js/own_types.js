@@ -234,6 +234,14 @@ class UI {
     }
 
 
+    static assign_click_actions(item, item_type) {
+      if (item_type == 'item') {
+        item.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(item)});
+        item.querySelector('.shoplist-list-item-right div').addEventListener('click', () => {UI.display_edit_cost_field(item)});
+      }
+    }
+
+
     static create_input(action_by_enter) {
       const ele_ListItemTextInput = document.createElement('input');
       ele_ListItemTextInput.classList.add('shoplist-list-item-textbox');
@@ -355,8 +363,7 @@ class UI {
     static turn_input_to_item(input_item) {
       let id = +input_item.id.substring(19);
       let ele_ListItem = UI.create_item(input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Cost, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, input_item.id, false);
-      ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
-      ele_ListItem.querySelector('.shoplist-list-item-right div').addEventListener('click', () => {UI.display_edit_cost_field(ele_ListItem)});
+      UI.assign_click_actions(ele_ListItem, 'item');
 
     
       input_item.replaceWith(ele_ListItem);
@@ -369,9 +376,7 @@ class UI {
       console.log('console.log');
       let id = +input_item.id.substring(19);
       let ele_ListItem = UI.create_item(hub.get_current_list().get_item_by_id(id).SLI_Name, input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, input_item.id, false);
-      ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => {UI.display_edit_item_field(ele_ListItem)});
-      ele_ListItem.querySelector('.shoplist-list-item-right div').addEventListener('click', () => {UI.display_edit_cost_field(ele_ListItem)});
-    
+      UI.assign_click_actions(ele_ListItem, 'item');
     
       input_item.replaceWith(ele_ListItem);
     
