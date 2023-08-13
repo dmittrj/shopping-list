@@ -176,12 +176,7 @@ class UI {
     static append_item(list_item) {
       var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, false);
 
-      ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => { 
-        UI.make_item_editable(ele_ListItem, 'name');
-      });
-      ele_ListItem.querySelector('.shoplist-list-item-right div').addEventListener('click', () => {
-        UI.make_item_editable(ele_ListItem, 'cost');
-      })
+      UI.assign_click_actions(ele_ListItem, 'item');
       
       document.querySelector(".shoplist-list").appendChild(ele_ListItem);
       
