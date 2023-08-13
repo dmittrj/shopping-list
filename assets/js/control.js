@@ -47,6 +47,7 @@ function unremove_ticked(right_side, shopping_list_item) {
   let ele_ListItem = UI.create_item(shopping_list_item.SLI_Name, shopping_list_item.SLI_Cost, shopping_list_item.SLI_Amount, shopping_list_item.SLI_Checked, 'shopping-list-item-' + shopping_list_item.SLI_Id, false);
 
   ele_ListItem.querySelector('.shoplist-list-item-text').addEventListener('click', () => { UI.display_edit_item_field(ele_ListItem) });
+  ele_ListItem.querySelector('.shoplist-list-item-right div').addEventListener('click', () => { UI.display_edit_cost_field(ele_ListItem) });
   right_side.parentElement.replaceWith(ele_ListItem);
   shopping_list_item.SLI_Removed = false;
   UI.delete_ticked_toggle_visibility();
@@ -91,26 +92,6 @@ function toggle_mark_item(item) {
   let checked_status = hub.get_current_list().get_item_by_id(item_id).SLI_Checked;
   hub.get_current_list().get_item_by_id(item_id).SLI_Checked = !checked_status;
   UI.mark_item(item, !checked_status);
-}
-
-
-function sl_append_item(item) {
-  item.id = LAST_ID++;
-  SHOPPING_LIST.push(item);
-  save();
-
-  return item.id;
-}
-
-
-
-function sl_edit_item(item, item_id) {
-  get_sl_item_by_id(item_id).name = item;
-}
-
-
-function sl_drop_item(item_id) {
-  SHOPPING_LIST = SHOPPING_LIST.filter((w) => w.id != +item_id)
 }
 
 
