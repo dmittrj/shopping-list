@@ -396,7 +396,6 @@ class UI {
 
 
     static turn_input_to_cost(input_item) {
-      console.log('console.log');
       let id = +input_item.id.substring(19);
       let ele_ListItem = UI.create_item(hub.get_current_list().get_item_by_id(id).SLI_Name, input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, input_item.id, false);
       UI.assign_click_actions(ele_ListItem, 'item');
@@ -407,11 +406,46 @@ class UI {
     }
 
 
+    static turn_input_to_title() {
+      hub.get_current_list().SL_Name = document.querySelector('#shoplist-title').value;
+      
+      let eleTitle_input = document.createElement('h1');
+      eleTitle_input.classList.add('shoplist-title');
+      eleTitle_input.innerText = document.querySelector('#shoplist-title').value;
+      eleTitle_input.id = 'shoplist-title';
+      document.querySelector('#shoplist-title').replaceWith(eleTitle_input);
+
+      UI.draw_list_of_lists();
+
+      let ele_listTitle_span = document.createElement('span');
+      ele_listTitle_span.classList.add('shoplist-title-button');
+      ele_listTitle_span.addEventListener('click', () => {
+        UI.toggle_lists_list_display();
+      });
+
+      document.querySelector('#shoplist-title').appendChild(ele_listTitle_span);
+    }
+
+
+    static turn_title_to_input() {
+      let eleTitle_input = document.createElement('input');
+      eleTitle_input.classList.add('shoplist-title-input');
+      eleTitle_input.value = document.querySelector('#shoplist-title').innerText;
+      eleTitle_input.id = 'shoplist-title';
+      eleTitle_input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          UI.turn_input_to_title();
+        }
+      })
+      document.querySelector('#shoplist-title').replaceWith(eleTitle_input);
+      eleTitle_input.select();
+    }
+
+
     static toggle_lists_list_display() {
       let isListOfListsVisible = document.querySelector('#shopping-lists-list').getAttribute('data-visible');
       isListOfListsVisible = isListOfListsVisible == 'true' ? 'false' : 'true';
       document.querySelector('#shopping-lists-list').setAttribute('data-visible', isListOfListsVisible);
-      console.log(isListOfListsVisible);
     }
 
 
@@ -433,6 +467,35 @@ class UI {
       }
 
       UI.append_add();
+    }
+
+
+    static draw_list_of_lists() {
+      document.querySelector('#shopping-lists-list list').innerHTML = '';
+
+      hub.ShoppingLists.forEach(s_list => {
+        let _ele_slListsList_li = document.createElement('li');
+        _ele_slListsList_li.innerText = s_list.SL_Name;
+
+        if (s_list.SL_Id == hub.CurrentList) {
+          _ele_slListsList_li.classList.add('sl-list-current');
+        }
+
+        document.querySelector('#shopping-lists-list list').appendChild(_ele_slListsList_li);
+      });
+
+      let ele_slListsList_li = document.createElement('li');
+      ele_slListsList_li.innerText = 'Add list...';
+      ele_slListsList_li.addEventListener('click', () => {
+        let new_list = hub.add_list('New list');
+        hub.switch_list(new_list.SL_Id);
+        UI.draw_list_of_lists();
+        UI.draw_list(hub.get_current_list());
+        UI.turn_title_to_input();
+        UI.toggle_lists_list_display();
+      })
+
+      document.querySelector('#shopping-lists-list list').appendChild(ele_slListsList_li);
     }
 
 
@@ -543,5 +606,9 @@ class Hub {
 
     get_current_list() {
       return this.ShoppingLists.find((w) => w.SL_Id === this.CurrentList);
+    }
+
+    switch_list(id) {
+      this.CurrentList = id;
     }
 }

@@ -31,6 +31,21 @@ body {
 }
 
 
+.shoplist-title-input {
+    text-align: center;
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding: 0;
+    font-weight: bold;
+    outline: none;
+    border: none;
+}
+
+
 .shoplist-list {
     width: 100%;
     max-width: 500px;
@@ -257,8 +272,15 @@ body {
     cursor: pointer;
 }
 
+.shoplist-header-list list li:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
 .shoplist-header-list list li:last-child {
     border-bottom: none;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 .shoplist-header-list list li:hover {
