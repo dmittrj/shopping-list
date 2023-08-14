@@ -295,6 +295,8 @@ body {
 .sl-list-current {
     background-color:royalblue;
     color: white;
+
+    cursor: default!important;
 }
 
 .sl-list-current:hover {
