@@ -408,7 +408,7 @@ class UI {
 
     static turn_input_to_title() {
       hub.get_current_list().SL_Name = document.querySelector('#shoplist-title').value;
-      
+
       let eleTitle_input = document.createElement('h1');
       eleTitle_input.classList.add('shoplist-title');
       eleTitle_input.innerText = document.querySelector('#shoplist-title').value;
@@ -479,6 +479,13 @@ class UI {
 
         if (s_list.SL_Id == hub.CurrentList) {
           _ele_slListsList_li.classList.add('sl-list-current');
+        } else {
+          _ele_slListsList_li.addEventListener('click', () => {
+            hub.switch_list(s_list.SL_Id);
+            UI.draw_list_of_lists();
+            UI.draw_list(hub.get_current_list());
+            UI.toggle_lists_list_display();
+          });
         }
 
         document.querySelector('#shopping-lists-list list').appendChild(_ele_slListsList_li);
