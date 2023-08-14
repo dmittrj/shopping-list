@@ -441,6 +441,7 @@ class UI {
       });
 
       eleTitle_input.onblur = function() {
+        eleTitle_input.onblur = null;
         UI.turn_input_to_title();
         hub.save();
       };
