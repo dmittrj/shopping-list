@@ -434,9 +434,16 @@ class UI {
       eleTitle_input.id = 'shoplist-title';
       eleTitle_input.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
+          eleTitle_input.onblur = null;
           UI.turn_input_to_title();
+          hub.save();
         }
-      })
+      });
+
+      eleTitle_input.onblur = function() {
+        UI.turn_input_to_title();
+        hub.save();
+      };
       document.querySelector('#shoplist-title').replaceWith(eleTitle_input);
       eleTitle_input.select();
     }
@@ -500,6 +507,7 @@ class UI {
         UI.draw_list(hub.get_current_list());
         UI.turn_title_to_input();
         UI.toggle_lists_list_display();
+        hub.save();
       })
 
       document.querySelector('#shopping-lists-list list').appendChild(ele_slListsList_li);
