@@ -119,6 +119,20 @@ function event_load() {
   hub = new Hub();
   hub.open();
   UI.draw_list(hub.get_current_list());
+
+  document.querySelector('#shopping-lists-list list').innerHTML = '';
+
+  hub.ShoppingLists.forEach(s_list => {
+    let _ele_slListsList_li = document.createElement('li');
+    _ele_slListsList_li.innerText = s_list.SL_Name;
+
+    document.querySelector('#shopping-lists-list list').appendChild(_ele_slListsList_li);
+  });
+
+  let ele_slListsList_li = document.createElement('li');
+  ele_slListsList_li.innerText = 'Add list...';
+
+  document.querySelector('#shopping-lists-list list').appendChild(ele_slListsList_li);
 }
 
 

@@ -407,11 +407,22 @@ class UI {
     }
 
 
+    static toggle_lists_list_display() {
+      let isListOfListsVisible = document.querySelector('#shopping-lists-list').getAttribute('data-visible');
+      isListOfListsVisible = isListOfListsVisible == 'true' ? 'false' : 'true';
+      document.querySelector('#shopping-lists-list').setAttribute('data-visible', isListOfListsVisible);
+      console.log(isListOfListsVisible);
+    }
+
+
     static draw_list(list) {
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
 
       let ele_listTitle_span = document.createElement('span');
       ele_listTitle_span.classList.add('shoplist-title-button');
+      ele_listTitle_span.addEventListener('click', () => {
+        UI.toggle_lists_list_display();
+      });
 
       document.querySelector('#shoplist-title').appendChild(ele_listTitle_span);
       UI.clear_list();
