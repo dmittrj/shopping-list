@@ -119,6 +119,7 @@ function event_load() {
   hub = new Hub();
   hub.open();
   UI.draw_list(hub.get_current_list());
+  UI.draw_list_of_lists();
 }
 
 

@@ -31,6 +31,21 @@ body {
 }
 
 
+.shoplist-title-input {
+    text-align: center;
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding: 0;
+    font-weight: bold;
+    outline: none;
+    border: none;
+}
+
+
 .shoplist-list {
     width: 100%;
     max-width: 500px;
@@ -181,4 +196,104 @@ body {
 .shoplist-list-item-left {
     display: flex;
     flex-direction: row;
+}
+
+
+.shoplist-title-button {
+    width: 0.7em;
+    height: 0.7em;
+    display: inline-block;
+    background-color: #ddd;
+    border-radius: 50%;
+    margin-left: 0.4em;
+
+    cursor: pointer;
+    position: relative;
+}
+
+.shoplist-title-button:hover {
+    background-color: #ccc;
+}
+
+.shoplist-title-button:before {
+    content: "...";
+    color: #666;
+    font-weight: 400;
+    position: absolute;
+    top: 22%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: .75em;
+}
+
+
+.shoplist-header {
+    position: relative;
+}
+
+
+.shoplist-header-list {
+    border-radius: 5px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    top: 80%;
+    right: 0;
+    z-index: 1;
+    transform-origin: top right;
+
+    position: absolute;
+
+    transition: all .25s cubic-bezier(.55,.08,.06,.97);
+}
+
+.shoplist-header-list[data-visible="true"] {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+.shoplist-header-list[data-visible="false"] {
+    transform: scale(.25);
+    opacity: 0;
+    visibility: hidden;
+}
+
+
+.shoplist-header-list list {
+    border-radius: 5px;
+    list-style: none;
+}
+
+
+.shoplist-header-list list li {
+    padding: 3px 8px;
+    white-space: nowrap;
+
+    border-bottom: 1px solid #ccc;
+
+    cursor: pointer;
+}
+
+.shoplist-header-list list li:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.shoplist-header-list list li:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.shoplist-header-list list li:hover {
+    background-color:rgb(225, 231, 246);
+}
+
+
+.sl-list-current {
+    background-color:royalblue;
+    color: white;
+}
+
+.sl-list-current:hover {
+    background-color:royalblue!important;
 }
