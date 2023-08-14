@@ -266,6 +266,7 @@ body {
 
 .shoplist-header-list list li {
     padding: 3px 8px;
+    white-space: nowrap;
 
     border-bottom: 1px solid #ccc;
 
