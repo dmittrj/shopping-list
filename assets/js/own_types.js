@@ -409,6 +409,11 @@ class UI {
 
     static draw_list(list) {
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
+
+      let ele_listTitle_span = document.createElement('span');
+      ele_listTitle_span.classList.add('shoplist-title-button');
+
+      document.querySelector('#shoplist-title').appendChild(ele_listTitle_span);
       UI.clear_list();
 
       for (let i = 0; i < list.SL_Items.length; i++) {
