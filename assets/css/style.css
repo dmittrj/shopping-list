@@ -361,3 +361,22 @@ body {
 .shoplist-pop-up list li:hover {
     background-color: #eee;
 }
+
+
+.shoplist-list-info-text {
+    text-align: center;
+}
+
+
+.shoplist-list-info-link {
+    text-decoration: none;
+    border-bottom: 1px solid #444;
+
+    cursor: pointer;
+}
+
+
+.shoplist-list-info-link:hover {
+    color: #999;
+    border-bottom: 1px solid #ccc;
+}

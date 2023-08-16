@@ -128,7 +128,12 @@ function event_load() {
     UI.close_options_popup();
     UI.turn_title_to_input();
   });
+  document.querySelector('#pop-up-delete').addEventListener('click', () => {
+    UI.close_options_popup();
+    hub.get_current_list().SL_Removed = true;
 
+    UI.draw_list(hub.get_current_list());
+  });
   document.querySelector('#pop-up-cancel').addEventListener('click', () => {
     UI.close_options_popup();
   });
