@@ -131,6 +131,7 @@ function event_load() {
   document.querySelector('#pop-up-delete').addEventListener('click', () => {
     UI.close_options_popup();
     hub.get_current_list().SL_Removed = true;
+    hub.save();
 
     UI.draw_list(hub.get_current_list());
   });

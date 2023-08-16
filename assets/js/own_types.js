@@ -485,6 +485,8 @@ class UI {
         ele_listInfoTextRestoreButton.addEventListener('click', () => {
           list.SL_Removed = false;
           UI.draw_list(list);
+
+          hub.save();
         });
 
         document.querySelector('#shoplist-list').appendChild(ele_listInfoText);
@@ -624,6 +626,9 @@ class Hub {
     save() {
       let temp_shopping_lists = [];
       this.ShoppingLists.forEach(sl => {
+        if (sl.SL_Removed) {
+          return;
+        }
         let temp_shopping_list = [];
         sl.SL_Items.forEach(sl_item => {
           if (sl_item.SLI_Removed) {
