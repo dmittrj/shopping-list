@@ -323,9 +323,8 @@ body {
     background-color: white;
     position: absolute;
     bottom: 10px;
-    left: 15px;
-    right: 15px;
     width: calc(100% - 30px);
+    max-width: 400px;
 
     border-radius: 10px;
 
