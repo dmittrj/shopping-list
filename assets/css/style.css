@@ -302,3 +302,16 @@ body {
 .sl-list-current:hover {
     background-color:royalblue!important;
 }
+
+
+.shoplist-header-link {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+
+    cursor: pointer;
+}
+
+.shoplist-header-link:hover {
+    color: #bbb;
+}

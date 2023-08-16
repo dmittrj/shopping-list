@@ -533,6 +533,12 @@ class UI {
         }
       }
     }
+
+
+    static open_options_popup() {
+      console.log('opened');
+      document.querySelector('#shoplist-pop-up').style.display = 'block';
+    }
 }
   
   
