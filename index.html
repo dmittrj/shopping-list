@@ -16,6 +16,7 @@
 </head>
 <body>
     <div class="shoplist-container">
+        <a class="shoplist-header-link" id="button-options">Options</a>
         <div class="shoplist-header">
             <h1 class="shoplist-title" id="shoplist-title"></h1>
             <div data-visible="false" class="shoplist-header-list" id="shopping-lists-list">
@@ -23,12 +24,18 @@
                 </list>
             </div>
         </div>
-        
         <div class="shoplist-list" id="shoplist-list">
         </div>
         <div class="shoplist-footer">
             <button class="shoplist-button" id="shoplist-delete-ticked" style="display: none;" onclick="delete_ticked()">Remove ticked</button>
             <button class="shoplist-button" onclick="UI.display_new_item_field()">Add</button>
+        </div>
+        <div class="shoplist-pop-up" id="shoplist-pop-up" style="display: none;">
+            <list>
+                <li id="pop-up-rename"><a>Rename list</a></li>
+                <li id="pop-up-delete"><a>Delete list</a></li>
+                <li id="pop-up-cancel"><a>Cancel</a></li>
+            </list>
         </div>
     </div>
 </body>
