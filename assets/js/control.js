@@ -124,6 +124,10 @@ function event_load() {
   document.querySelector('#button-options').addEventListener('click', () => {
     UI.open_options_popup();
   });
+  document.querySelector('#pop-up-rename').addEventListener('click', () => {
+    UI.close_options_popup();
+    UI.turn_title_to_input();
+  })
 }
 
 

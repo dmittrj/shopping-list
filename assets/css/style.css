@@ -44,6 +44,7 @@ body {
     font-weight: bold;
     outline: none;
     border: none;
+    width: 95%;
 
     font-family: 'Inter', sans-serif;
 }
@@ -314,4 +315,49 @@ body {
 
 .shoplist-header-link:hover {
     color: #bbb;
+}
+
+
+.shoplist-pop-up {
+    background-color: white;
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    right: 15px;
+    width: calc(100% - 30px);
+
+    border-radius: 10px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+
+    z-index: 1;
+}
+
+
+.shoplist-pop-up list {
+    list-style: none;
+}
+
+
+.shoplist-pop-up list li {
+    padding: 5px 2px;
+    border-bottom: 1px solid #bbb;
+    text-align: center;
+
+    cursor: pointer;
+}
+
+.shoplist-pop-up list li:first-child {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.shoplist-pop-up list li:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.shoplist-pop-up list li:hover {
+    background-color: #eee;
 }
