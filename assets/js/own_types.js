@@ -409,6 +409,12 @@ class UI {
 
 
     static turn_input_to_title() {
+      if (document.querySelector('#shoplist-title').value === '') {
+        if (hub.get_current_list().SL_Name === '') {
+          hub.get_current_list().SL_Name = 'Shopping List';
+        }
+        document.querySelector('#shoplist-title').value = hub.get_current_list().SL_Name;
+      }
       hub.get_current_list().SL_Name = document.querySelector('#shoplist-title').value;
 
       let eleTitle_input = document.createElement('h1');
