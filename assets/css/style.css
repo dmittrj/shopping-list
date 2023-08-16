@@ -273,6 +273,7 @@ body {
     white-space: nowrap;
 
     border-bottom: 1px solid #ccc;
+    background-color: white;
 
     cursor: pointer;
 }
@@ -294,8 +295,8 @@ body {
 
 
 .sl-list-current {
-    background-color:royalblue;
-    color: white;
+    background-color:royalblue!important;
+    color: white!important;
 
     cursor: default!important;
 }

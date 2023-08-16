@@ -482,6 +482,10 @@ class UI {
         ele_listInfoTextRestoreButton.innerText = 'Restore';
         ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
         ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
+        ele_listInfoTextRestoreButton.addEventListener('click', () => {
+          list.SL_Removed = false;
+          UI.draw_list(list);
+        });
 
         document.querySelector('#shoplist-list').appendChild(ele_listInfoText);
         ele_listInfoText.appendChild(ele_listInfoTextBr);
