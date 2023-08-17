@@ -119,6 +119,25 @@ function event_load() {
   hub = new Hub();
   hub.open();
   UI.draw_list(hub.get_current_list());
+  UI.draw_list_of_lists();
+
+  document.querySelector('#button-options').addEventListener('click', () => {
+    UI.open_options_popup();
+  });
+  document.querySelector('#pop-up-rename').addEventListener('click', () => {
+    UI.close_options_popup();
+    UI.turn_title_to_input();
+  });
+  document.querySelector('#pop-up-delete').addEventListener('click', () => {
+    UI.close_options_popup();
+    hub.get_current_list().SL_Removed = true;
+    hub.save();
+
+    UI.draw_list(hub.get_current_list());
+  });
+  document.querySelector('#pop-up-cancel').addEventListener('click', () => {
+    UI.close_options_popup();
+  });
 }
 
 

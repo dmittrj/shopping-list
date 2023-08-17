@@ -4,6 +4,8 @@ class ShoppingList {
         this.SL_Id = id;
         this.SL_Items = [];
         this.SL_LastID = 0;
+
+        this.SL_Removed = false;
     }
 
     save() {
@@ -17,7 +19,7 @@ class ShoppingList {
     }
 
 
-    drop(id) {
+    drop_item(id) {
       this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id !== id);
     }
 
@@ -63,6 +65,11 @@ class UI {
 
     static delete_ticked_toggle_visibility() {
       document.querySelector('#shoplist-delete-ticked').style.display = (hub.get_current_list().get_checked()) ? 'inline-block' : 'none';
+    }
+
+
+    static add_item_toggle_visibility() {
+      document.querySelector('#shoplist-add-item').style.display = (hub.get_current_list().SL_Removed) ? 'none' : 'inline-block';
     }
 
 
@@ -190,6 +197,18 @@ class UI {
         UI.mark_item(ele_ListItem, true);
       }
 
+      if (list_item.SLI_Removed) {
+        let right_side = document.querySelector('#shopping-list-item-' + String(list_item.SLI_Id)).querySelector('.shoplist-list-item-right');
+        right_side.innerHTML = '';
+        
+        let ele_ListItemRight_a = document.createElement('a');
+        ele_ListItemRight_a.innerText = 'Unremove';
+        ele_ListItemRight_a.addEventListener('click', () => {
+          unremove_ticked(right_side, list_item);
+        })
+        right_side.appendChild(ele_ListItemRight_a);
+      }
+
       return ele_ListItem;
     }
 
@@ -276,7 +295,7 @@ class UI {
           if (event.key === 'Enter') {
             ele_ListItemTextInput.onblur = null;
             if (ele_ListItemTextInput.value === '') {
-              hub.get_current_list().drop(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
+              hub.get_current_list().drop_item(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
               hub.save();
               UI.get_list_item_by_its_input(ele_ListItemTextInput).remove();
             } else {
@@ -289,7 +308,7 @@ class UI {
 
         ele_ListItemTextInput.onblur = function() {
           if (ele_ListItemTextInput.value === '') {
-            hub.get_current_list().drop(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
+            hub.get_current_list().drop_item(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
             hub.save();
             UI.get_list_item_by_its_input(ele_ListItemTextInput).remove();
           } else {
@@ -396,7 +415,6 @@ class UI {
 
 
     static turn_input_to_cost(input_item) {
-      console.log('console.log');
       let id = +input_item.id.substring(19);
       let ele_ListItem = UI.create_item(hub.get_current_list().get_item_by_id(id).SLI_Name, input_item.querySelector('.shoplist-list-item-textbox').value, hub.get_current_list().get_item_by_id(id).SLI_Amount, hub.get_current_list().get_item_by_id(id).SLI_Checked, input_item.id, false);
       UI.assign_click_actions(ele_ListItem, 'item');
@@ -407,9 +425,101 @@ class UI {
     }
 
 
+    static turn_input_to_title() {
+      if (document.querySelector('#shoplist-title').value === '') {
+        if (hub.get_current_list().SL_Name === '') {
+          hub.get_current_list().SL_Name = 'Shopping List';
+        }
+        document.querySelector('#shoplist-title').value = hub.get_current_list().SL_Name;
+      }
+      hub.get_current_list().SL_Name = document.querySelector('#shoplist-title').value;
+
+      let eleTitle_input = document.createElement('h1');
+      eleTitle_input.classList.add('shoplist-title');
+      eleTitle_input.innerText = document.querySelector('#shoplist-title').value;
+      eleTitle_input.id = 'shoplist-title';
+      document.querySelector('#shoplist-title').replaceWith(eleTitle_input);
+
+      UI.draw_list_of_lists();
+
+      let ele_listTitle_span = document.createElement('span');
+      ele_listTitle_span.classList.add('shoplist-title-button');
+      ele_listTitle_span.addEventListener('click', () => {
+        UI.toggle_lists_list_display();
+      });
+
+      document.querySelector('#shoplist-title').appendChild(ele_listTitle_span);
+    }
+
+
+    static turn_title_to_input() {
+      let eleTitle_input = document.createElement('input');
+      eleTitle_input.classList.add('shoplist-title-input');
+      eleTitle_input.value = document.querySelector('#shoplist-title').innerText;
+      eleTitle_input.id = 'shoplist-title';
+      eleTitle_input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          eleTitle_input.onblur = null;
+          UI.turn_input_to_title();
+          hub.save();
+        }
+      });
+
+      eleTitle_input.onblur = function() {
+        eleTitle_input.onblur = null;
+        UI.turn_input_to_title();
+        hub.save();
+      };
+      document.querySelector('#shoplist-title').replaceWith(eleTitle_input);
+      eleTitle_input.select();
+    }
+
+
+    static toggle_lists_list_display() {
+      let isListOfListsVisible = document.querySelector('#shopping-lists-list').getAttribute('data-visible');
+      isListOfListsVisible = isListOfListsVisible == 'true' ? 'false' : 'true';
+      document.querySelector('#shopping-lists-list').setAttribute('data-visible', isListOfListsVisible);
+    }
+
+
     static draw_list(list) {
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
+
+      let ele_listTitle_span = document.createElement('span');
+      ele_listTitle_span.classList.add('shoplist-title-button');
+      ele_listTitle_span.addEventListener('click', () => {
+        UI.toggle_lists_list_display();
+      });
+
+      document.querySelector('#shoplist-title').appendChild(ele_listTitle_span);
       UI.clear_list();
+
+      UI.delete_ticked_toggle_visibility();
+      UI.add_item_toggle_visibility();
+
+      if (list.SL_Removed) {
+        let ele_listInfoText = document.createElement('p');
+        ele_listInfoText.innerText = 'This list has been removed';
+        ele_listInfoText.classList.add('shoplist-list-info-text');
+
+        let ele_listInfoTextBr = document.createElement('br');
+
+        let ele_listInfoTextRestoreButton = document.createElement('a');
+        ele_listInfoTextRestoreButton.innerText = 'Restore';
+        ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
+        ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
+        ele_listInfoTextRestoreButton.addEventListener('click', () => {
+          list.SL_Removed = false;
+          UI.draw_list(list);
+
+          hub.save();
+        });
+
+        document.querySelector('#shoplist-list').appendChild(ele_listInfoText);
+        ele_listInfoText.appendChild(ele_listInfoTextBr);
+        ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
+        return;
+      }
 
       for (let i = 0; i < list.SL_Items.length; i++) {
         const list_item = list.SL_Items[i];
@@ -420,6 +530,43 @@ class UI {
     }
 
 
+    static draw_list_of_lists() {
+      document.querySelector('#shopping-lists-list list').innerHTML = '';
+
+      hub.ShoppingLists.forEach(s_list => {
+        let _ele_slListsList_li = document.createElement('li');
+        _ele_slListsList_li.innerText = s_list.SL_Name;
+
+        if (s_list.SL_Id == hub.CurrentList) {
+          _ele_slListsList_li.classList.add('sl-list-current');
+        } else {
+          _ele_slListsList_li.addEventListener('click', () => {
+            hub.switch_list(s_list.SL_Id);
+            UI.draw_list_of_lists();
+            UI.draw_list(hub.get_current_list());
+            UI.toggle_lists_list_display();
+          });
+        }
+
+        document.querySelector('#shopping-lists-list list').appendChild(_ele_slListsList_li);
+      });
+
+      let ele_slListsList_li = document.createElement('li');
+      ele_slListsList_li.innerText = 'Add list...';
+      ele_slListsList_li.addEventListener('click', () => {
+        let new_list = hub.add_list('New list');
+        hub.switch_list(new_list.SL_Id);
+        UI.draw_list_of_lists();
+        UI.draw_list(hub.get_current_list());
+        UI.turn_title_to_input();
+        UI.toggle_lists_list_display();
+        hub.save();
+      })
+
+      document.querySelector('#shopping-lists-list list').appendChild(ele_slListsList_li);
+    }
+
+
     static stop_inputing() {
       let eles_ListItemTB = document.querySelectorAll('.shoplist-list-item-textbox');
     
@@ -427,7 +574,7 @@ class UI {
         const ele_ListItemTB = eles_ListItemTB[i];
         if (ele_ListItemTB.value === '') {
           if (!(UI.get_list_item_by_its_input(ele_ListItemTB).id == 'shoplist-add-pseudoitem')) {
-            hub.get_current_list().drop(+UI.get_list_item_by_its_input(ele_ListItemTB).id.substring(19));
+            hub.get_current_list().drop_item(+UI.get_list_item_by_its_input(ele_ListItemTB).id.substring(19));
             hub.save();
           }
           UI.get_list_item_by_its_input(ele_ListItemTB).remove();
@@ -437,6 +584,16 @@ class UI {
           hub.save();
         }
       }
+    }
+
+
+    static open_options_popup() {
+      document.querySelector('#shoplist-pop-up').style.display = 'block';
+    }
+
+
+    static close_options_popup() {
+      document.querySelector('#shoplist-pop-up').style.display = 'none';
     }
 }
   
@@ -495,6 +652,9 @@ class Hub {
     save() {
       let temp_shopping_lists = [];
       this.ShoppingLists.forEach(sl => {
+        if (sl.SL_Removed) {
+          return;
+        }
         let temp_shopping_list = [];
         sl.SL_Items.forEach(sl_item => {
           if (sl_item.SLI_Removed) {
@@ -527,5 +687,9 @@ class Hub {
 
     get_current_list() {
       return this.ShoppingLists.find((w) => w.SL_Id === this.CurrentList);
+    }
+
+    switch_list(id) {
+      this.CurrentList = id;
     }
 }
