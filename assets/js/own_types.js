@@ -197,6 +197,18 @@ class UI {
         UI.mark_item(ele_ListItem, true);
       }
 
+      if (list_item.SLI_Removed) {
+        let right_side = document.querySelector('#shopping-list-item-' + String(list_item.SLI_Id)).querySelector('.shoplist-list-item-right');
+        right_side.innerHTML = '';
+        
+        let ele_ListItemRight_a = document.createElement('a');
+        ele_ListItemRight_a.innerText = 'Unremove';
+        ele_ListItemRight_a.addEventListener('click', () => {
+          unremove_ticked(right_side, list_item);
+        })
+        right_side.appendChild(ele_ListItemRight_a);
+      }
+
       return ele_ListItem;
     }
 
