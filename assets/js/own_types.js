@@ -494,6 +494,7 @@ class UI {
       document.querySelector('#shoplist-title').appendChild(ele_listTitle_span);
       UI.clear_list();
 
+      UI.delete_ticked_toggle_visibility();
       UI.add_item_toggle_visibility();
 
       if (list.SL_Removed) {
