@@ -68,6 +68,11 @@ class UI {
     }
 
 
+    static add_item_toggle_visibility() {
+      document.querySelector('#shoplist-add-item').style.display = (hub.get_current_list().SL_Removed) ? 'none' : 'inline-block';
+    }
+
+
     static mark_item(item, checked_status) {
       if (checked_status) {
         item.querySelector('.shoplist-list-item-checkbox').classList.add('sl-item-checkbox-ticked');
@@ -476,6 +481,8 @@ class UI {
 
       document.querySelector('#shoplist-title').appendChild(ele_listTitle_span);
       UI.clear_list();
+
+      UI.add_item_toggle_visibility();
 
       if (list.SL_Removed) {
         let ele_listInfoText = document.createElement('p');
