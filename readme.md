@@ -1,6 +1,6 @@
 # Shoppling List App
 
-Simple shopping list web application without registration
+Simple free shopping list web application without registration
 
 ## Test, use
 
@@ -40,3 +40,9 @@ You can clean up your list by deleting all the items marked with a tick. You wil
 
 ### No registration
 All your lists are saved in cookies
+
+## Technology stack
+* HTML, CSS
+* JavaScript
+* Flex boxes
+* Cookie storage
