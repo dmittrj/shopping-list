@@ -1,10 +1,23 @@
+:root {
+    --sl-background-color: #fff;
+    --sl-background-fade: #eee;
+    --sl-light-gray: #ddd;
+    --sl-gray: #999;
+    --sl-dark-gray: #666;
+    --sl-font-color: #222;
+    --sl-royalblue: rgb(65, 105, 225);
+    --sl-skyblue: rgb(225, 231, 246);
+    --sl-shadow: rgba(0, 0, 0, 0.15);
+}
+
 body {
 	margin: 0;
 	font-family: 'Inter', sans-serif;
 
 	font-size: 15px;
 	line-height: 1.6;
-	color: #333;
+    background-color: var(--sl-background-color);
+	color: var(--sl-font-color);
 
 	display: flex;
 	flex-direction: column;
@@ -46,6 +59,9 @@ body {
     border: none;
     width: 95%;
 
+    color: var(--sl-font-color);
+    background-color: var(--sl-background-color);
+
     font-family: 'Inter', sans-serif;
 }
 
@@ -73,7 +89,7 @@ body {
 }
 
 .shoplist-list-item:hover {
-    background-color: #eee;
+    background-color: var(--sl-background-fade);
 }
 
 
@@ -88,7 +104,8 @@ body {
     height: 22px;
 
     border-radius: 5px;
-    border: 1px solid black;
+    border: 1px solid var(--sl-font-color);
+    background-color: var(--sl-background-color);
 }
 
 
@@ -97,8 +114,8 @@ body {
     display: block;
     width: 16px;
     height: 8px;
-    border-bottom: 2px solid black;
-    border-left: 2px solid black;
+    border-bottom: 2px solid var(--sl-font-color);
+    border-left: 2px solid var(--sl-font-color);
     transform: rotate(315deg) translate(-1.5px, -4.5px);
     transform-origin: center;
 }
@@ -111,7 +128,7 @@ body {
 
 .shoplist-list-item-add {
     margin-left: 6px;
-    color: #999;
+    color: var(--sl-gray);
 }
 
 .shoplist-list-item-text {
@@ -124,6 +141,7 @@ body {
     margin-left: .6em;
     font-size: 15px;
     line-height: 1.5;
+    color: var(--sl-font-color);
 
     font-family: 'Inter', sans-serif;
 
@@ -135,19 +153,19 @@ body {
 
 .shoplist-list-item-right a {
     text-decoration: none;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid var(--sl-dark-gray);
 }
 
 
 .shoplist-list-item-right a:hover {
-    color: #999;
-    border-bottom: 1px solid #ccc;
+    color: var(--sl-gray);
+    border-bottom: 1px solid var(--sl-gray);
 }
 
 .shoplist-list-item-right div {
     text-align: right;
     font-size: 1em;
-    color: #666;
+    color: var(--sl-dark-gray);
 }
 
 
@@ -164,8 +182,8 @@ body {
 
 
 .shoplist-button {
-    background-color: black;
-    color: white;
+    background-color: var(--sl-font-color);
+    color: var(--sl-background-color);
     font-size: 15px;
 
     padding: 8px 18px;
@@ -177,7 +195,7 @@ body {
 }
 
 .shoplist-button:hover {
-    background-color: #444;
+    background-color: var(--sl-dark-gray);
 } 
 
 .shoplist-list-item-cb {
@@ -190,8 +208,8 @@ body {
 .shoplist-list-item-cb-tick {
     width: 16px;
     height: 8px;
-    border-bottom: 2px solid black;
-    border-left: 2px solid black;
+    border-bottom: 2px solid var(--sl-font-color);
+    border-left: 2px solid var(--sl-font-color);
     transform: rotate(315deg) translate(-1.5px, -4.5px);
     transform-origin: center;
 }
@@ -207,7 +225,7 @@ body {
     width: 0.7em;
     height: 0.7em;
     display: inline-block;
-    background-color: #ddd;
+    background-color: var(--sl-light-gray);
     border-radius: 50%;
     margin-left: 0.4em;
 
@@ -221,7 +239,7 @@ body {
 
 .shoplist-title-button:before {
     content: "...";
-    color: #666;
+    color: var(--sl-dark-gray);
     font-weight: 400;
     position: absolute;
     top: 22%;
@@ -238,7 +256,7 @@ body {
 
 .shoplist-header-list {
     border-radius: 5px;
-    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    box-shadow: 0 10px 25px var(--sl-shadow);
     top: 80%;
     right: 0;
     z-index: 1;
@@ -273,7 +291,7 @@ body {
     white-space: nowrap;
 
     border-bottom: 1px solid #ccc;
-    background-color: white;
+    background-color: var(--sl-background-color);
 
     cursor: pointer;
 }
@@ -290,19 +308,19 @@ body {
 }
 
 .shoplist-header-list list li:hover {
-    background-color:rgb(225, 231, 246);
+    background-color: var(--sl-skyblue);
 }
 
 
 .sl-list-current {
-    background-color:royalblue!important;
-    color: white!important;
+    background-color: var(--sl-royalblue)!important;
+    color: var(--sl-background-color)!important;
 
     cursor: default!important;
 }
 
 .sl-list-current:hover {
-    background-color:royalblue!important;
+    background-color:var(--sl-royalblue)!important;
 }
 
 
@@ -321,15 +339,16 @@ body {
 
 
 .shoplist-pop-up {
-    background-color: white;
+    background-color: var(--sl-background-color);
     position: absolute;
     bottom: 10px;
     width: calc(100% - 30px);
     max-width: 400px;
 
     border-radius: 10px;
+    border: 1px solid var(--sl-shadow);
 
-    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    box-shadow: 0 10px 25px var(--sl-shadow);
 
     z-index: 1;
 }
@@ -342,7 +361,7 @@ body {
 
 .shoplist-pop-up list li {
     padding: 5px 2px;
-    border-bottom: 1px solid #bbb;
+    border-bottom: 1px solid var(--sl-shadow);
     text-align: center;
 
     cursor: pointer;
@@ -360,7 +379,7 @@ body {
 }
 
 .shoplist-pop-up list li:hover {
-    background-color: #eee;
+    background-color: var(--sl-background-fade);
 }
 
 
@@ -371,13 +390,13 @@ body {
 
 .shoplist-list-info-link {
     text-decoration: none;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid var(--sl-dark-gray);
 
     cursor: pointer;
 }
 
 
 .shoplist-list-info-link:hover {
-    color: #999;
-    border-bottom: 1px solid #ccc;
+    color: var(--sl-gray);
+    border-bottom: 1px solid var(--sl-gray);
 }

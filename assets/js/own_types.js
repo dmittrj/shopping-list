@@ -595,6 +595,39 @@ class UI {
     static close_options_popup() {
       document.querySelector('#shoplist-pop-up').style.display = 'none';
     }
+
+
+    static dark_mode_switch(isDark) {
+      if (isDark) {
+        Object.assign(document.documentElement, {
+          style: `
+            --sl-background-color: #222;
+            --sl-background-fade: #333;
+            --sl-light-gray: #555;
+            --sl-gray: #777;
+            --sl-dark-gray: #999;
+            --sl-font-color: #fff;
+            --sl-royalblue: rgb(120, 150, 250);
+            --sl-skyblue: rgb(125, 131, 146);
+            --sl-shadow: rgba(255, 255, 255, 0.15);
+          `
+        });
+      } else {
+        Object.assign(document.documentElement, {
+          style: `
+            --sl-background-color: #fff;
+            --sl-background-fade: #eee;
+            --sl-light-gray: #ddd;
+            --sl-gray: #999;
+            --sl-dark-gray: #666;
+            --sl-font-color: #222;
+            --sl-royalblue: rgb(65, 105, 225);
+            --sl-skyblue: rgb(225, 231, 246);
+            --sl-shadow: rgba(0, 0, 0, 0.15);
+          `
+        });
+      }
+    }
 }
   
   
@@ -603,6 +636,15 @@ class Hub {
       this.ShoppingLists = [];
       this.CurrentList = 0;
       this.LastID = 0;
+
+      this.DarkMode = false;
+    }
+
+
+    dark_mode_toggle() {
+      this.DarkMode = !this.DarkMode;
+
+      document.cookie = `dark_mode=${this.DarkMode}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
     }
 
 
@@ -670,6 +712,17 @@ class Hub {
   
 
     open() {
+      const DMcookies = document.cookie.split("; ");
+      const DMcookieName = "dark_mode=";
+
+      for (let i = 0; i < DMcookies.length; i++) {
+        const DMcookie = DMcookies[i];
+        if (DMcookie.indexOf(DMcookieName) === 0) {
+          const cookieValue = DMcookie.substring(DMcookieName.length);
+          this.DarkMode = (cookieValue == 'true' ? true : false);
+        }
+      }
+
       let cookies = this.get_cookies();
 
       if (cookies?.version == 'v1') {
