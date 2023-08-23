@@ -135,6 +135,10 @@ function event_load() {
 
     UI.draw_list(hub.get_current_list());
   });
+  document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
+    UI.close_options_popup();
+    UI.dark_mode_switch(hub.DarkMode);
+  });
   document.querySelector('#pop-up-cancel').addEventListener('click', () => {
     UI.close_options_popup();
   });

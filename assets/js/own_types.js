@@ -595,6 +595,11 @@ class UI {
     static close_options_popup() {
       document.querySelector('#shoplist-pop-up').style.display = 'none';
     }
+
+
+    static dark_mode_switch(isDark) {
+      
+    }
 }
   
   
@@ -603,6 +608,8 @@ class Hub {
       this.ShoppingLists = [];
       this.CurrentList = 0;
       this.LastID = 0;
+
+      this.DarkMode = false;
     }
 
 
