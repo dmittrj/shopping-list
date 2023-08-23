@@ -1,10 +1,16 @@
+:root {
+    --sl-background-color: #fff;
+    --sl-font-color: #222;
+}
+
 body {
 	margin: 0;
 	font-family: 'Inter', sans-serif;
 
 	font-size: 15px;
 	line-height: 1.6;
-	color: #333;
+    background-color: var(--sl-background-color);
+	color: var(--sl-font-color);
 
 	display: flex;
 	flex-direction: column;
@@ -88,7 +94,7 @@ body {
     height: 22px;
 
     border-radius: 5px;
-    border: 1px solid black;
+    border: 1px solid var(--sl-font-color);
 }
 
 
@@ -97,8 +103,8 @@ body {
     display: block;
     width: 16px;
     height: 8px;
-    border-bottom: 2px solid black;
-    border-left: 2px solid black;
+    border-bottom: 2px solid var(--sl-font-color);
+    border-left: 2px solid var(--sl-font-color);
     transform: rotate(315deg) translate(-1.5px, -4.5px);
     transform-origin: center;
 }
@@ -164,7 +170,7 @@ body {
 
 
 .shoplist-button {
-    background-color: black;
+    background-color: var(--sl-font-color);
     color: white;
     font-size: 15px;
 
@@ -190,8 +196,8 @@ body {
 .shoplist-list-item-cb-tick {
     width: 16px;
     height: 8px;
-    border-bottom: 2px solid black;
-    border-left: 2px solid black;
+    border-bottom: 2px solid var(--sl-font-color);
+    border-left: 2px solid var(--sl-font-color);
     transform: rotate(315deg) translate(-1.5px, -4.5px);
     transform-origin: center;
 }
