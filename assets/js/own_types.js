@@ -602,7 +602,13 @@ class UI {
         Object.assign(document.documentElement, {
           style: `
             --sl-background-color: #222;
+            --sl-background-fade: #333;
+            --sl-light-gray: #555;
+            --sl-gray: #777;
+            --sl-dark-gray: #999;
             --sl-font-color: #fff;
+            --sl-royalblue: rgb(120, 150, 250);
+            --sl-skyblue: rgb(125, 131, 146);
             --sl-shadow: rgba(255, 255, 255, 0.15);
           `
         })
