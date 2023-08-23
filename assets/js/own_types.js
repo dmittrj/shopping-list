@@ -603,6 +603,7 @@ class UI {
           style: `
             --sl-background-color: #222;
             --sl-font-color: #fff;
+            --sl-shadow: rgba(255, 255, 255, 0.15);
           `
         })
       }

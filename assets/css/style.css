@@ -1,6 +1,7 @@
 :root {
     --sl-background-color: #fff;
     --sl-font-color: #222;
+    --sl-shadow: rgba(0, 0, 0, 0.15);
 }
 
 body {
@@ -171,7 +172,7 @@ body {
 
 .shoplist-button {
     background-color: var(--sl-font-color);
-    color: white;
+    color: var(--sl-background-color);
     font-size: 15px;
 
     padding: 8px 18px;
@@ -244,7 +245,7 @@ body {
 
 .shoplist-header-list {
     border-radius: 5px;
-    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    box-shadow: 0 10px 25px var(--sl-shadow);
     top: 80%;
     right: 0;
     z-index: 1;
@@ -279,7 +280,7 @@ body {
     white-space: nowrap;
 
     border-bottom: 1px solid #ccc;
-    background-color: white;
+    background-color: var(--sl-background-color);
 
     cursor: pointer;
 }
@@ -302,7 +303,7 @@ body {
 
 .sl-list-current {
     background-color:royalblue!important;
-    color: white!important;
+    color: var(--sl-background-color)!important;
 
     cursor: default!important;
 }
@@ -327,7 +328,7 @@ body {
 
 
 .shoplist-pop-up {
-    background-color: white;
+    background-color: var(--sl-background-color);
     position: absolute;
     bottom: 10px;
     width: calc(100% - 30px);
@@ -335,7 +336,7 @@ body {
 
     border-radius: 10px;
 
-    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    box-shadow: 0 10px 25px var(--sl-shadow);
 
     z-index: 1;
 }
