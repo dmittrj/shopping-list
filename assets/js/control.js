@@ -137,6 +137,8 @@ function event_load() {
   });
   document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
     UI.close_options_popup();
+    document.querySelector('#pop-up-mode-switch').innerText = 'Turn to ' + (hub.DarkMode ? 'dark' : 'light') + ' mode';
+    hub.DarkMode = !hub.DarkMode;
     UI.dark_mode_switch(hub.DarkMode);
   });
   document.querySelector('#pop-up-cancel').addEventListener('click', () => {

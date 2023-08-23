@@ -598,7 +598,14 @@ class UI {
 
 
     static dark_mode_switch(isDark) {
-      
+      if (isDark) {
+        Object.assign(document.documentElement, {
+          style: `
+            --sl-background-color: #222;
+            --sl-font-color: #fff;
+          `
+        })
+      }
     }
 }
   
