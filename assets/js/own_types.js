@@ -623,33 +623,8 @@ class Hub {
       }
       return [];
     }
-  
 
-    open() {
-      let cookies = this.get_cookies();
-
-      if (cookies?.version != 'v1') {
-        
-        this.add_list('Shopping List');
-        this.CurrentList = this.LastID - 1;
-        return;
-      }
-
-      cookies?.content.forEach(sl => {
-        let new_item = this.add_list(sl.name, this.LastID++);
-        this.CurrentList = this.LastID - 1;
-        sl.items.forEach(sl_item => {
-          new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
-        });
-      });
-
-      if (cookies?.content.length == 0) {
-        this.add_list('Shopping List');
-        this.CurrentList = 0;
-      }
-    }
-
-    save() {
+    app_to_string() {
       let temp_shopping_lists = [];
       this.ShoppingLists.forEach(sl => {
         if (sl.SL_Removed) {
@@ -669,14 +644,63 @@ class Hub {
                                   "items": temp_shopping_list});
       });
       let cookie_to_save = {
-        "version": 'v1',
+        "version": 'v1.1',
         "current_list": this.CurrentList,
         "content": temp_shopping_lists
       }
       const shopping_list_string = JSON.stringify(cookie_to_save);
-      console.log(shopping_list_string);
+      return shopping_list_string;
+    }
 
-      document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
+
+    open_v1(cookies) {
+      cookies?.content.forEach(sl => {
+        let new_item = this.add_list(sl.name, this.LastID++);
+        this.CurrentList = this.LastID - 1;
+        sl.items.forEach(sl_item => {
+          new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
+        });
+      });
+
+      if (cookies?.content.length == 0) {
+        this.add_list('Shopping List');
+        this.CurrentList = 0;
+      }
+    }
+  
+
+    open() {
+      let cookies = this.get_cookies();
+
+      if (cookies?.version == 'v1') {
+        this.open_v1(cookies);
+        return;
+      }
+
+      if (cookies?.version == 'v1.1' || JSON.parse(localStorage?.shopping_list).version == 'v1.1') {
+        if (cookies?.version == 'v1.1') {
+          this.open_v1(cookies);
+        } else {
+          this.open_v1(JSON.parse(localStorage?.shopping_list));
+        }
+        return;
+      }
+
+      this.add_list('Shopping List');
+      this.CurrentList = this.LastID - 1;
+      return;
+
+    }
+
+    save() {
+      const shopping_list_string = this.app_to_string();
+      if (this.ShoppingLists.length == 1 && this.ShoppingLists[0].SL_Items.length <= 10) {
+        document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
+        localStorage.shopping_list = shopping_list_string;
+      } else {
+        document.cookie = `shopping_list=; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
+        localStorage.removeItem("shopping_list");
+      }
     }
 
     add_list(name) {
