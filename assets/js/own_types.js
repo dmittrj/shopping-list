@@ -677,7 +677,7 @@ class Hub {
         return;
       }
 
-      if (cookies?.version == 'v1.1' || JSON.parse(localStorage?.shopping_list).version == 'v1.1') {
+      if (cookies?.version == 'v1.1' || (localStorage?.shopping_list && JSON.parse(localStorage?.shopping_list).version == 'v1.1')) {
         if (cookies?.version == 'v1.1') {
           this.open_v1(cookies);
         } else {
@@ -696,10 +696,10 @@ class Hub {
       const shopping_list_string = this.app_to_string();
       if (this.ShoppingLists.length == 1 && this.ShoppingLists[0].SL_Items.length <= 10) {
         document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
-        localStorage.shopping_list = shopping_list_string;
+        localStorage.removeItem("shopping_list");
       } else {
         document.cookie = `shopping_list=; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
-        localStorage.removeItem("shopping_list");
+        localStorage.shopping_list = shopping_list_string;
       }
     }
 
