@@ -38,6 +38,11 @@ You can clean up your list by deleting all the items marked with a tick. You wil
 
 <img src="Screenshots/readme-6.jpg" />
 
+### Beautiful Dark Mode
+You can switch your interface to Dark mode
+
+<img src="Screenshots/readme-7.jpg" />
+
 ### No registration
 All your lists are saved in cookies or in your browser's local storage
 
@@ -52,6 +57,7 @@ Your shopping lists are not saved anywhere except on your device
 
 ## Technology stack
 * HTML, CSS
+* CSS variables
 * JavaScript
 * Flex boxes
 * Cookie storage

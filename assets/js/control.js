@@ -135,6 +135,16 @@ function event_load() {
 
     UI.draw_list(hub.get_current_list());
   });
+  document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
+    UI.close_options_popup();
+    document.querySelector('#pop-up-mode-switch').innerText = 'Turn to ' + (hub.DarkMode ? 'dark' : 'light') + ' mode';
+    hub.dark_mode_toggle();
+    UI.dark_mode_switch(hub.DarkMode);
+  });
+  if (hub.DarkMode) {
+    document.querySelector('#pop-up-mode-switch').innerText = 'Turn to ' + (!hub.DarkMode ? 'dark' : 'light') + ' mode';
+    UI.dark_mode_switch(hub.DarkMode);
+  }
   document.querySelector('#pop-up-cancel').addEventListener('click', () => {
     UI.close_options_popup();
   });
