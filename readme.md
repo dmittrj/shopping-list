@@ -41,6 +41,9 @@ You can clean up your list by deleting all the items marked with a tick. You wil
 ### No registration
 All your lists are saved in cookies
 
+### Safety
+Your shopping lists are not saved anywhere except on your device
+
 ## Technology stack
 * HTML, CSS
 * JavaScript
