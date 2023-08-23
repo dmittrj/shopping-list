@@ -39,13 +39,20 @@ You can clean up your list by deleting all the items marked with a tick. You wil
 <img src="Screenshots/readme-6.jpg" />
 
 ### No registration
-All your lists are saved in cookies
+All your lists are saved in cookies or in your browser's local storage
 
 ### Safety
-Your shopping lists are not saved anywhere except on your device
+Your shopping lists are not saved anywhere except on your device  
+**Where is your data stored?**  
+|Condition                   |Storage|
+|----------------------------|-------|
+|One list, less than 10 items|Cookies|
+|One list, 10 items or more  |Local Storage|
+|Multiple lists              |Local Storage|
 
 ## Technology stack
 * HTML, CSS
 * JavaScript
 * Flex boxes
 * Cookie storage
+* Local storage
