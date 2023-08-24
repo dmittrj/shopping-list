@@ -1,45 +1,11 @@
 // GLOBAL VARS
 const OPACITY_LEVEL = '.4';
-var SHOPPING_LIST;
-var LAST_ID = 1;
 var hub;
 
 
 
-function save() {
-  var cookie_shopping_list = SHOPPING_LIST.map(({ id, ...item }) => item);
-  cookie_shopping_list = cookie_shopping_list.filter((w) => !w.removed);
-  cookie_shopping_list = cookie_shopping_list.map(({ removed, ...item }) => item);
-  const shopping_list_string = JSON.stringify(cookie_shopping_list);
-  document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
-}
-
-function sl_open() {
-  const cookies = document.cookie.split("; ");
-  const cookieName = "shopping_list=";
-
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i];
-    if (cookie.indexOf(cookieName) === 0) {
-      const cookieValue = cookie.substring(cookieName.length);
-      try {
-        return JSON.parse(cookieValue);
-      } catch (error) {
-        return [];
-      }
-    }
-  }
-  return [];
-}
-
-
 function get_id_by_ui_item(item) {
   return +item.id.substring(19);
-}
-
-
-function get_sl_item_by_id(item_id) {
-  return SHOPPING_LIST.find((w) => w.id === +item_id);
 }
 
 
