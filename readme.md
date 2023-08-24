@@ -1,6 +1,6 @@
 # Shoppling List App
 
-Simple free shopping list web application without registration
+Simple free secure shopping list web application without registration
 
 ## Test, use
 
@@ -41,16 +41,14 @@ You can clean up your list by deleting all the items marked with a tick. You wil
 ### List sharing
 You can share your shopping list with another person. You just need to click on the "Share List" button and send a link  
 
+It's secure: the list is stored on the server in encrypted form, and only you and your partner have the key to the cipher
+
 <table>
   <tr>
     <td><img src="Screenshots/readme-8.jpg" /></td>
     <td><img src="Screenshots/readme-9.jpg" /></td>
   </tr>
 </table>
-
-It's secure: the list is stored on the server in encrypted form, and only you and your partner have the key to the cipher
-
-<img src="Screenshots/readme-10.jpg" />
 
 ### Beautiful Dark Mode
 You can switch your interface to Dark mode
@@ -62,20 +60,22 @@ All your lists are saved in cookies or in your browser's local storage
 
 ### Safety
 Your shopping lists are not saved anywhere except on your device  
+If you have shared the list, it is stored on the server in encrypted form. Only you have the encryption key     
 **Where is your data stored?**  
 |Condition                   |Storage|
 |----------------------------|-------|
 |One list, less than 10 items|Cookies|
 |One list, 10 items or more  |Local Storage|
 |Multiple lists              |Local Storage|
+|Shared list                 |Server (encrypted)|
 
 ## Technology stack
-* HTML, CSS
-* CSS variables
-* JavaScript
-* PHP
+* _Frontend languages:_ HTML, CSS, JavaScript
 * Flex boxes
+* CSS variables
 * Cookie storage
 * Local storage
-* MySQL
 * AES encryption
+* _Backend language:_ PHP
+* GET and POST requests
+* MySQL
