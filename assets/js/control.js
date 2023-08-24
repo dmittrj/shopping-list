@@ -110,8 +110,8 @@ async function share_list() {
     body: list_to_send
   });
   let text = await response.text();
-  
-  console.log(text);
+
+  link_to_copy = window.location.href + '?share=' + text + '&key=' + key;
 }
 
 
