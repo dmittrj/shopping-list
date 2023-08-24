@@ -86,9 +86,13 @@ function aes_encrypt(message, key) {
 }
 
 function aes_decrypt(ciphertext, key) {
-  const bytes = CryptoJS.AES.decrypt(ciphertext, key);
-  const plaintext = bytes.toString(CryptoJS.enc.Utf8);
-  return plaintext;
+  try {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, key);
+    const plaintext = bytes.toString(CryptoJS.enc.Utf8);
+    return plaintext;
+  } catch (error) {
+    return null;
+  }
 }
 
 function generate_key(length) {
@@ -191,30 +195,30 @@ async function event_load() {
       method: 'GET'
     });
     let text = await response.text();
-    let json = JSON.parse(aes_decrypt(text, key));
-    console.log(json);
+    let decrypted_list = aes_decrypt(text, key);
+    if (decrypted_list) {
+      let json = JSON.parse(decrypted_list);
+      let sl = new ShoppingList("Shared List", 0);
+      json.forEach(sl_item => {
+        sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
+      });
 
-    //let sl = hub.add_list('Shared List');
-    let sl = new ShoppingList("Shared List", 0);
-    json.forEach(sl_item => {
-      sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
-    });
+      UI.draw_list(sl);
+      hub.CurrentList = null;
 
-    UI.draw_list(sl);
-    hub.CurrentList = null;
+      let ele_listInfoText = UI.create_info_block('This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved', 'Save');
 
-    let ele_listInfoText = UI.create_info_block('This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved', 'Save');
-
-    ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
-      sl.SL_Id = hub.LastID++;
-      hub.ShoppingLists.push(sl);
-      hub.CurrentList = sl.SL_Id;
-      UI.draw_list_of_lists();
-      hub.save();
-      ele_listInfoText.remove();
-    });
-    document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
-
+      ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
+        sl.SL_Id = hub.LastID++;
+        hub.ShoppingLists.push(sl);
+        hub.CurrentList = sl.SL_Id;
+        UI.draw_list_of_lists();
+        hub.save();
+        ele_listInfoText.remove();
+      });
+      document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+    }
+    
     const url = window.location.href;
     const cleanUrl = url.split('?')[0];
     window.history.replaceState(null, null, cleanUrl);
