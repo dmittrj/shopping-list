@@ -211,6 +211,10 @@ async function event_load() {
     document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
     ele_listInfoText.appendChild(ele_listInfoTextBr);
     ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
+
+    const url = window.location.href;
+    const cleanUrl = url.split('?')[0];
+    window.history.replaceState(null, null, cleanUrl);
   }
 
   UI.draw_list_of_lists();
