@@ -137,7 +137,7 @@ async function share_list() {
 }
 
 
-function event_load() {
+async function event_load() {
   hub = new Hub();
   hub.open();
   UI.draw_list(hub.get_current_list());
@@ -175,6 +175,18 @@ function event_load() {
   document.querySelector('#pop-up-cancel').addEventListener('click', () => {
     UI.close_options_popup();
   });
+
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const share = urlParams.get('share');
+  const key = urlParams.get('key');
+  if (share && key) {
+    let response = await fetch(`assets/server/p2p_get.php?id=${share}`, {
+      method: 'GET'
+    });
+    let text = await response.text();
+    let json = JSON.parse(aes_decrypt(text, key));
+  }
 }
 
 
