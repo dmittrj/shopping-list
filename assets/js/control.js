@@ -101,6 +101,9 @@ function event_load() {
 
     UI.draw_list(hub.get_current_list());
   });
+  document.querySelector('#pop-up-share').addEventListener('click', () => {
+    UI.close_options_popup();
+  });
   document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
     UI.close_options_popup();
     document.querySelector('#pop-up-mode-switch').innerText = 'Turn to ' + (hub.DarkMode ? 'dark' : 'light') + ' mode';
