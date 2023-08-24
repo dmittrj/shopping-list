@@ -59,6 +59,9 @@ Your shopping lists are not saved anywhere except on your device
 * HTML, CSS
 * CSS variables
 * JavaScript
+* PHP
 * Flex boxes
 * Cookie storage
 * Local storage
+* MySQL
+* AES encryption
