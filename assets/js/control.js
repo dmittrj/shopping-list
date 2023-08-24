@@ -1,45 +1,11 @@
 // GLOBAL VARS
 const OPACITY_LEVEL = '.4';
-var SHOPPING_LIST;
-var LAST_ID = 1;
 var hub;
 
 
 
-function save() {
-  var cookie_shopping_list = SHOPPING_LIST.map(({ id, ...item }) => item);
-  cookie_shopping_list = cookie_shopping_list.filter((w) => !w.removed);
-  cookie_shopping_list = cookie_shopping_list.map(({ removed, ...item }) => item);
-  const shopping_list_string = JSON.stringify(cookie_shopping_list);
-  document.cookie = `shopping_list=${shopping_list_string}; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
-}
-
-function sl_open() {
-  const cookies = document.cookie.split("; ");
-  const cookieName = "shopping_list=";
-
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i];
-    if (cookie.indexOf(cookieName) === 0) {
-      const cookieValue = cookie.substring(cookieName.length);
-      try {
-        return JSON.parse(cookieValue);
-      } catch (error) {
-        return [];
-      }
-    }
-  }
-  return [];
-}
-
-
 function get_id_by_ui_item(item) {
   return +item.id.substring(19);
-}
-
-
-function get_sl_item_by_id(item_id) {
-  return SHOPPING_LIST.find((w) => w.id === +item_id);
 }
 
 
@@ -114,12 +80,78 @@ function delete_ticked() {
   hub.save();
 }
 
+function aes_encrypt(message, key) {
+  const ciphertext = CryptoJS.AES.encrypt(message, key).toString();
+  return ciphertext;
+}
 
-function event_load() {
+function aes_decrypt(ciphertext, key) {
+  try {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, key);
+    const plaintext = bytes.toString(CryptoJS.enc.Utf8);
+    return plaintext;
+  } catch (error) {
+    return null;
+  }
+}
+
+function generate_key(length) {
+  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
+
+async function share_list() {
+  const key = generate_key(16);
+  const list_to_share = JSON.stringify(hub.get_current_list().to_json());
+  const list_to_send = aes_encrypt(list_to_share, key);
+  let response = await fetch('assets/server/p2p_share.php', {
+    method: 'POST',
+    body: list_to_send
+  });
+  let atr_share = await response.text();
+  link_to_copy = window.location.href + '?share=' + atr_share + '&key=' + key;
+  let ele_listInfoText = UI.create_info_block('Tap to copy this link and send it to your partner', link_to_copy);
+  ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
+    const link = ele_listInfoText.querySelector('#sl-info-block-button');
+    const range = document.createRange();
+    range.selectNode(link);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.execCommand('copy');
+    selection.removeAllRanges();
+
+    if (document.querySelector('.shoplist-list-info-pop-up')) {
+      document.querySelector('.shoplist-list-info-pop-up').remove();
+    }
+
+    let eleCopyPopUp = document.createElement('div');
+    eleCopyPopUp.classList.add('shoplist-list-info-pop-up');
+    eleCopyPopUp.innerText = 'Copied';
+    eleCopyPopUp.addEventListener('animationend', () => {
+      setTimeout(() => {
+        eleCopyPopUp.style.animation = 'shoplist-ani-pop-up-fading .35s ease-out forwards'
+        eleCopyPopUp.addEventListener('animationend', () => {
+          eleCopyPopUp.remove();
+        })
+      }, 2000);
+    })
+
+    document.querySelector('#shoplist-list').appendChild(eleCopyPopUp);
+  });
+  document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+}
+
+
+async function event_load() {
   hub = new Hub();
   hub.open();
   UI.draw_list(hub.get_current_list());
-  UI.draw_list_of_lists();
 
   document.querySelector('#button-options').addEventListener('click', () => {
     UI.open_options_popup();
@@ -135,6 +167,11 @@ function event_load() {
 
     UI.draw_list(hub.get_current_list());
   });
+  document.querySelector('#pop-up-share').addEventListener('click', () => {
+    UI.close_options_popup();
+
+    share_list();
+  });
   document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
     UI.close_options_popup();
     document.querySelector('#pop-up-mode-switch').innerText = 'Turn to ' + (hub.DarkMode ? 'dark' : 'light') + ' mode';
@@ -148,6 +185,46 @@ function event_load() {
   document.querySelector('#pop-up-cancel').addEventListener('click', () => {
     UI.close_options_popup();
   });
+
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const share = urlParams.get('share');
+  const key = urlParams.get('key');
+  if (share && key) {
+    let response = await fetch(`assets/server/p2p_get.php?id=${share}`, {
+      method: 'GET'
+    });
+    let text = await response.text();
+    let decrypted_list = aes_decrypt(text, key);
+    if (decrypted_list) {
+      let json = JSON.parse(decrypted_list);
+      let sl = new ShoppingList("Shared List", 0);
+      json.forEach(sl_item => {
+        sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
+      });
+
+      UI.draw_list(sl);
+      hub.CurrentList = null;
+
+      let ele_listInfoText = UI.create_info_block('This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved', 'Save');
+
+      ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
+        sl.SL_Id = hub.LastID++;
+        hub.ShoppingLists.push(sl);
+        hub.CurrentList = sl.SL_Id;
+        UI.draw_list_of_lists();
+        hub.save();
+        ele_listInfoText.remove();
+      });
+      document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+    }
+    
+    const url = window.location.href;
+    const cleanUrl = url.split('?')[0];
+    window.history.replaceState(null, null, cleanUrl);
+  }
+
+  UI.draw_list_of_lists();
 }
 
 

@@ -31,6 +31,20 @@ class ShoppingList {
     get_checked() {
       return this.SL_Items.find((w) => w.SLI_Checked && !w.SLI_Removed);
     }
+
+    to_json() {
+        let temp_shopping_list = [];
+        this.SL_Items.forEach(sl_item => {
+            if (!sl_item.SLI_Removed) {
+				temp_shopping_list.push({"name": sl_item.SLI_Name,
+										 "cost": sl_item.SLI_Cost,
+										 "amount": sl_item.SLI_Amount,
+										 "checked": sl_item.SLI_Checked}
+				);
+            }
+        });
+        return temp_shopping_list;
+    }
 }
   
 
@@ -177,6 +191,25 @@ class UI {
       ele_ListItemAdd.style.opacity = OPACITY_LEVEL;
       ele_ListItemAdd.querySelector('.shoplist-list-item-text').addEventListener('click', UI.display_new_item_field);
       return ele_ListItemAdd;
+    }
+
+
+    static create_info_block(text, link) {
+      let ele_listInfoText = document.createElement('p');
+      ele_listInfoText.innerHTML = text;
+      ele_listInfoText.classList.add('shoplist-list-info-text');
+  
+      let ele_listInfoTextBr = document.createElement('br');
+  
+      let ele_listInfoTextRestoreButton = document.createElement('a');
+      ele_listInfoTextRestoreButton.innerText = link;
+      ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
+      ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
+      ele_listInfoTextRestoreButton.id = 'sl-info-block-button';
+      ele_listInfoText.appendChild(ele_listInfoTextBr);
+      ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
+
+      return ele_listInfoText;
     }
 
 
@@ -498,17 +531,9 @@ class UI {
       UI.add_item_toggle_visibility();
 
       if (list.SL_Removed) {
-        let ele_listInfoText = document.createElement('p');
-        ele_listInfoText.innerText = 'This list has been removed';
-        ele_listInfoText.classList.add('shoplist-list-info-text');
+        let ele_listInfoText = UI.create_info_block('This list has been removed', 'Restore');
 
-        let ele_listInfoTextBr = document.createElement('br');
-
-        let ele_listInfoTextRestoreButton = document.createElement('a');
-        ele_listInfoTextRestoreButton.innerText = 'Restore';
-        ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
-        ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
-        ele_listInfoTextRestoreButton.addEventListener('click', () => {
+        ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
           list.SL_Removed = false;
           UI.draw_list(list);
 
@@ -516,8 +541,6 @@ class UI {
         });
 
         document.querySelector('#shoplist-list').appendChild(ele_listInfoText);
-        ele_listInfoText.appendChild(ele_listInfoTextBr);
-        ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
         return;
       }
 
@@ -672,18 +695,8 @@ class Hub {
         if (sl.SL_Removed) {
           return;
         }
-        let temp_shopping_list = [];
-        sl.SL_Items.forEach(sl_item => {
-          if (sl_item.SLI_Removed) {
-            return;
-          }
-          temp_shopping_list.push({"name": sl_item.SLI_Name,
-                                   "cost": sl_item.SLI_Cost,
-                                   "amount": sl_item.SLI_Amount,
-                                   "checked": sl_item.SLI_Checked});
-        });
         temp_shopping_lists.push({"name": sl.SL_Name,
-                                  "items": temp_shopping_list});
+                                  "items": sl.to_json()});
       });
       let cookie_to_save = {
         "version": 'v1.1',

@@ -73,6 +73,8 @@ body {
 
     overflow-y: auto;
     height: calc(100vh - 140px);
+
+    position: relative;
 }
 
 
@@ -390,6 +392,7 @@ body {
 
 .shoplist-list-info-link {
     text-decoration: none;
+    color: var(--sl-font-color);
     border-bottom: 1px solid var(--sl-dark-gray);
 
     cursor: pointer;
@@ -399,4 +402,59 @@ body {
 .shoplist-list-info-link:hover {
     color: var(--sl-gray);
     border-bottom: 1px solid var(--sl-gray);
+}
+
+
+.shoplist-list-info-pop-up {
+    width: fit-content;
+    margin: 0 auto;
+    background-color: var(--sl-light-gray);
+    color: var(--sl-font-color);
+    padding: 4px 8px;
+    border-radius: 6px;
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 6px;
+
+    transform-origin: bottom;
+    animation: shoplist-ani-pop-up-expand .35s ease-out forwards;
+}
+
+.shoplist-list-info-pop-up::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--sl-light-gray);
+}
+
+
+@keyframes shoplist-ani-pop-up-expand {
+    from {
+        transform: scale(0);
+    }
+    75% {
+        transform: scale(1.15);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes shoplist-ani-pop-up-fading {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(.25);
+        opacity: 0;
+    }
 }
