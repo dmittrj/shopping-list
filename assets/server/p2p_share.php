@@ -15,6 +15,9 @@
         " . $conn->error;
     }
 
+    //CREATE TABLE `$dbname`.`links` ( `id` INT(8) UNSIGNED NOT NULL AUTO_INCREMENT , `shopping_list` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = MyISAM CHARSET=utf8 COLLATE utf8_general_ci;
+
+
     $id_str = base_convert($last_id, 10, 36);
     //$id_str = str_pad($id_str, 6, "0", STR_PAD_LEFT);
 
