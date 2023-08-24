@@ -112,6 +112,28 @@ async function share_list() {
   let text = await response.text();
 
   link_to_copy = window.location.href + '?share=' + text + '&key=' + key;
+
+  let ele_listInfoText = document.createElement('p');
+  ele_listInfoText.innerText = 'Copy this link and send it to your partner';
+  ele_listInfoText.classList.add('shoplist-list-info-text');
+
+  let ele_listInfoTextBr = document.createElement('br');
+
+  let ele_listInfoTextRestoreButton = document.createElement('a');
+  ele_listInfoTextRestoreButton.innerText = link_to_copy;
+  ele_listInfoTextRestoreButton.href = link_to_copy;
+  ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
+  ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
+  ele_listInfoTextRestoreButton.addEventListener('click', () => {
+    list.SL_Removed = false;
+    UI.draw_list(list);
+
+    hub.save();
+  });
+
+  document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+  ele_listInfoText.appendChild(ele_listInfoTextBr);
+  ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
 }
 
 
