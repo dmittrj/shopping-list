@@ -31,6 +31,20 @@ class ShoppingList {
     get_checked() {
       return this.SL_Items.find((w) => w.SLI_Checked && !w.SLI_Removed);
     }
+
+    to_json() {
+        let temp_shopping_list = [];
+        this.SL_Items.forEach(sl_item => {
+            if (!sl_item.SLI_Removed) {
+				temp_shopping_list.push({"name": sl_item.SLI_Name,
+										 "cost": sl_item.SLI_Cost,
+										 "amount": sl_item.SLI_Amount,
+										 "checked": sl_item.SLI_Checked}
+				);
+            }
+        });
+        return temp_shopping_list;
+    }
 }
   
 
@@ -672,18 +686,8 @@ class Hub {
         if (sl.SL_Removed) {
           return;
         }
-        let temp_shopping_list = [];
-        sl.SL_Items.forEach(sl_item => {
-          if (sl_item.SLI_Removed) {
-            return;
-          }
-          temp_shopping_list.push({"name": sl_item.SLI_Name,
-                                   "cost": sl_item.SLI_Cost,
-                                   "amount": sl_item.SLI_Amount,
-                                   "checked": sl_item.SLI_Checked});
-        });
         temp_shopping_lists.push({"name": sl.SL_Name,
-                                  "items": temp_shopping_list});
+                                  "items": sl.to_json()});
       });
       let cookie_to_save = {
         "version": 'v1.1',
