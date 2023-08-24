@@ -38,6 +38,20 @@ You can clean up your list by deleting all the items marked with a tick. You wil
 
 <img src="Screenshots/readme-6.jpg" />
 
+### List sharing
+You can share your shopping list with another person. You just need to click on the "Share List" button and send a link  
+
+<table>
+  <tr>
+    <td><img src="Screenshots/readme-8.jpg" /></td>
+    <td><img src="Screenshots/readme-9.jpg" /></td>
+  </tr>
+</table>
+
+It's secure: the list is stored on the server in encrypted form, and only you and your partner have the key to the cipher
+
+<img src="Screenshots/readme-10.jpg" />
+
 ### Beautiful Dark Mode
 You can switch your interface to Dark mode
 
