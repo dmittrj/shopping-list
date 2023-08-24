@@ -124,12 +124,6 @@ async function share_list() {
   ele_listInfoTextRestoreButton.href = link_to_copy;
   ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
   ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
-  ele_listInfoTextRestoreButton.addEventListener('click', () => {
-    list.SL_Removed = false;
-    UI.draw_list(list);
-
-    hub.save();
-  });
 
   document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
   ele_listInfoText.appendChild(ele_listInfoTextBr);
@@ -141,7 +135,6 @@ async function event_load() {
   hub = new Hub();
   hub.open();
   UI.draw_list(hub.get_current_list());
-  UI.draw_list_of_lists();
 
   document.querySelector('#button-options').addEventListener('click', () => {
     UI.open_options_popup();
@@ -186,7 +179,41 @@ async function event_load() {
     });
     let text = await response.text();
     let json = JSON.parse(aes_decrypt(text, key));
+    console.log(json);
+
+    //let sl = hub.add_list('Shared List');
+    let sl = new ShoppingList("Shared List", 0);
+    json.forEach(sl_item => {
+      sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
+    });
+
+    UI.draw_list(sl);
+    hub.CurrentList = null;
+
+    let ele_listInfoText = document.createElement('p');
+    ele_listInfoText.innerHTML = 'This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved';
+    ele_listInfoText.classList.add('shoplist-list-info-text');
+
+    let ele_listInfoTextBr = document.createElement('br');
+
+    let ele_listInfoTextRestoreButton = document.createElement('a');
+    ele_listInfoTextRestoreButton.innerText = "Save";
+    ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
+    ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
+    ele_listInfoTextRestoreButton.addEventListener('click', () => {
+      sl.SL_Id = hub.LastID++;
+      hub.ShoppingLists.push(sl);
+      hub.CurrentList = sl.SL_Id;
+      UI.draw_list_of_lists();
+      hub.save();
+      ele_listInfoText.remove();
+    });
+    document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+    ele_listInfoText.appendChild(ele_listInfoTextBr);
+    ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
   }
+
+  UI.draw_list_of_lists();
 }
 
 
