@@ -1,4 +1,4 @@
-# Shoppling List App
+# Shopping List App
 
 Simple free secure shopping list web application without registration
 
