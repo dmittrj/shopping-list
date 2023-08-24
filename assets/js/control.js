@@ -81,6 +81,17 @@ function delete_ticked() {
 }
 
 
+async function share_list() {
+  const list_to_share = hub.get_current_list().to_json();
+  let response = await fetch('assets/server/p2p_share.php', {
+    method: 'POST',
+    body: JSON.stringify(list_to_share)
+  });
+  let text = await response.text();
+  console.log(text);
+}
+
+
 function event_load() {
   hub = new Hub();
   hub.open();
@@ -103,6 +114,8 @@ function event_load() {
   });
   document.querySelector('#pop-up-share').addEventListener('click', () => {
     UI.close_options_popup();
+
+    share_list();
   });
   document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
     UI.close_options_popup();
