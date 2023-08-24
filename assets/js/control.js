@@ -80,14 +80,37 @@ function delete_ticked() {
   hub.save();
 }
 
+function aes_encrypt(message, key) {
+  const ciphertext = CryptoJS.AES.encrypt(message, key).toString();
+  return ciphertext;
+}
+
+function aes_decrypt(ciphertext, key) {
+  const bytes = CryptoJS.AES.decrypt(ciphertext, key);
+  const plaintext = bytes.toString(CryptoJS.enc.Utf8);
+  return plaintext;
+}
+
+function generate_key(length) {
+  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
 
 async function share_list() {
-  const list_to_share = hub.get_current_list().to_json();
+  const key = generate_key(16);
+  const list_to_share = JSON.stringify(hub.get_current_list().to_json());
+  const list_to_send = aes_encrypt(list_to_share, key);
   let response = await fetch('assets/server/p2p_share.php', {
     method: 'POST',
-    body: JSON.stringify(list_to_share)
+    body: list_to_send
   });
   let text = await response.text();
+  
   console.log(text);
 }
 
