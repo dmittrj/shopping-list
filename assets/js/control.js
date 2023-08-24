@@ -113,21 +113,9 @@ async function share_list() {
 
   link_to_copy = window.location.href + '?share=' + text + '&key=' + key;
 
-  let ele_listInfoText = document.createElement('p');
-  ele_listInfoText.innerText = 'Copy this link and send it to your partner';
-  ele_listInfoText.classList.add('shoplist-list-info-text');
-
-  let ele_listInfoTextBr = document.createElement('br');
-
-  let ele_listInfoTextRestoreButton = document.createElement('a');
-  ele_listInfoTextRestoreButton.innerText = link_to_copy;
-  ele_listInfoTextRestoreButton.href = link_to_copy;
-  ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
-  ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
+  let ele_listInfoText = UI.create_info_block('Copy this link and send it to your partner', link_to_copy);
 
   document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
-  ele_listInfoText.appendChild(ele_listInfoTextBr);
-  ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
 }
 
 
@@ -190,17 +178,9 @@ async function event_load() {
     UI.draw_list(sl);
     hub.CurrentList = null;
 
-    let ele_listInfoText = document.createElement('p');
-    ele_listInfoText.innerHTML = 'This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved';
-    ele_listInfoText.classList.add('shoplist-list-info-text');
+    let ele_listInfoText = UI.create_info_block('This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved', 'Save');
 
-    let ele_listInfoTextBr = document.createElement('br');
-
-    let ele_listInfoTextRestoreButton = document.createElement('a');
-    ele_listInfoTextRestoreButton.innerText = "Save";
-    ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
-    ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
-    ele_listInfoTextRestoreButton.addEventListener('click', () => {
+    ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
       sl.SL_Id = hub.LastID++;
       hub.ShoppingLists.push(sl);
       hub.CurrentList = sl.SL_Id;
@@ -209,8 +189,6 @@ async function event_load() {
       ele_listInfoText.remove();
     });
     document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
-    ele_listInfoText.appendChild(ele_listInfoTextBr);
-    ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
 
     const url = window.location.href;
     const cleanUrl = url.split('?')[0];

@@ -194,6 +194,25 @@ class UI {
     }
 
 
+    static create_info_block(text, link) {
+      let ele_listInfoText = document.createElement('p');
+      ele_listInfoText.innerHTML = text;
+      ele_listInfoText.classList.add('shoplist-list-info-text');
+  
+      let ele_listInfoTextBr = document.createElement('br');
+  
+      let ele_listInfoTextRestoreButton = document.createElement('a');
+      ele_listInfoTextRestoreButton.innerText = link;
+      ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
+      ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
+      ele_listInfoTextRestoreButton.id = 'sl-info-block-button';
+      ele_listInfoText.appendChild(ele_listInfoTextBr);
+      ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
+
+      return ele_listInfoText;
+    }
+
+
     static append_item(list_item) {
       var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, false);
 
@@ -512,17 +531,9 @@ class UI {
       UI.add_item_toggle_visibility();
 
       if (list.SL_Removed) {
-        let ele_listInfoText = document.createElement('p');
-        ele_listInfoText.innerText = 'This list has been removed';
-        ele_listInfoText.classList.add('shoplist-list-info-text');
+        let ele_listInfoText = UI.create_info_block('This list has been removed', 'Restore');
 
-        let ele_listInfoTextBr = document.createElement('br');
-
-        let ele_listInfoTextRestoreButton = document.createElement('a');
-        ele_listInfoTextRestoreButton.innerText = 'Restore';
-        ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-text');
-        ele_listInfoTextRestoreButton.classList.add('shoplist-list-info-link');
-        ele_listInfoTextRestoreButton.addEventListener('click', () => {
+        ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
           list.SL_Removed = false;
           UI.draw_list(list);
 
@@ -530,8 +541,6 @@ class UI {
         });
 
         document.querySelector('#shoplist-list').appendChild(ele_listInfoText);
-        ele_listInfoText.appendChild(ele_listInfoTextBr);
-        ele_listInfoText.appendChild(ele_listInfoTextRestoreButton);
         return;
       }
 
