@@ -14,7 +14,6 @@ class ShoppingList {
 
     append(sl_item) {
         this.SL_Items.push(sl_item);
-        hub.save();
         return sl_item;
     }
 
@@ -213,10 +212,12 @@ class UI {
     }
 
 
-    static append_item(list_item) {
-      var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, false);
+    static append_item(list_item, editable) {
+      var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, !editable);
 
-      UI.assign_click_actions(ele_ListItem, 'item');
+      if (editable) {
+        UI.assign_click_actions(ele_ListItem, 'item');
+      }
       
       document.querySelector(".shoplist-list").appendChild(ele_ListItem);
       
@@ -303,7 +304,7 @@ class UI {
             } else {
               let new_item_content = parse_item(ele_ListItemTextInput.value);
               let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
-              UI.append_item(new_item);
+              UI.append_item(new_item, true);
             }
           }
         });
@@ -314,7 +315,7 @@ class UI {
           } else {
             let new_item_content = parse_item(ele_ListItemTextInput.value);
             let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
-            UI.append_item(new_item);
+            UI.append_item(new_item, true);
             if (document.querySelector('#shoplist-add-pseudoitem')) {
               document.querySelector('#shoplist-add-pseudoitem input').onblur = null;
               document.querySelector('#shoplist-add-pseudoitem').remove();
@@ -515,7 +516,12 @@ class UI {
     }
 
 
-    static draw_list(list) {
+    static toggle_delete_list_action() {
+      document.querySelector('#pop-up-delete a').innerText = hub.get_current_list().SL_Removed ? 'Restore list' : 'Delete list';
+    }
+
+
+    static draw_list(list, editable) {
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
 
       let ele_listTitle_span = document.createElement('span');
@@ -535,7 +541,8 @@ class UI {
 
         ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
           list.SL_Removed = false;
-          UI.draw_list(list);
+          UI.draw_list(list, editable);
+          UI.toggle_delete_list_action();
 
           hub.save();
         });
@@ -546,7 +553,7 @@ class UI {
 
       for (let i = 0; i < list.SL_Items.length; i++) {
         const list_item = list.SL_Items[i];
-        UI.append_item(list_item);
+        UI.append_item(list_item, editable);
       }
 
       UI.append_add();
@@ -554,7 +561,7 @@ class UI {
 
 
     static draw_list_of_lists() {
-      document.querySelector('#shopping-lists-list list').innerHTML = '';
+      document.querySelector('#shopping-lists-list menu').innerHTML = '';
 
       hub.ShoppingLists.forEach(s_list => {
         let _ele_slListsList_li = document.createElement('li');
@@ -566,12 +573,14 @@ class UI {
           _ele_slListsList_li.addEventListener('click', () => {
             hub.switch_list(s_list.SL_Id);
             UI.draw_list_of_lists();
-            UI.draw_list(hub.get_current_list());
+            UI.draw_list(hub.get_current_list(), true);
             UI.toggle_lists_list_display();
+            UI.toggle_delete_list_action();
+            hub.save();
           });
         }
 
-        document.querySelector('#shopping-lists-list list').appendChild(_ele_slListsList_li);
+        document.querySelector('#shopping-lists-list menu').appendChild(_ele_slListsList_li);
       });
 
       let ele_slListsList_li = document.createElement('li');
@@ -580,13 +589,13 @@ class UI {
         let new_list = hub.add_list('New list');
         hub.switch_list(new_list.SL_Id);
         UI.draw_list_of_lists();
-        UI.draw_list(hub.get_current_list());
+        UI.draw_list(hub.get_current_list(), true);
         UI.turn_title_to_input();
         UI.toggle_lists_list_display();
         hub.save();
       })
 
-      document.querySelector('#shopping-lists-list list').appendChild(ele_slListsList_li);
+      document.querySelector('#shopping-lists-list menu').appendChild(ele_slListsList_li);
     }
 
 
@@ -691,16 +700,22 @@ class Hub {
 
     app_to_string() {
       let temp_shopping_lists = [];
+      let current_list = 0;
+      let i = 0;
       this.ShoppingLists.forEach(sl => {
         if (sl.SL_Removed) {
           return;
         }
+        if (sl.SL_Id == this.CurrentList) {
+          current_list = i;
+        }
+        i++;
         temp_shopping_lists.push({"name": sl.SL_Name,
                                   "items": sl.to_json()});
       });
       let cookie_to_save = {
         "version": 'v1.1',
-        "current_list": this.CurrentList,
+        "current_list": current_list,
         "content": temp_shopping_lists
       }
       const shopping_list_string = JSON.stringify(cookie_to_save);
@@ -709,9 +724,10 @@ class Hub {
 
 
     open_v1(cookies) {
+      this.CurrentList = cookies?.current_list;
       cookies?.content.forEach(sl => {
-        let new_item = this.add_list(sl.name, this.LastID++);
-        this.CurrentList = this.LastID - 1;
+        let new_item = this.add_list(sl.name);
+        //this.CurrentList = this.LastID - 1;
         sl.items.forEach(sl_item => {
           new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
         });

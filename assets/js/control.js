@@ -106,6 +106,10 @@ function generate_key(length) {
 
 
 async function share_list() {
+  if (document.querySelector('#shoplist-share-text')) {
+    return;
+  }
+
   const key = generate_key(16);
   const list_to_share = JSON.stringify(hub.get_current_list().to_json());
   const list_to_send = aes_encrypt(list_to_share, key);
@@ -114,8 +118,10 @@ async function share_list() {
     body: list_to_send
   });
   let atr_share = await response.text();
-  link_to_copy = window.location.href + '?share=' + atr_share + '&key=' + key;
+
+  let link_to_copy = window.location.href + '?share=' + atr_share + '&key=' + key;
   let ele_listInfoText = UI.create_info_block('Tap to copy this link and send it to your partner', link_to_copy);
+  ele_listInfoText.id = 'shoplist-share-text';
   ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
     const link = ele_listInfoText.querySelector('#sl-info-block-button');
     const range = document.createRange();
@@ -140,7 +146,7 @@ async function share_list() {
           eleCopyPopUp.remove();
         })
       }, 2000);
-    })
+    });
 
     document.querySelector('#shoplist-list').appendChild(eleCopyPopUp);
   });
@@ -151,7 +157,10 @@ async function share_list() {
 async function event_load() {
   hub = new Hub();
   hub.open();
-  UI.draw_list(hub.get_current_list());
+  if (!hub.get_current_list()) {
+    hub.CurrentList = hub.ShoppingLists[0].SL_Id;
+  }
+  UI.draw_list(hub.get_current_list(), true);
 
   document.querySelector('#button-options').addEventListener('click', () => {
     UI.open_options_popup();
@@ -162,14 +171,13 @@ async function event_load() {
   });
   document.querySelector('#pop-up-delete').addEventListener('click', () => {
     UI.close_options_popup();
-    hub.get_current_list().SL_Removed = true;
+    hub.get_current_list().SL_Removed = !hub.get_current_list().SL_Removed;
+    UI.toggle_delete_list_action();
+    UI.draw_list(hub.get_current_list(), true);
     hub.save();
-
-    UI.draw_list(hub.get_current_list());
   });
   document.querySelector('#pop-up-share').addEventListener('click', () => {
     UI.close_options_popup();
-
     share_list();
   });
   document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
@@ -203,7 +211,7 @@ async function event_load() {
         sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
       });
 
-      UI.draw_list(sl);
+      UI.draw_list(sl, false);
       hub.CurrentList = null;
 
       let ele_listInfoText = UI.create_info_block('This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved', 'Save');
@@ -213,6 +221,7 @@ async function event_load() {
         hub.ShoppingLists.push(sl);
         hub.CurrentList = sl.SL_Id;
         UI.draw_list_of_lists();
+        UI.draw_list(hub.get_current_list(), true);
         hub.save();
         ele_listInfoText.remove();
       });
