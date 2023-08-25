@@ -109,6 +109,7 @@ async function share_list() {
   if (document.querySelector('#shoplist-share-text')) {
     return;
   }
+
   const key = generate_key(16);
   const list_to_share = JSON.stringify(hub.get_current_list().to_json());
   const list_to_send = aes_encrypt(list_to_share, key);
@@ -117,7 +118,8 @@ async function share_list() {
     body: list_to_send
   });
   let atr_share = await response.text();
-  link_to_copy = window.location.href + '?share=' + atr_share + '&key=' + key;
+
+  let link_to_copy = window.location.href + '?share=' + atr_share + '&key=' + key;
   let ele_listInfoText = UI.create_info_block('Tap to copy this link and send it to your partner', link_to_copy);
   ele_listInfoText.id = 'shoplist-share-text';
   ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
@@ -144,7 +146,7 @@ async function share_list() {
           eleCopyPopUp.remove();
         })
       }, 2000);
-    })
+    });
 
     document.querySelector('#shoplist-list').appendChild(eleCopyPopUp);
   });
@@ -165,25 +167,14 @@ async function event_load() {
     UI.turn_title_to_input();
   });
   document.querySelector('#pop-up-delete').addEventListener('click', () => {
-    if (hub.get_current_list().SL_Removed) {
-      UI.close_options_popup();
-      hub.get_current_list().SL_Removed = false;
-      UI.toggle_delete_list_action();
-      UI.draw_list(hub.get_current_list());
-
-      hub.save();
-    } else {
-      UI.close_options_popup();
-      hub.get_current_list().SL_Removed = true;
-      UI.toggle_delete_list_action();
-      hub.save();
-
-      UI.draw_list(hub.get_current_list());
-    }
+    UI.close_options_popup();
+    hub.get_current_list().SL_Removed = !hub.get_current_list().SL_Removed;
+    UI.toggle_delete_list_action();
+    UI.draw_list(hub.get_current_list());
+    hub.save();
   });
   document.querySelector('#pop-up-share').addEventListener('click', () => {
     UI.close_options_popup();
-
     share_list();
   });
   document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
