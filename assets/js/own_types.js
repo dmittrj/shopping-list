@@ -213,10 +213,12 @@ class UI {
     }
 
 
-    static append_item(list_item) {
-      var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, false);
+    static append_item(list_item, editable) {
+      var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, !editable);
 
-      UI.assign_click_actions(ele_ListItem, 'item');
+      if (editable) {
+        UI.assign_click_actions(ele_ListItem, 'item');
+      }
       
       document.querySelector(".shoplist-list").appendChild(ele_ListItem);
       
@@ -303,7 +305,7 @@ class UI {
             } else {
               let new_item_content = parse_item(ele_ListItemTextInput.value);
               let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
-              UI.append_item(new_item);
+              UI.append_item(new_item, true);
             }
           }
         });
@@ -314,7 +316,7 @@ class UI {
           } else {
             let new_item_content = parse_item(ele_ListItemTextInput.value);
             let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
-            UI.append_item(new_item);
+            UI.append_item(new_item, true);
             if (document.querySelector('#shoplist-add-pseudoitem')) {
               document.querySelector('#shoplist-add-pseudoitem input').onblur = null;
               document.querySelector('#shoplist-add-pseudoitem').remove();
@@ -520,7 +522,7 @@ class UI {
     }
 
 
-    static draw_list(list) {
+    static draw_list(list, editable) {
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
 
       let ele_listTitle_span = document.createElement('span');
@@ -540,7 +542,7 @@ class UI {
 
         ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
           list.SL_Removed = false;
-          UI.draw_list(list);
+          UI.draw_list(list, editable);
           UI.toggle_delete_list_action();
 
           hub.save();
@@ -552,7 +554,7 @@ class UI {
 
       for (let i = 0; i < list.SL_Items.length; i++) {
         const list_item = list.SL_Items[i];
-        UI.append_item(list_item);
+        UI.append_item(list_item, editable);
       }
 
       UI.append_add();
@@ -572,7 +574,7 @@ class UI {
           _ele_slListsList_li.addEventListener('click', () => {
             hub.switch_list(s_list.SL_Id);
             UI.draw_list_of_lists();
-            UI.draw_list(hub.get_current_list());
+            UI.draw_list(hub.get_current_list(), true);
             UI.toggle_lists_list_display();
             UI.toggle_delete_list_action();
             hub.save();
@@ -588,7 +590,7 @@ class UI {
         let new_list = hub.add_list('New list');
         hub.switch_list(new_list.SL_Id);
         UI.draw_list_of_lists();
-        UI.draw_list(hub.get_current_list());
+        UI.draw_list(hub.get_current_list(), true);
         UI.turn_title_to_input();
         UI.toggle_lists_list_display();
         hub.save();

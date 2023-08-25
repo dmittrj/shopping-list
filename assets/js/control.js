@@ -157,7 +157,7 @@ async function share_list() {
 async function event_load() {
   hub = new Hub();
   hub.open();
-  UI.draw_list(hub.get_current_list());
+  UI.draw_list(hub.get_current_list(), true);
 
   document.querySelector('#button-options').addEventListener('click', () => {
     UI.open_options_popup();
@@ -170,7 +170,7 @@ async function event_load() {
     UI.close_options_popup();
     hub.get_current_list().SL_Removed = !hub.get_current_list().SL_Removed;
     UI.toggle_delete_list_action();
-    UI.draw_list(hub.get_current_list());
+    UI.draw_list(hub.get_current_list(), true);
     hub.save();
   });
   document.querySelector('#pop-up-share').addEventListener('click', () => {
@@ -208,7 +208,7 @@ async function event_load() {
         sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
       });
 
-      UI.draw_list(sl);
+      UI.draw_list(sl, false);
       hub.CurrentList = null;
 
       let ele_listInfoText = UI.create_info_block('This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved', 'Save');
@@ -218,6 +218,7 @@ async function event_load() {
         hub.ShoppingLists.push(sl);
         hub.CurrentList = sl.SL_Id;
         UI.draw_list_of_lists();
+        UI.draw_list(hub.get_current_list(), true);
         hub.save();
         ele_listInfoText.remove();
       });
