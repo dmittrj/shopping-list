@@ -106,6 +106,9 @@ function generate_key(length) {
 
 
 async function share_list() {
+  if (document.querySelector('#shoplist-share-text')) {
+    return;
+  }
   const key = generate_key(16);
   const list_to_share = JSON.stringify(hub.get_current_list().to_json());
   const list_to_send = aes_encrypt(list_to_share, key);
@@ -116,6 +119,7 @@ async function share_list() {
   let atr_share = await response.text();
   link_to_copy = window.location.href + '?share=' + atr_share + '&key=' + key;
   let ele_listInfoText = UI.create_info_block('Tap to copy this link and send it to your partner', link_to_copy);
+  ele_listInfoText.id = 'shoplist-share-text';
   ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
     const link = ele_listInfoText.querySelector('#sl-info-block-button');
     const range = document.createRange();
