@@ -560,7 +560,7 @@ class UI {
 
 
     static draw_list_of_lists() {
-      document.querySelector('#shopping-lists-list list').innerHTML = '';
+      document.querySelector('#shopping-lists-list menu').innerHTML = '';
 
       hub.ShoppingLists.forEach(s_list => {
         let _ele_slListsList_li = document.createElement('li');
@@ -579,7 +579,7 @@ class UI {
           });
         }
 
-        document.querySelector('#shopping-lists-list list').appendChild(_ele_slListsList_li);
+        document.querySelector('#shopping-lists-list menu').appendChild(_ele_slListsList_li);
       });
 
       let ele_slListsList_li = document.createElement('li');
@@ -594,7 +594,7 @@ class UI {
         hub.save();
       })
 
-      document.querySelector('#shopping-lists-list list').appendChild(ele_slListsList_li);
+      document.querySelector('#shopping-lists-list menu').appendChild(ele_slListsList_li);
     }
 
 
