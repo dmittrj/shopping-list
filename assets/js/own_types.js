@@ -568,6 +568,7 @@ class UI {
             UI.draw_list_of_lists();
             UI.draw_list(hub.get_current_list());
             UI.toggle_lists_list_display();
+            hub.save();
           });
         }
 
@@ -709,9 +710,10 @@ class Hub {
 
 
     open_v1(cookies) {
+      this.CurrentList = cookies?.current_list;
       cookies?.content.forEach(sl => {
         let new_item = this.add_list(sl.name, this.LastID++);
-        this.CurrentList = this.LastID - 1;
+        //this.CurrentList = this.LastID - 1;
         sl.items.forEach(sl_item => {
           new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
         });
