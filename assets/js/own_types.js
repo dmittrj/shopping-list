@@ -515,6 +515,11 @@ class UI {
     }
 
 
+    static toggle_delete_list_action() {
+      document.querySelector('#pop-up-delete a').innerText = hub.get_current_list().SL_Removed ? 'Restore list' : 'Delete list';
+    }
+
+
     static draw_list(list) {
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
 
@@ -536,6 +541,7 @@ class UI {
         ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
           list.SL_Removed = false;
           UI.draw_list(list);
+          UI.toggle_delete_list_action();
 
           hub.save();
         });
@@ -568,6 +574,7 @@ class UI {
             UI.draw_list_of_lists();
             UI.draw_list(hub.get_current_list());
             UI.toggle_lists_list_display();
+            UI.toggle_delete_list_action();
             hub.save();
           });
         }
