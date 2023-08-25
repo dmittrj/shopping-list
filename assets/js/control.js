@@ -157,6 +157,9 @@ async function share_list() {
 async function event_load() {
   hub = new Hub();
   hub.open();
+  if (!hub.get_current_list()) {
+    hub.CurrentList = hub.ShoppingLists[0].SL_Id;
+  }
   UI.draw_list(hub.get_current_list(), true);
 
   document.querySelector('#button-options').addEventListener('click', () => {
