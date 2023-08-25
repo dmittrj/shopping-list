@@ -14,7 +14,6 @@ class ShoppingList {
 
     append(sl_item) {
         this.SL_Items.push(sl_item);
-        hub.save();
         return sl_item;
     }
 
