@@ -701,16 +701,22 @@ class Hub {
 
     app_to_string() {
       let temp_shopping_lists = [];
+      let current_list = 0;
+      let i = 0;
       this.ShoppingLists.forEach(sl => {
         if (sl.SL_Removed) {
           return;
         }
+        if (sl.SL_Id == this.CurrentList) {
+          current_list = i;
+        }
+        i++;
         temp_shopping_lists.push({"name": sl.SL_Name,
                                   "items": sl.to_json()});
       });
       let cookie_to_save = {
         "version": 'v1.1',
-        "current_list": this.CurrentList,
+        "current_list": current_list,
         "content": temp_shopping_lists
       }
       const shopping_list_string = JSON.stringify(cookie_to_save);
@@ -721,7 +727,7 @@ class Hub {
     open_v1(cookies) {
       this.CurrentList = cookies?.current_list;
       cookies?.content.forEach(sl => {
-        let new_item = this.add_list(sl.name, this.LastID++);
+        let new_item = this.add_list(sl.name);
         //this.CurrentList = this.LastID - 1;
         sl.items.forEach(sl_item => {
           new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
