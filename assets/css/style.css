@@ -345,7 +345,7 @@ body {
 
 .shoplist-pop-up {
     background-color: var(--sl-background-color);
-    position: absolute;
+    position: fixed;
     bottom: 10px;
     width: calc(100% - 30px);
     max-width: 400px;
@@ -356,6 +356,8 @@ body {
     box-shadow: 0 10px 25px var(--sl-shadow);
 
     z-index: 1;
+
+    animation: shoplist-ani-appear-from-bottom .15s ease-out forwards;
 }
 
 
@@ -460,6 +462,30 @@ body {
     }
     to {
         transform: scale(.25);
+        opacity: 0;
+    }
+}
+
+
+@keyframes shoplist-ani-appear-from-bottom {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
+@keyframes shoplist-ani-disappear-to-bottom {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(50px);
         opacity: 0;
     }
 }

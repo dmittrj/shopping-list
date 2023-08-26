@@ -614,7 +614,12 @@ class UI {
 
 
     static close_options_popup() {
-      document.querySelector('#shoplist-pop-up').style.display = 'none';
+      document.querySelector('#shoplist-pop-up').style.animation = 'shoplist-ani-disappear-to-bottom .15s ease-out forwards';
+      document.querySelector('#shoplist-pop-up').onanimationend = function () {
+        document.querySelector('#shoplist-pop-up').style.display = 'none';
+        document.querySelector('#shoplist-pop-up').onanimationend = null;
+        document.querySelector('#shoplist-pop-up').style.animation = 'shoplist-ani-appear-from-bottom .15s ease-out forwards';
+      }
     }
 
 
