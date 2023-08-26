@@ -8,15 +8,10 @@ class ShoppingList {
         this.SL_Removed = false;
     }
 
-    save() {
-
-    }
-
     append(sl_item) {
         this.SL_Items.push(sl_item);
         return sl_item;
     }
-
 
     drop_item(id) {
       this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id !== id);
@@ -26,7 +21,6 @@ class ShoppingList {
       return this.SL_Items.find((w) => w.SLI_Id === id);
     }
 
-
     get_checked() {
       return this.SL_Items.find((w) => w.SLI_Checked && !w.SLI_Removed);
     }
@@ -35,11 +29,11 @@ class ShoppingList {
         let temp_shopping_list = [];
         this.SL_Items.forEach(sl_item => {
             if (!sl_item.SLI_Removed) {
-				temp_shopping_list.push({"name": sl_item.SLI_Name,
-										 "cost": sl_item.SLI_Cost,
-										 "amount": sl_item.SLI_Amount,
-										 "checked": sl_item.SLI_Checked}
-				);
+              temp_shopping_list.push({"name": sl_item.SLI_Name,
+                                       "cost": sl_item.SLI_Cost,
+                                       "amount": sl_item.SLI_Amount,
+                                       "checked": sl_item.SLI_Checked}
+              );
             }
         });
         return temp_shopping_list;
@@ -58,11 +52,9 @@ class ShoppingListItem {
       this.SLI_Removed = false;
     }
 
-
     edit_name(new_name) {
       this.SLI_Name = new_name;
     }
-
 
     edit_cost(new_cost) {
       this.SLI_Cost = new_cost;
@@ -75,16 +67,13 @@ class UI {
       document.querySelector('#shoplist-list').innerHTML = '';
     }
 
-
     static delete_ticked_toggle_visibility() {
       document.querySelector('#shoplist-delete-ticked').style.display = (hub.get_current_list().get_checked()) ? 'inline-block' : 'none';
     }
 
-
     static add_item_toggle_visibility() {
       document.querySelector('#shoplist-add-item').style.display = (hub.get_current_list().SL_Removed) ? 'none' : 'inline-block';
     }
-
 
     static mark_item(item, checked_status) {
       if (checked_status) {
@@ -782,6 +771,12 @@ class Hub {
       } else {
         document.cookie = `shopping_list=; expires=Fri, 31 Dec 9999 23:59:59 GMT"`;
         localStorage.shopping_list = shopping_list_string;
+      }
+    }
+
+    fix_current_list() {
+      if (!this.get_current_list()) {
+        this.CurrentList = this.ShoppingLists[0].SL_Id;
       }
     }
 

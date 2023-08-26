@@ -157,9 +157,8 @@ async function share_list() {
 async function event_load() {
   hub = new Hub();
   hub.open();
-  if (!hub.get_current_list()) {
-    hub.CurrentList = hub.ShoppingLists[0].SL_Id;
-  }
+  hub.fix_current_list();
+  
   UI.draw_list(hub.get_current_list(), true);
 
   document.querySelector('#button-options').addEventListener('click', () => {
@@ -182,12 +181,12 @@ async function event_load() {
   });
   document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
     UI.close_options_popup();
-    document.querySelector('#pop-up-mode-switch').innerText = 'Turn to ' + (hub.DarkMode ? 'dark' : 'light') + ' mode';
+    document.querySelector('#pop-up-mode-switch a').innerText = 'Turn to ' + (hub.DarkMode ? 'dark' : 'light') + ' mode';
     hub.dark_mode_toggle();
     UI.dark_mode_switch(hub.DarkMode);
   });
   if (hub.DarkMode) {
-    document.querySelector('#pop-up-mode-switch').innerText = 'Turn to ' + (!hub.DarkMode ? 'dark' : 'light') + ' mode';
+    document.querySelector('#pop-up-mode-switch a').innerText = 'Turn to ' + (!hub.DarkMode ? 'dark' : 'light') + ' mode';
     UI.dark_mode_switch(hub.DarkMode);
   }
   document.querySelector('#pop-up-cancel').addEventListener('click', () => {
@@ -223,7 +222,6 @@ async function event_load() {
         UI.draw_list_of_lists();
         UI.draw_list(hub.get_current_list(), true);
         hub.save();
-        ele_listInfoText.remove();
       });
       document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
     }

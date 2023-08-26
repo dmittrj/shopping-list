@@ -61,7 +61,7 @@ All your lists are saved in cookies or in your browser's local storage
 ### Safety
 Your shopping lists are not saved anywhere except on your device  
 If you have shared the list, it is stored on the server in encrypted form. Only you have the encryption key     
-**Where is your data stored?**  
+#### Where is your data stored?  
 |Condition                   |Storage|
 |----------------------------|-------|
 |One list, less than 10 items|Cookies|
