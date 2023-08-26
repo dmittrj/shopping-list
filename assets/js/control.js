@@ -111,7 +111,8 @@ async function share_list() {
   }
 
   const key = generate_key(16);
-  const list_to_share = JSON.stringify(hub.get_current_list().to_json());
+  const list_to_share = JSON.stringify({"list": hub.get_current_list().to_json(),
+                                        "title": hub.get_current_list().SL_Name});
   const list_to_send = aes_encrypt(list_to_share, key);
   let response = await fetch('assets/server/p2p_share.php', {
     method: 'POST',
@@ -205,8 +206,8 @@ async function event_load() {
     let decrypted_list = aes_decrypt(text, key);
     if (decrypted_list) {
       let json = JSON.parse(decrypted_list);
-      let sl = new ShoppingList("Shared List", 0);
-      json.forEach(sl_item => {
+      let sl = new ShoppingList(json?.title, 0);
+      json?.list.forEach(sl_item => {
         sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
       });
 
