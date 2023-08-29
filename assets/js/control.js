@@ -253,6 +253,7 @@ async function event_load() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const share = urlParams.get('share');
+  const invite = urlParams.get('invite');
   const key = urlParams.get('key');
   if (share && key) {
     let response = await fetch(`assets/server/p2p_get.php?id=${share}`, {
@@ -260,6 +261,42 @@ async function event_load() {
     });
     let text = await response.text();
     let decrypted_list = aes_decrypt(text, key);
+    if (decrypted_list) {
+      let json = JSON.parse(decrypted_list);
+      let sl = new ShoppingList(json?.title, 0);
+      json?.list.forEach(sl_item => {
+        sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
+      });
+
+      UI.draw_list(sl, false);
+      hub.CurrentList = null;
+
+      let ele_listInfoText = UI.create_info_block('This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved', 'Save');
+
+      ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
+        sl.SL_Id = hub.LastID++;
+        hub.ShoppingLists.push(sl);
+        hub.CurrentList = sl.SL_Id;
+        UI.draw_list_of_lists();
+        UI.draw_list(hub.get_current_list(), true);
+        hub.save();
+      });
+      document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+    }
+    
+    const url = window.location.href;
+    const cleanUrl = url.split('?')[0];
+    window.history.replaceState(null, null, cleanUrl);
+  }
+
+  if (invite && key) {
+    let response = await fetch(`assets/server/collaborate_get_list.php?id=${invite}`, {
+      method: 'GET'
+    });
+    let text = await response.text();
+    let decrypted_list = aes_decrypt(text, key);
+    console.log(decrypted_list);
+    return;
     if (decrypted_list) {
       let json = JSON.parse(decrypted_list);
       let sl = new ShoppingList(json?.title, 0);
