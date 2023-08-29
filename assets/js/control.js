@@ -154,6 +154,25 @@ async function share_list() {
   document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
 }
 
+async function collaborate_list(isOn) {
+  if (isOn) {
+    hub.get_current_list().SL_CollaborationStatus = 'Owner';
+    if (!hub.get_current_list().SL_Source) {
+      hub.get_current_list().SL_Source = generate_key(16);
+      const list_to_share = JSON.stringify({"list": hub.get_current_list().to_json(),
+                                        "title": hub.get_current_list().SL_Name});
+      const list_to_send = aes_encrypt(list_to_share, key);
+      let response = await fetch('assets/server/collaborate_send_list.php', {
+        method: 'POST',
+        body: list_to_send
+      });
+      let atr_share = await response.text();
+    }
+  } else {
+    hub.get_current_list().SL_CollaborationStatus = 'Off';
+  }
+}
+
 
 async function event_load() {
   hub = new Hub();
@@ -180,6 +199,9 @@ async function event_load() {
     UI.close_options_popup();
     share_list();
   });
+  document.querySelector('#pop-up-collaborate-toggle').addEventListener('change', () => {
+    collaborate_list(document.querySelector('#pop-up-collaborate-toggle').checked);
+  })
   document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
     UI.close_options_popup();
     document.querySelector('#pop-up-mode-switch a').innerText = 'Turn to ' + (hub.DarkMode ? 'dark' : 'light') + ' mode';
