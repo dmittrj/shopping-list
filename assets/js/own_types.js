@@ -6,6 +6,7 @@ class ShoppingList {
         this.SL_LastID = 0;
         this.SL_CollaborationInfo = {"status": 'Off',
                                      "key": null,
+                                     "variation": 0,
                                      "source": null};
 
         this.SL_Removed = false;

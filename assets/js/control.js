@@ -294,12 +294,17 @@ async function event_load() {
       method: 'GET'
     });
     let text = await response.text();
-    let decrypted_list = aes_decrypt(text, key);
+    let actual_list = JSON.parse(text).actual_list;
+    let variation = JSON.parse(text).variation;
+    let decrypted_list = aes_decrypt(actual_list, key);
     console.log(decrypted_list);
-    return;
     if (decrypted_list) {
       let json = JSON.parse(decrypted_list);
       let sl = new ShoppingList(json?.title, 0);
+      sl.SL_CollaborationInfo = {"status": 'Editor',
+                                 "key": key,
+                                 "variation": variation,
+                                 "source": invite};
       json?.list.forEach(sl_item => {
         sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
       });
@@ -307,7 +312,7 @@ async function event_load() {
       UI.draw_list(sl, false);
       hub.CurrentList = null;
 
-      let ele_listInfoText = UI.create_info_block('This&nbsp;is the&nbsp;viewing mode of&nbsp;the&nbsp;list that was shared with you, it&nbsp;is&nbsp;not&nbsp;saved', 'Save');
+      let ele_listInfoText = UI.create_info_block('You have been invited to&nbsp;work together on&nbsp;the list', 'Accept invitation');
 
       ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
         sl.SL_Id = hub.LastID++;
