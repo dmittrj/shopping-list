@@ -161,12 +161,45 @@ async function collaborate_list(isOn) {
       hub.get_current_list().SL_Source = generate_key(16);
       const list_to_share = JSON.stringify({"list": hub.get_current_list().to_json(),
                                         "title": hub.get_current_list().SL_Name});
-      const list_to_send = aes_encrypt(list_to_share, key);
+      const list_to_send = aes_encrypt(list_to_share, hub.get_current_list().SL_Source);
       let response = await fetch('assets/server/collaborate_send_list.php', {
         method: 'POST',
         body: list_to_send
       });
       let atr_share = await response.text();
+
+      let link_to_copy = window.location.href + '?invite=' + atr_share + '&key=' + hub.get_current_list().SL_Source;
+      let ele_listInfoText = UI.create_info_block('Tap to copy this link and send it to your partner', link_to_copy);
+      ele_listInfoText.id = 'shoplist-share-text';
+      ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
+        const link = ele_listInfoText.querySelector('#sl-info-block-button');
+        const range = document.createRange();
+        range.selectNode(link);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('copy');
+        selection.removeAllRanges();
+
+        if (document.querySelector('.shoplist-list-info-pop-up')) {
+          document.querySelector('.shoplist-list-info-pop-up').remove();
+        }
+
+        let eleCopyPopUp = document.createElement('div');
+        eleCopyPopUp.classList.add('shoplist-list-info-pop-up');
+        eleCopyPopUp.innerText = 'Copied';
+        eleCopyPopUp.addEventListener('animationend', () => {
+          setTimeout(() => {
+            eleCopyPopUp.style.animation = 'shoplist-ani-pop-up-fading .35s ease-out forwards'
+            eleCopyPopUp.addEventListener('animationend', () => {
+              eleCopyPopUp.remove();
+            })
+          }, 2000);
+        });
+
+        document.querySelector('#shoplist-list').appendChild(eleCopyPopUp);
+      });
+      document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
     }
   } else {
     hub.get_current_list().SL_CollaborationStatus = 'Off';
