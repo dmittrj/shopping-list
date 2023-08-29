@@ -514,6 +514,23 @@ class UI {
     }
 
 
+    static toggle_collaborate_list_switcher() {
+      if (hub.get_current_list().SL_CollaborationInfo.status == 'Editor') {
+        document.querySelector('#pop-up-collaborate').display = 'none';
+        return;
+      }
+      document.querySelector('#pop-up-collaborate').display = 'list-item';
+      if (hub.get_current_list().SL_CollaborationInfo.status == 'Off') {
+        document.querySelector('#pop-up-collaborate-toggle').checked = false;
+        return;
+      }
+      if (hub.get_current_list().SL_CollaborationInfo.status == 'Owner') {
+        document.querySelector('#pop-up-collaborate-toggle').checked = true;
+        return;
+      }
+    }
+
+
     static draw_list(list, editable) {
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
 
@@ -569,6 +586,7 @@ class UI {
             UI.draw_list(hub.get_current_list(), true);
             UI.toggle_lists_list_display();
             UI.toggle_delete_list_action();
+            UI.toggle_collaborate_list_switcher();
             hub.save();
           });
         }

@@ -201,6 +201,7 @@ async function collaborate_list(isOn) {
         document.querySelector('#shoplist-list').appendChild(eleCopyPopUp);
       });
       document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+      hub.save();
     }
   } else {
     hub.get_current_list().SL_CollaborationInfo.status = 'Off';
