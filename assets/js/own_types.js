@@ -708,8 +708,16 @@ class Hub {
           current_list = i;
         }
         i++;
-        temp_shopping_lists.push({"name": sl.SL_Name,
-                                  "items": sl.to_json()});
+        if (sl.SL_CollaborationInfo.source) {
+          temp_shopping_lists.push({"name": sl.SL_Name,
+                                    "collabor": {"source": sl.SL_CollaborationInfo.source,
+                                                 "key": sl.SL_CollaborationInfo.key,
+                                                 "variation": sl.SL_CollaborationInfo.variation}});
+        } else {
+          temp_shopping_lists.push({"name": sl.SL_Name,
+                                    "items": sl.to_json()});
+        }
+        
       });
       let cookie_to_save = {
         "version": 'v1.1',
@@ -726,9 +734,16 @@ class Hub {
       cookies?.content.forEach(sl => {
         let new_item = this.add_list(sl.name);
         //this.CurrentList = this.LastID - 1;
-        sl.items.forEach(sl_item => {
-          new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
-        });
+        if (sl.collabor) {
+          new_item.SL_CollaborationInfo = {"status": 'Unknown',
+                                           "key": sl.collabor.key,
+                                           "variation": sl.collabor.variation,
+                                           "source": sl.collabor.source};
+        } else {
+          sl.items.forEach(sl_item => {
+            new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
+          });
+        }
       });
 
       if (cookies?.content.length == 0) {
