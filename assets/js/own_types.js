@@ -4,8 +4,9 @@ class ShoppingList {
         this.SL_Id = id;
         this.SL_Items = [];
         this.SL_LastID = 0;
-        this.SL_Source = null;
-        this.SL_CollaborationStatus = 'Off';
+        this.SL_CollaborationInfo = {"status": 'Off',
+                                     "key": null,
+                                     "source": null};
 
         this.SL_Removed = false;
     }
