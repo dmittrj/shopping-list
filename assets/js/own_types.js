@@ -67,6 +67,13 @@ class ShoppingList {
         return temp_shopping_list;
     }
 }
+
+class VirtualShoppingList extends ShoppingList {
+  constructor(name, id) {
+    super(name, id);
+    console.log('Virtual List Created!');
+  }
+}
   
 
 class ShoppingListItem {
