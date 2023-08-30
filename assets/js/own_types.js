@@ -806,11 +806,11 @@ class Hub {
       cookies?.content.forEach(sl => {
         let new_item = this.add_list(sl.name);
         //this.CurrentList = this.LastID - 1;
-        if (sl.collabor.status != 'Off') {
-          new_item.SL_CollaborationInfo = {"status": sl.collabor.status,
-                                           "key": sl.collabor.key,
-                                           "variation": sl.collabor.variation,
-                                           "source": sl.collabor.source};
+        if (sl.collabor?.status != 'Off') {
+          // new_item.SL_CollaborationInfo = {"status": sl.collabor.status,
+          //                                  "key": sl.collabor.key,
+          //                                  "variation": sl.collabor.variation,
+          //                                  "source": sl.collabor.source};
         }
         sl.items.forEach(sl_item => {
           new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
@@ -887,5 +887,16 @@ class Hub {
 
     switch_list(id) {
       this.CurrentList = id;
+    }
+
+    turn_list_to_virtual(id) {
+      let old_list = this.ShoppingLists.find((w) => w.SL_Id === id);
+      let new_list = new VirtualShoppingList(old_list.SL_Name, old_list.SL_Id);
+      new_list.SL_CollaborationStatus = old_list.SL_CollaborationStatus;
+      for (let i = 0; i < old_list.length; i++) {
+        const sl_item = old_list[i];
+        new_list.append(sl_item);
+      }
+      this.ShoppingLists.splice(this.ShoppingLists.findIndex(item => item.SL_Id === id), 1, new_list);
     }
 }
