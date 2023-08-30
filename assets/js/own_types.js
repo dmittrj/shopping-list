@@ -30,7 +30,27 @@ class ShoppingList {
     }
 
     async is_last_version() {
+      let response = await fetch(`assets/server/collaborate_check_variation.php?id=${this.SL_CollaborationInfo.source}`, {
+        method: 'GET'
+      });
+      let text = await response.text();
+      return text == this.SL_CollaborationInfo.variation;
+    }
 
+    async pull_updates() {
+      let response = await fetch(`assets/server/collaborate_get_list.php?id=${this.SL_CollaborationInfo.source}`, {
+        method: 'GET'
+      });
+      let text = await response.text();
+      let updated_list = JSON.parse(aes_decrypt(JSON.parse(text).actual_list, this.SL_CollaborationInfo.key));
+      this.SL_CollaborationInfo.variation = JSON.parse(text).variation;
+
+      this.SL_Items = [];
+
+      for (let i = 0; i < updated_list.length; i++) {
+        const sl_item = updated_list[i];
+        this.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, this.SL_LastID++));
+      }
     }
 
     to_json() {
@@ -537,7 +557,7 @@ class UI {
     }
 
 
-    static draw_list(list, editable) {
+    static async draw_list(list, editable) {
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
 
       let ele_listTitle_span = document.createElement('span');
@@ -568,7 +588,12 @@ class UI {
       }
 
       if (list.SL_CollaborationInfo.status != 'Off') {
-        console.log('Items is not downloaded');
+        let is_last_version = await list.is_last_version();
+        if (!is_last_version) {
+          list.pull_updates();
+          UI.draw_list(hub.get_current_list(), true);
+          return;
+        }
       }
 
       for (let i = 0; i < list.SL_Items.length; i++) {
