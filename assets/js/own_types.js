@@ -29,6 +29,10 @@ class ShoppingList {
       return this.SL_Items.find((w) => w.SLI_Checked && !w.SLI_Removed);
     }
 
+    async is_last_version() {
+
+    }
+
     to_json() {
         let temp_shopping_list = [];
         this.SL_Items.forEach(sl_item => {
@@ -516,10 +520,10 @@ class UI {
 
     static toggle_collaborate_list_switcher() {
       if (hub.get_current_list().SL_CollaborationInfo.status == 'Editor') {
-        document.querySelector('#pop-up-collaborate').display = 'none';
+        document.querySelector('#pop-up-collaborate').style.display = 'none';
         return;
       }
-      document.querySelector('#pop-up-collaborate').display = 'list-item';
+      document.querySelector('#pop-up-collaborate').styel.display = 'list-item';
       if (hub.get_current_list().SL_CollaborationInfo.status == 'Off') {
         document.querySelector('#pop-up-collaborate-toggle').checked = false;
         return;
@@ -728,9 +732,7 @@ class Hub {
         i++;
         if (sl.SL_CollaborationInfo.source) {
           temp_shopping_lists.push({"name": sl.SL_Name,
-                                    "collabor": {"source": sl.SL_CollaborationInfo.source,
-                                                 "key": sl.SL_CollaborationInfo.key,
-                                                 "variation": sl.SL_CollaborationInfo.variation}});
+                                    "collabor": sl.SL_CollaborationInfo});
         } else {
           temp_shopping_lists.push({"name": sl.SL_Name,
                                     "items": sl.to_json()});
@@ -753,7 +755,7 @@ class Hub {
         let new_item = this.add_list(sl.name);
         //this.CurrentList = this.LastID - 1;
         if (sl.collabor) {
-          new_item.SL_CollaborationInfo = {"status": 'Unknown',
+          new_item.SL_CollaborationInfo = {"status": sl.collabor.status,
                                            "key": sl.collabor.key,
                                            "variation": sl.collabor.variation,
                                            "source": sl.collabor.source};
