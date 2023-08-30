@@ -156,7 +156,7 @@ async function share_list() {
 
 async function collaborate_list(isOn) {
   if (isOn) {
-    hub.get_current_list().SL_CollaborationInfo.status = 'Owner';
+    hub.get_current_list().SL_CollaborationStatus = 'Owner';
     if (!hub.get_current_list().SL_CollaborationInfo.source) {
       hub.get_current_list().SL_CollaborationInfo.key = generate_key(16);
       const list_to_share = JSON.stringify({"list": hub.get_current_list().to_json(),
@@ -204,7 +204,7 @@ async function collaborate_list(isOn) {
       hub.save();
     }
   } else {
-    hub.get_current_list().SL_CollaborationInfo.status = 'Off';
+    hub.get_current_list().SL_CollaborationStatus = 'Off';
   }
 }
 
@@ -301,9 +301,8 @@ async function event_load() {
     console.log(decrypted_list);
     if (decrypted_list) {
       let json = JSON.parse(decrypted_list);
-      let sl = new ShoppingList(json?.title, 0);
-      sl.SL_CollaborationInfo = {"status": 'Editor',
-                                 "key": key,
+      let sl = new VirtualShoppingList(json?.title, 0);
+      sl.SL_CollaborationInfo = {"key": key,
                                  "variation": variation,
                                  "source": invite};
       json?.list.forEach(sl_item => {

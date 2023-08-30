@@ -4,10 +4,7 @@ class ShoppingList {
         this.SL_Id = id;
         this.SL_Items = [];
         this.SL_LastID = 0;
-        this.SL_CollaborationInfo = {"status": 'Off',
-                                     "key": null,
-                                     "variation": 0,
-                                     "source": null};
+        this.SL_CollaborationStatus = 'Off';
 
         this.SL_Removed = false;
     }
@@ -29,30 +26,6 @@ class ShoppingList {
       return this.SL_Items.find((w) => w.SLI_Checked && !w.SLI_Removed);
     }
 
-    async is_last_version() {
-      let response = await fetch(`assets/server/collaborate_check_variation.php?id=${this.SL_CollaborationInfo.source}`, {
-        method: 'GET'
-      });
-      let text = await response.text();
-      return text == this.SL_CollaborationInfo.variation;
-    }
-
-    async pull_updates() {
-      let response = await fetch(`assets/server/collaborate_get_list.php?id=${this.SL_CollaborationInfo.source}`, {
-        method: 'GET'
-      });
-      let text = await response.text();
-      let updated_list = JSON.parse(aes_decrypt(JSON.parse(text).actual_list, this.SL_CollaborationInfo.key));
-      this.SL_CollaborationInfo.variation = JSON.parse(text).variation;
-
-      this.SL_Items = [];
-
-      for (let i = 0; i < updated_list.length; i++) {
-        const sl_item = updated_list[i];
-        this.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, this.SL_LastID++));
-      }
-    }
-
     to_json() {
         let temp_shopping_list = [];
         this.SL_Items.forEach(sl_item => {
@@ -71,8 +44,53 @@ class ShoppingList {
 class VirtualShoppingList extends ShoppingList {
   constructor(name, id) {
     super(name, id);
+    this.SL_CollaborationInfo = {"key": null,
+                                 "variation": 0,
+                                 "source": null};
     console.log('Virtual List Created!');
   }
+
+
+  async is_last_version() {
+    let response = await fetch(`assets/server/collaborate_check_variation.php?id=${this.SL_CollaborationInfo.source}`, {
+      method: 'GET'
+    });
+    let text = await response.text();
+    return text == this.SL_CollaborationInfo.variation;
+  }
+
+
+  async pull_updates() {
+    let response = await fetch(`assets/server/collaborate_get_list.php?id=${this.SL_CollaborationInfo.source}`, {
+      method: 'GET'
+    });
+    let text = await response.text();
+    let updated_list = JSON.parse(aes_decrypt(JSON.parse(text).actual_list, this.SL_CollaborationInfo.key));
+    this.SL_CollaborationInfo.variation = JSON.parse(text).variation;
+
+    this.SL_Items = [];
+
+    for (let i = 0; i < updated_list.length; i++) {
+      const sl_item = updated_list[i];
+      this.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, this.SL_LastID++));
+    }
+  }
+
+
+  to_json() {
+    let temp_shopping_list = [];
+    this.SL_Items.forEach(sl_item => {
+        if (!sl_item.SLI_Removed) {
+          temp_shopping_list.push({"name": sl_item.SLI_Name,
+                                   "id": sl_item.SLI_Id,
+                                   "cost": sl_item.SLI_Cost,
+                                   "amount": sl_item.SLI_Amount,
+                                   "checked": sl_item.SLI_Checked}
+          );
+        }
+    });
+    return temp_shopping_list;
+}
 }
   
 
@@ -548,16 +566,16 @@ class UI {
 
 
     static toggle_collaborate_list_switcher() {
-      if (hub.get_current_list().SL_CollaborationInfo.status == 'Editor') {
+      if (hub.get_current_list().SL_CollaborationStatus == 'Editor') {
         document.querySelector('#pop-up-collaborate').style.display = 'none';
         return;
       }
       document.querySelector('#pop-up-collaborate').style.display = 'list-item';
-      if (hub.get_current_list().SL_CollaborationInfo.status == 'Off') {
+      if (hub.get_current_list().SL_CollaborationStatus == 'Off') {
         document.querySelector('#pop-up-collaborate-toggle').checked = false;
         return;
       }
-      if (hub.get_current_list().SL_CollaborationInfo.status == 'Owner') {
+      if (hub.get_current_list().SL_CollaborationStatus == 'Owner') {
         document.querySelector('#pop-up-collaborate-toggle').checked = true;
         return;
       }
@@ -594,7 +612,7 @@ class UI {
         return;
       }
 
-      if (list.SL_CollaborationInfo.status != 'Off') {
+      if (list.SL_CollaborationStatus != 'Off') {
         let is_last_version = await list.is_last_version();
         if (!is_last_version) {
           list.pull_updates();
