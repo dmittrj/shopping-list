@@ -302,6 +302,7 @@ class UI {
               let new_item_content = parse_item(ele_ListItemTextInput.value);
               let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
               UI.append_item(new_item, true);
+              hub.save();
             }
           }
         });
@@ -313,6 +314,7 @@ class UI {
             let new_item_content = parse_item(ele_ListItemTextInput.value);
             let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
             UI.append_item(new_item, true);
+            hub.save();
             if (document.querySelector('#shoplist-add-pseudoitem')) {
               document.querySelector('#shoplist-add-pseudoitem input').onblur = null;
               document.querySelector('#shoplist-add-pseudoitem').remove();
@@ -523,7 +525,7 @@ class UI {
         document.querySelector('#pop-up-collaborate').style.display = 'none';
         return;
       }
-      document.querySelector('#pop-up-collaborate').styel.display = 'list-item';
+      document.querySelector('#pop-up-collaborate').style.display = 'list-item';
       if (hub.get_current_list().SL_CollaborationInfo.status == 'Off') {
         document.querySelector('#pop-up-collaborate-toggle').checked = false;
         return;
@@ -563,6 +565,10 @@ class UI {
 
         document.querySelector('#shoplist-list').appendChild(ele_listInfoText);
         return;
+      }
+
+      if (list.SL_CollaborationInfo.status != 'Off') {
+        console.log('Items is not downloaded');
       }
 
       for (let i = 0; i < list.SL_Items.length; i++) {
@@ -730,13 +736,9 @@ class Hub {
           current_list = i;
         }
         i++;
-        if (sl.SL_CollaborationInfo.source) {
-          temp_shopping_lists.push({"name": sl.SL_Name,
-                                    "collabor": sl.SL_CollaborationInfo});
-        } else {
-          temp_shopping_lists.push({"name": sl.SL_Name,
-                                    "items": sl.to_json()});
-        }
+        temp_shopping_lists.push({"name": sl.SL_Name,
+                                  "items": sl.to_json(),
+                                  "collabor": sl.SL_CollaborationInfo});
         
       });
       let cookie_to_save = {
@@ -754,16 +756,15 @@ class Hub {
       cookies?.content.forEach(sl => {
         let new_item = this.add_list(sl.name);
         //this.CurrentList = this.LastID - 1;
-        if (sl.collabor) {
+        if (sl.collabor.status != 'Off') {
           new_item.SL_CollaborationInfo = {"status": sl.collabor.status,
                                            "key": sl.collabor.key,
                                            "variation": sl.collabor.variation,
                                            "source": sl.collabor.source};
-        } else {
-          sl.items.forEach(sl_item => {
-            new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
-          });
         }
+        sl.items.forEach(sl_item => {
+          new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
+        });
       });
 
       if (cookies?.content.length == 0) {

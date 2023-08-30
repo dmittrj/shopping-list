@@ -332,6 +332,7 @@ async function event_load() {
   }
 
   UI.draw_list_of_lists();
+  UI.toggle_collaborate_list_switcher();
 }
 
 
