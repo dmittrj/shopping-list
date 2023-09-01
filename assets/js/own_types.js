@@ -613,10 +613,10 @@ class UI {
       }
 
       if (list.SL_CollaborationStatus != 'Off') {
-        let is_last_version = await list.is_last_version();
+        //let is_last_version = await list.is_last_version();
         if (!is_last_version) {
-          list.pull_updates();
-          UI.draw_list(hub.get_current_list(), true);
+          //list.pull_updates();
+          //UI.draw_list(hub.get_current_list(), true);
           return;
         }
       }
@@ -788,7 +788,7 @@ class Hub {
         i++;
         temp_shopping_lists.push({"name": sl.SL_Name,
                                   "items": sl.to_json(),
-                                  "collabor": sl.SL_CollaborationInfo});
+                                  "co_status": sl.SL_CollaborationStatus});
         
       });
       let cookie_to_save = {
@@ -804,14 +804,15 @@ class Hub {
     open_v1(cookies) {
       this.CurrentList = cookies?.current_list;
       cookies?.content.forEach(sl => {
-        let new_item = this.add_list(sl.name);
-        //this.CurrentList = this.LastID - 1;
-        if (sl.collabor?.status != 'Off') {
-          // new_item.SL_CollaborationInfo = {"status": sl.collabor.status,
-          //                                  "key": sl.collabor.key,
-          //                                  "variation": sl.collabor.variation,
-          //                                  "source": sl.collabor.source};
+        let new_item;
+        if (sl?.co_status == 'Off' || sl?.co_status == undefined) {
+          new_item = this.add_list(sl.name);
+        } else {
+          new_item = this.add_virtual_list(sl.name);
         }
+        
+        //this.CurrentList = this.LastID - 1;
+        new_item.SL_CollaborationStatus = sl.co_status;
         sl.items.forEach(sl_item => {
           new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
         });
@@ -877,6 +878,12 @@ class Hub {
 
     add_list(name) {
       let new_list = new ShoppingList(name, this.LastID++);
+      this.ShoppingLists.push(new_list);
+      return new_list;
+    }
+
+    add_virtual_list(name) {
+      let new_list = new VirtualShoppingList(name, this.LastID++);
       this.ShoppingLists.push(new_list);
       return new_list;
     }
