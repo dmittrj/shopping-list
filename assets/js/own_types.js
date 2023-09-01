@@ -788,7 +788,8 @@ class Hub {
         i++;
         temp_shopping_lists.push({"name": sl.SL_Name,
                                   "items": sl.to_json(),
-                                  "co_status": sl.SL_CollaborationStatus});
+                                  "co_status": sl.SL_CollaborationStatus,
+                                  "co_info": sl.SL_CollaborationInfo ? sl.SL_CollaborationInfo : null});
         
       });
       let cookie_to_save = {
@@ -808,7 +809,7 @@ class Hub {
         if (sl?.co_status == 'Off' || sl?.co_status == undefined) {
           new_item = this.add_list(sl.name);
         } else {
-          new_item = this.add_virtual_list(sl.name);
+          new_item = this.add_virtual_list(sl.name, sl.co_info);
         }
         
         //this.CurrentList = this.LastID - 1;
@@ -882,8 +883,11 @@ class Hub {
       return new_list;
     }
 
-    add_virtual_list(name) {
+    add_virtual_list(name, co_info) {
       let new_list = new VirtualShoppingList(name, this.LastID++);
+      new_list.SL_CollaborationInfo = {"key": co_info?.key,
+                                       "variation": co_info?.variation,
+                                       "source": co_info?.source};
       this.ShoppingLists.push(new_list);
       return new_list;
     }
