@@ -39,6 +39,10 @@ class ShoppingList {
         });
         return temp_shopping_list;
     }
+
+    is_list_virtual() {
+      return false;
+    }
 }
 
 class VirtualShoppingList extends ShoppingList {
@@ -90,7 +94,11 @@ class VirtualShoppingList extends ShoppingList {
         }
     });
     return temp_shopping_list;
-}
+  }
+
+  is_list_virtual() {
+    return true;
+  }
 }
   
 
@@ -902,6 +910,9 @@ class Hub {
 
     turn_list_to_virtual(id) {
       let old_list = this.ShoppingLists.find((w) => w.SL_Id === id);
+      if (old_list.is_list_virtual()) {
+        return false;
+      }
       let new_list = new VirtualShoppingList(old_list.SL_Name, old_list.SL_Id);
       new_list.SL_CollaborationStatus = old_list.SL_CollaborationStatus;
       for (let i = 0; i < old_list.length; i++) {
@@ -909,5 +920,7 @@ class Hub {
         new_list.append(sl_item);
       }
       this.ShoppingLists.splice(this.ShoppingLists.findIndex(item => item.SL_Id === id), 1, new_list);
+
+      return true;
     }
 }
