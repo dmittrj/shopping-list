@@ -621,6 +621,39 @@ class UI {
       }
 
       if (list.SL_CollaborationStatus != 'Off') {
+        let link_to_copy = window.location.href + '?invite=' + list.SL_CollaborationInfo.source + '&key=' + list.SL_CollaborationInfo.key;
+        let ele_listInfoText = UI.create_info_block('Collaboration link', link_to_copy);
+        ele_listInfoText.id = 'shoplist-share-text';
+        ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
+          const link = ele_listInfoText.querySelector('#sl-info-block-button');
+          const range = document.createRange();
+          range.selectNode(link);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          document.execCommand('copy');
+          selection.removeAllRanges();
+
+          if (document.querySelector('.shoplist-list-info-pop-up')) {
+            document.querySelector('.shoplist-list-info-pop-up').remove();
+          }
+
+          let eleCopyPopUp = document.createElement('div');
+          eleCopyPopUp.classList.add('shoplist-list-info-pop-up');
+          eleCopyPopUp.innerText = 'Copied';
+          eleCopyPopUp.addEventListener('animationend', () => {
+            setTimeout(() => {
+              eleCopyPopUp.style.animation = 'shoplist-ani-pop-up-fading .35s ease-out forwards'
+              eleCopyPopUp.addEventListener('animationend', () => {
+                eleCopyPopUp.remove();
+              })
+            }, 2000);
+          });
+
+          document.querySelector('#shoplist-list').appendChild(eleCopyPopUp);
+        });
+        document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+      
         //let is_last_version = await list.is_last_version();
         if (!is_last_version) {
           //list.pull_updates();
