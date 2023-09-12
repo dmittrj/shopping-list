@@ -948,8 +948,8 @@ class Hub {
       }
       let new_list = new VirtualShoppingList(old_list.SL_Name, old_list.SL_Id);
       new_list.SL_CollaborationStatus = old_list.SL_CollaborationStatus;
-      for (let i = 0; i < old_list.length; i++) {
-        const sl_item = old_list[i];
+      for (let i = 0; i < old_list.SL_Items.length; i++) {
+        const sl_item = old_list.SL_Items[i];
         new_list.append(sl_item);
       }
       this.ShoppingLists.splice(this.ShoppingLists.findIndex(item => item.SL_Id === id), 1, new_list);
