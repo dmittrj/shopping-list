@@ -54,6 +54,12 @@ class VirtualShoppingList extends ShoppingList {
     console.log('Virtual List Created!');
   }
 
+  append(sl_item) {
+    this.SL_Items.push(sl_item);
+    console.log('Pushing...');
+    return sl_item;
+}
+
 
   async is_last_version() {
     let response = await fetch(`assets/server/collaborate_check_variation.php?id=${this.SL_CollaborationInfo.source}`, {
@@ -655,11 +661,11 @@ class UI {
         document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
       
         //let is_last_version = await list.is_last_version();
-        if (!is_last_version) {
-          //list.pull_updates();
-          //UI.draw_list(hub.get_current_list(), true);
-          return;
-        }
+        // if (!is_last_version) {
+        //   //list.pull_updates();
+        //   //UI.draw_list(hub.get_current_list(), true);
+        //   return;
+        // }
       }
 
       for (let i = 0; i < list.SL_Items.length; i++) {
@@ -856,7 +862,7 @@ class Hub {
         //this.CurrentList = this.LastID - 1;
         new_item.SL_CollaborationStatus = sl.co_status;
         sl.items.forEach(sl_item => {
-          new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
+          new_item.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
         });
       });
 
