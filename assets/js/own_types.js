@@ -56,9 +56,15 @@ class VirtualShoppingList extends ShoppingList {
 
   append(sl_item) {
     this.SL_Items.push(sl_item);
-    console.log('Pushing...');
+    fetch('assets/server/collaborate_push_item.php', {
+      method: 'POST',
+      body: JSON.stringify({ "item": JSON.stringify(sl_item), "source": this.SL_CollaborationInfo.source})
+    })
+    .then(response => response.text())
+    .then(atr_share => console.log(atr_share))
+    .catch(error => console.error(error));
     return sl_item;
-}
+  }
 
 
   async is_last_version() {
@@ -956,7 +962,7 @@ class Hub {
       new_list.SL_CollaborationStatus = old_list.SL_CollaborationStatus;
       for (let i = 0; i < old_list.SL_Items.length; i++) {
         const sl_item = old_list.SL_Items[i];
-        new_list.append(sl_item);
+        new_list.SL_Items.push(sl_item);
       }
       this.ShoppingLists.splice(this.ShoppingLists.findIndex(item => item.SL_Id === id), 1, new_list);
 

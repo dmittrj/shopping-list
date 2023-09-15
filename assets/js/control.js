@@ -271,7 +271,7 @@ async function event_load() {
       let json = JSON.parse(decrypted_list);
       let sl = new ShoppingList(json?.title, 0);
       json?.list.forEach(sl_item => {
-        sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
+        sl.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
       });
 
       UI.draw_list(sl, false);
@@ -311,7 +311,7 @@ async function event_load() {
                                  "variation": variation,
                                  "source": invite};
       json?.list.forEach(sl_item => {
-        sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
+        sl.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
       });
 
       UI.draw_list(sl, false);
