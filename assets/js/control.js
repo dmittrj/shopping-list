@@ -170,6 +170,16 @@ async function collaborate_list(isOn) {
       let atr_share = await response.text();
       console.log(atr_share);
       hub.get_current_list().SL_CollaborationInfo.source = atr_share;
+      let items_to_push = [];
+      hub.get_current_list().SL_Items.forEach(element => {
+        items_to_push.push({ "item": JSON.stringify(element), "source": atr_share});
+      });
+
+      let r = await fetch('assets/server/collaborate_push_items.php', {
+        method: 'POST',
+        body: JSON.stringify(items_to_push)
+      });
+      console.log(await r.text());
 
       let link_to_copy = window.location.href + '?invite=' + atr_share + '&key=' + hub.get_current_list().SL_CollaborationInfo.key;
       let ele_listInfoText = UI.create_info_block('Tap to copy this link and send it to your partner', link_to_copy);
