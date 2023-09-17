@@ -310,17 +310,17 @@ async function event_load() {
       method: 'GET'
     });
     let text = await response.text();
-    let actual_list = JSON.parse(text).actual_list;
+    let actual_list = JSON.parse(text).list_items;
     let variation = JSON.parse(text).variation;
-    let decrypted_list = aes_decrypt(actual_list, key);
-    console.log(decrypted_list);
+    let decrypted_list = '[' + actual_list + ']';//aes_decrypt(actual_list, key);
+    console.log('GOT:' + actual_list);
     if (decrypted_list) {
       let json = JSON.parse(decrypted_list);
       let sl = new VirtualShoppingList(json?.title, 0);
       sl.SL_CollaborationInfo = {"key": key,
                                  "variation": variation,
                                  "source": invite};
-      json?.list.forEach(sl_item => {
+      json?.forEach(sl_item => {
         sl.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
       });
 
