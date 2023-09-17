@@ -321,7 +321,7 @@ async function event_load() {
                                  "variation": variation,
                                  "source": invite};
       json?.forEach(sl_item => {
-        sl.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
+        sl.SL_Items.push(new ShoppingListItem(sl_item.SLI_Name, sl_item.SLI_Cost, sl_item.SLI_Amount, sl_item.SLI_Checked, sl.SL_LastID++));
       });
 
       UI.draw_list(sl, false);
