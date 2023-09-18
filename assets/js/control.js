@@ -350,7 +350,7 @@ async function event_load() {
 
   if (hub.get_current_list().is_list_virtual()) {
     hub.UpdateTimer = setInterval(() => {
-      console.log('Updated!');
+      UI.draw_list(hub.get_current_list(), true);
     }, 1000);
   }
 }

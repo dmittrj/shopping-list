@@ -954,7 +954,7 @@ class Hub {
       this.CurrentList = id;
       if (this.get_current_list().is_list_virtual()) {
         this.UpdateTimer = setInterval(() => {
-          console.log('Updated!');
+          UI.draw_list(hub.get_current_list(), true);
         }, 1000);
       } else {
         clearInterval(this.UpdateTimer);
