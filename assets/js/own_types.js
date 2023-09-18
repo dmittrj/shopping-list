@@ -797,6 +797,7 @@ class Hub {
       this.ShoppingLists = [];
       this.CurrentList = 0;
       this.LastID = 0;
+      this.UpdateTimer = null;
 
       this.DarkMode = false;
     }
@@ -951,6 +952,13 @@ class Hub {
 
     switch_list(id) {
       this.CurrentList = id;
+      if (this.get_current_list().is_list_virtual()) {
+        this.UpdateTimer = setInterval(() => {
+          console.log('Updated!');
+        }, 1000);
+      } else {
+        clearInterval(this.UpdateTimer);
+      }
     }
 
     turn_list_to_virtual(id) {
