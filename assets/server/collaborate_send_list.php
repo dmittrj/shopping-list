@@ -7,7 +7,7 @@
     $dbname = "database";
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-    $sql = "INSERT INTO collaborations (actual_list, actions) VALUES ('$json_str', NULL)";
+    $sql = "INSERT INTO collaborations_lists (list_title, actions) VALUES ('$json_str', NULL)";
     if ($conn->query($sql) === TRUE) {
         $last_id = $conn->insert_id;
     } else {
@@ -15,8 +15,7 @@
         " . $conn->error;
     }
 
-    //CREATE TABLE `$dbname`.`links` ( `id` INT(8) UNSIGNED NOT NULL AUTO_INCREMENT , `shopping_list` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL , PRIMARY KEY (`id`)) ENGINE = MyISAM CHARSET=utf8 COLLATE utf8_general_ci;
-
+    //CREATE TABLE `$dbname`.`collaborations_lists` ( `list_id` INT UNSIGNED NOT NULL , `list_title` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL , `list_version` INT UNSIGNED NOT NULL DEFAULT '0' , PRIMARY KEY (`list_id`)) ENGINE = MyISAM CHARSET=utf8 COLLATE utf8_general_ci;
 
     $id_str = base_convert($last_id, 10, 36);
     //$id_str = str_pad($id_str, 6, "0", STR_PAD_LEFT);
