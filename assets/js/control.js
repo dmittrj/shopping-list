@@ -159,9 +159,7 @@ async function collaborate_list(isOn) {
     hub.get_current_list().SL_CollaborationStatus = 'Owner';
     if (hub.turn_list_to_virtual(hub.get_current_list().SL_Id)) {
       hub.get_current_list().SL_CollaborationInfo.key = generate_key(16);
-      const list_to_share = JSON.stringify({"list": hub.get_current_list().to_json(),
-                                            "title": hub.get_current_list().SL_Name});
-      const list_to_send = aes_encrypt(list_to_share, hub.get_current_list().SL_CollaborationInfo.key);
+      const list_to_send = aes_encrypt(hub.get_current_list().SL_Name, hub.get_current_list().SL_CollaborationInfo.key);
 
       let response = await fetch('assets/server/collaborate_send_list.php', {
         method: 'POST',
@@ -348,7 +346,7 @@ async function event_load() {
   UI.draw_list_of_lists();
   UI.toggle_collaborate_list_switcher();
 
-  ihub.fetch_updates();
+  hub.fetch_updates();
 }
 
 

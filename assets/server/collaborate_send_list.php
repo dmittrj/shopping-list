@@ -7,7 +7,7 @@
     $dbname = "database";
     $conn = new mysqli($servername, $username, $password, $dbname);
 
-    $sql = "INSERT INTO collaborations_lists (list_title, actions) VALUES ('$json_str', NULL)";
+    $sql = "INSERT INTO collaborations_lists (list_title) VALUES ('$json_str')";
     if ($conn->query($sql) === TRUE) {
         $last_id = $conn->insert_id;
     } else {
