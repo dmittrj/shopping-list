@@ -1,4 +1,5 @@
 <?php
+    require 'database.php';
     $json_str = file_get_contents('php://input');
 
     $items = json_decode($json_str, true);

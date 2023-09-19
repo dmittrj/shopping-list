@@ -1,4 +1,5 @@
 <?php
+    require 'database.php';
     $json_str = file_get_contents('php://input');
 
     $item = json_decode($json_str, true)["item"];
@@ -6,11 +7,7 @@
     //echo $json_str;
     //return;
     
-    $servername = "localhost";
-    $username = "username";
-    $password = "password";
-    $dbname = "database";
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = connect();
 
     $sql = "INSERT INTO collaborations_items (list_id, list_item) VALUES ($source, '$item')";
     if ($conn->query($sql) === TRUE) {

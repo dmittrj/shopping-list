@@ -1,11 +1,8 @@
 <?php
+    require 'database.php';
     $json_str = file_get_contents('php://input');
     
-    $servername = "localhost";
-    $username = "username";
-    $password = "password";
-    $dbname = "database";
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = connect();
 
     $sql = "INSERT INTO collaborations_lists (list_title) VALUES ('$json_str')";
     if ($conn->query($sql) === TRUE) {

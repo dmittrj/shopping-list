@@ -1,12 +1,9 @@
 <?php
+    require 'database.php';
     $share = $_GET['id'];
     $id = base_convert($share, 36, 10);
 
-    $servername = "localhost";
-    $username = "username";
-    $password = "password";
-    $dbname = "database";
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = connect();
 
     $sql = "SELECT `variation` FROM `collaborations` WHERE `id` = $id";
     $result = $conn->query($sql);
