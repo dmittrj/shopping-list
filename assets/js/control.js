@@ -348,11 +348,7 @@ async function event_load() {
   UI.draw_list_of_lists();
   UI.toggle_collaborate_list_switcher();
 
-  if (hub.get_current_list().is_list_virtual()) {
-    hub.UpdateTimer = setInterval(() => {
-      UI.draw_list(hub.get_current_list(), true);
-    }, 1000);
-  }
+  ihub.fetch_updates();
 }
 
 

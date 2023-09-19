@@ -950,15 +950,21 @@ class Hub {
       return this.ShoppingLists.find((w) => w.SL_Id === this.CurrentList);
     }
 
-    switch_list(id) {
-      this.CurrentList = id;
+    fetch_updates() {
       if (this.get_current_list().is_list_virtual()) {
         this.UpdateTimer = setInterval(() => {
-          UI.draw_list(hub.get_current_list(), true);
+          if (!this.get_current_list().is_last_version()) {
+            console.log('Not last version');
+          }
         }, 1000);
       } else {
         clearInterval(this.UpdateTimer);
       }
+    }
+
+    switch_list(id) {
+      this.CurrentList = id;
+      this.fetch_updates();
     }
 
     turn_list_to_virtual(id) {
