@@ -81,14 +81,14 @@ class VirtualShoppingList extends ShoppingList {
       method: 'GET'
     });
     let text = await response.text();
-    let updated_list = JSON.parse(aes_decrypt(JSON.parse(text).actual_list, this.SL_CollaborationInfo.key));
-    this.SL_CollaborationInfo.variation = JSON.parse(text).variation;
+    let updated_list = JSON.parse('[' + JSON.parse(text).list_items + ']');
+    this.SL_CollaborationInfo.variation = JSON.parse(text).version;
 
     this.SL_Items = [];
 
     for (let i = 0; i < updated_list.length; i++) {
       const sl_item = updated_list[i];
-      this.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, this.SL_LastID++));
+      this.SL_Items.push(new ShoppingListItem(sl_item.SLI_Name, sl_item.SLI_Cost, sl_item.SLI_Amount, sl_item.SLI_Checked, this.SL_LastID++));
     }
   }
 
@@ -957,6 +957,8 @@ class Hub {
             console.log('Last version!');
           } else {
             console.log('Not last version');
+            await this.get_current_list().pull_updates();
+            UI.draw_list(this.get_current_list(), true);
           }
         }, 1000);
       } else {
