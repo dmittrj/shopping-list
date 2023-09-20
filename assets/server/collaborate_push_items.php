@@ -7,11 +7,7 @@
     //echo $json_str;
     //return;
     
-    $servername = "localhost";
-    $username = "username";
-    $password = "password";
-    $dbname = "database";
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = connect();
 
     for ($i=0; $i < count($items); $i++) { 
         $item = $items[$i]["item"];
