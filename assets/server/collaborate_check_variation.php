@@ -5,11 +5,11 @@
 
     $conn = connect();
 
-    $sql = "SELECT `variation` FROM `collaborations` WHERE `id` = $id";
+    $sql = "SELECT `list_version` FROM `collaborations_lists` WHERE `list_id` = $id";
     $result = $conn->query($sql);
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
-        $variation = $row["variation"];
+        $variation = $row["list_version"];
     } else {
         $variation = -1;
     }

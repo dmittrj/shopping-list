@@ -950,10 +950,12 @@ class Hub {
       return this.ShoppingLists.find((w) => w.SL_Id === this.CurrentList);
     }
 
-    fetch_updates() {
+    async fetch_updates() {
       if (this.get_current_list().is_list_virtual()) {
-        this.UpdateTimer = setInterval(() => {
-          if (!this.get_current_list().is_last_version()) {
+        this.UpdateTimer = setInterval(async () => {
+          if (await this.get_current_list().is_last_version()) {
+            console.log('Last version!');
+          } else {
             console.log('Not last version');
           }
         }, 1000);
