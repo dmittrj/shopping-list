@@ -5,7 +5,7 @@
 
     $conn = connect();
 
-    $sql = "SELECT `list_item` FROM `collaborations_items` WHERE `list_id` = $id";
+    $sql = "SELECT `item_id`, `list_item` FROM `collaborations_items` WHERE `list_id` = $id ORDER BY `item_id`";
     $result = $conn->query($sql);
     $list_items = array(); // Создание пустого массива
 
@@ -18,11 +18,12 @@
         $list_items = array(); // Если нет результатов, массив остается пустым
     }
 
-    $sql = "SELECT `list_version` FROM `collaborations_lists` WHERE `list_id` = $id";
+    $sql = "SELECT `list_title`, `list_version` FROM `collaborations_lists` WHERE `list_id` = $id";
     $result = $conn->query($sql);
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
         $variation = $row["list_version"];
+        $title = $row["list_title"];
     } else {
         $variation = -1;
     }
@@ -33,6 +34,6 @@
     //$id_dec = base_convert($id_str, 36, 10);
     $conn->close();
 
-    $json_data = json_encode(array("list_items" => $list_items, "version" => $variation));
+    $json_data = json_encode(array("list_items" => $list_items, "version" => $variation, "title" => $title));
     echo $json_data;
 ?>

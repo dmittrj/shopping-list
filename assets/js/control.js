@@ -314,7 +314,7 @@ async function event_load() {
     console.log('GOT:' + actual_list);
     if (decrypted_list) {
       let json = JSON.parse(decrypted_list);
-      let sl = new VirtualShoppingList(json?.title, 0);
+      let sl = new VirtualShoppingList(aes_decrypt(JSON.parse(text).title, key), 0);
       sl.SL_CollaborationInfo = {"key": key,
                                  "variation": variation,
                                  "source": invite};
