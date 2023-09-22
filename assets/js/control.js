@@ -170,7 +170,7 @@ async function collaborate_list(isOn) {
       hub.get_current_list().SL_CollaborationInfo.source = atr_share;
       let items_to_push = [];
       hub.get_current_list().SL_Items.forEach(element => {
-        items_to_push.push({ "item": JSON.stringify(element), "source": atr_share});
+        items_to_push.push({ "item": aes_encrypt(JSON.stringify(element), hub.get_current_list().SL_CollaborationInfo.key), "source": atr_share});
       });
 
       let r = await fetch('assets/server/collaborate_push_items.php', {
@@ -310,15 +310,16 @@ async function event_load() {
     let text = await response.text();
     let actual_list = JSON.parse(text).list_items;
     let variation = JSON.parse(text).variation;
-    let decrypted_list = '[' + actual_list + ']';//aes_decrypt(actual_list, key);
-    console.log('GOT:' + actual_list);
+    let decrypted_list = actual_list;//aes_decrypt(actual_list, key);
+    console.log('GOT:' + JSON.parse(text).list_items);
     if (decrypted_list) {
       let json = JSON.parse(decrypted_list);
       let sl = new VirtualShoppingList(aes_decrypt(JSON.parse(text).title, key), 0);
       sl.SL_CollaborationInfo = {"key": key,
                                  "variation": variation,
                                  "source": invite};
-      json?.forEach(sl_item => {
+      json?.forEach(sl_ite => {
+        let sl_item = JSON.parse(aes_decrypt(sl_ite, key));
         sl.SL_Items.push(new ShoppingListItem(sl_item.SLI_Name, sl_item.SLI_Cost, sl_item.SLI_Amount, sl_item.SLI_Checked, sl.SL_LastID++));
       });
 
@@ -344,6 +345,7 @@ async function event_load() {
   }
 
   UI.draw_list_of_lists();
+
   UI.toggle_collaborate_list_switcher();
 
   hub.fetch_updates();

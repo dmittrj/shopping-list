@@ -34,6 +34,6 @@
     //$id_dec = base_convert($id_str, 36, 10);
     $conn->close();
 
-    $json_data = json_encode(array("list_items" => $list_items, "version" => $variation, "title" => $title));
+    $json_data = json_encode(array("list_items" => json_encode($list_items), "version" => $variation, "title" => $title));
     echo $json_data;
 ?>

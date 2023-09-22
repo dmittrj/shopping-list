@@ -58,7 +58,7 @@ class VirtualShoppingList extends ShoppingList {
     this.SL_Items.push(sl_item);
     fetch('assets/server/collaborate_push_item.php', {
       method: 'POST',
-      body: JSON.stringify({ "item": JSON.stringify(sl_item), "source": this.SL_CollaborationInfo.source})
+      body: JSON.stringify({ "item": aes_encrypt(JSON.stringify(sl_item), this.SL_CollaborationInfo.key), "source": this.SL_CollaborationInfo.source})
     })
     .then(response => response.text())
     .then(atr_share => console.log(atr_share))
@@ -81,13 +81,13 @@ class VirtualShoppingList extends ShoppingList {
       method: 'GET'
     });
     let text = await response.text();
-    let updated_list = JSON.parse('[' + JSON.parse(text).list_items + ']');
+    let updated_list = JSON.parse(JSON.parse(text).list_items);
     this.SL_CollaborationInfo.variation = JSON.parse(text).version;
 
     this.SL_Items = [];
 
     for (let i = 0; i < updated_list.length; i++) {
-      const sl_item = updated_list[i];
+      const sl_item = JSON.parse(aes_decrypt(updated_list[i], this.SL_CollaborationInfo.key));
       this.SL_Items.push(new ShoppingListItem(sl_item.SLI_Name, sl_item.SLI_Cost, sl_item.SLI_Amount, sl_item.SLI_Checked, this.SL_LastID++));
     }
   }
@@ -586,16 +586,16 @@ class UI {
 
 
     static toggle_collaborate_list_switcher() {
-      if (hub.get_current_list().SL_CollaborationStatus == 'Editor') {
+      if (hub.get_current_list()?.SL_CollaborationStatus == 'Editor') {
         document.querySelector('#pop-up-collaborate').style.display = 'none';
         return;
       }
       document.querySelector('#pop-up-collaborate').style.display = 'list-item';
-      if (hub.get_current_list().SL_CollaborationStatus == 'Off') {
+      if (hub.get_current_list()?.SL_CollaborationStatus == 'Off') {
         document.querySelector('#pop-up-collaborate-toggle').checked = false;
         return;
       }
-      if (hub.get_current_list().SL_CollaborationStatus == 'Owner') {
+      if (hub.get_current_list()?.SL_CollaborationStatus == 'Owner') {
         document.querySelector('#pop-up-collaborate-toggle').checked = true;
         return;
       }
@@ -951,7 +951,7 @@ class Hub {
     }
 
     async fetch_updates() {
-      if (this.get_current_list().is_list_virtual()) {
+      if (this.get_current_list()?.is_list_virtual()) {
         this.UpdateTimer = setInterval(async () => {
           if (await this.get_current_list().is_last_version()) {
             console.log('Last version!');
