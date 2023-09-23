@@ -49,7 +49,7 @@ class VirtualShoppingList extends ShoppingList {
   constructor(name, id) {
     super(name, id);
     this.SL_CollaborationInfo = {"key": null,
-                                 "variation": 0,
+                                 "version": 0,
                                  "source": null};
     console.log('Virtual List Created!');
   }
@@ -68,11 +68,11 @@ class VirtualShoppingList extends ShoppingList {
 
 
   async is_last_version() {
-    let response = await fetch(`assets/server/collaborate_check_variation.php?id=${this.SL_CollaborationInfo.source}`, {
+    let response = await fetch(`assets/server/collaborate_check_version.php?id=${this.SL_CollaborationInfo.source}`, {
       method: 'GET'
     });
     let text = await response.text();
-    return text == this.SL_CollaborationInfo.variation;
+    return text == this.SL_CollaborationInfo.version;
   }
 
 
@@ -82,7 +82,7 @@ class VirtualShoppingList extends ShoppingList {
     });
     let text = await response.text();
     let updated_list = JSON.parse(JSON.parse(text).list_items);
-    this.SL_CollaborationInfo.variation = JSON.parse(text).version;
+    this.SL_CollaborationInfo.version = JSON.parse(text).version;
 
     this.SL_Items = [];
 
@@ -972,7 +972,7 @@ class Hub {
     add_virtual_list(name, co_info) {
       let new_list = new VirtualShoppingList(name, this.LastID++);
       new_list.SL_CollaborationInfo = {"key": co_info?.key,
-                                       "variation": co_info?.variation,
+                                       "version": co_info?.version,
                                        "source": co_info?.source};
       this.ShoppingLists.push(new_list);
       return new_list;
