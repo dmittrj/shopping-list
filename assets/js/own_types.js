@@ -985,10 +985,7 @@ class Hub {
     async fetch_updates() {
       if (this.get_current_list()?.is_list_virtual()) {
         this.UpdateTimer = setInterval(async () => {
-          if (await this.get_current_list().is_last_version()) {
-            console.log('Last version!');
-          } else {
-            console.log('Not last version');
+          if (!(await this.get_current_list().is_last_version())) {
             await this.get_current_list().pull_updates();
             UI.draw_list(this.get_current_list(), true);
           }
