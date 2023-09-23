@@ -58,7 +58,12 @@ class VirtualShoppingList extends ShoppingList {
     this.SL_Items.push(sl_item);
     fetch('assets/server/collaborate_push_item.php', {
       method: 'POST',
-      body: JSON.stringify({ "item": aes_encrypt(JSON.stringify(sl_item), this.SL_CollaborationInfo.key), "source": this.SL_CollaborationInfo.source})
+      body: JSON.stringify({ "item": aes_encrypt(JSON.stringify({
+        "name": sl_item.SLI_Name,
+      "id": sl_item.SLI_Id,
+      "cost": sl_item.SLI_Cost,
+      "amount": sl_item.SLI_Amount,
+      "checked": sl_item.SLI_Checked}), this.SL_CollaborationInfo.key), "source": this.SL_CollaborationInfo.source})
     })
     .then(response => response.text())
     .then(atr_share => console.log(atr_share))
@@ -88,7 +93,7 @@ class VirtualShoppingList extends ShoppingList {
 
     for (let i = 0; i < updated_list.length; i++) {
       const sl_item = JSON.parse(aes_decrypt(updated_list[i], this.SL_CollaborationInfo.key));
-      this.SL_Items.push(new ShoppingListItem(sl_item.SLI_Name, sl_item.SLI_Cost, sl_item.SLI_Amount, sl_item.SLI_Checked, this.SL_LastID++));
+      this.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, this.SL_LastID++));
     }
   }
 

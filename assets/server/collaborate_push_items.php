@@ -2,7 +2,9 @@
     require 'database.php';
     $json_str = file_get_contents('php://input');
 
-    $items = json_decode($json_str, true);
+    $obj = json_decode($json_str, true);
+    $items = $obj["items"];
+    $source = base_convert($obj["source"], 36, 10);
 
     //echo $json_str;
     //return;
@@ -10,8 +12,7 @@
     $conn = connect();
 
     for ($i=0; $i < count($items); $i++) { 
-        $item = $items[$i]["item"];
-        $source = base_convert($items[$i]["source"], 36, 10);
+        $item = $items[$i];
 
         $sql = "INSERT INTO collaborations_items (list_id, list_item) VALUES ($source, '$item')";
         if ($conn->query($sql) === TRUE) {

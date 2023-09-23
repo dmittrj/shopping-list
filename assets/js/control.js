@@ -159,18 +159,25 @@ async function collaborate_list(isOn) {
     hub.get_current_list().SL_CollaborationStatus = 'Owner';
     if (hub.turn_list_to_virtual(hub.get_current_list().SL_Id)) {
       hub.get_current_list().SL_CollaborationInfo.key = generate_key(16);
-      const list_to_send = aes_encrypt(hub.get_current_list().SL_Name, hub.get_current_list().SL_CollaborationInfo.key);
+      const collabor_title = aes_encrypt(hub.get_current_list().SL_Name, hub.get_current_list().SL_CollaborationInfo.key);
 
-      let response = await fetch('assets/server/collaborate_send_list.php', {
+      let response = await fetch('assets/server/collaborate_start.php', {
         method: 'POST',
-        body: list_to_send
+        body: collabor_title
       });
       let atr_share = await response.text();
-      console.log(atr_share);
       hub.get_current_list().SL_CollaborationInfo.source = atr_share;
-      let items_to_push = [];
+      let items_to_push = {
+        "items": [],
+        "source": atr_share
+      };
       hub.get_current_list().SL_Items.forEach(element => {
-        items_to_push.push({ "item": aes_encrypt(JSON.stringify(element), hub.get_current_list().SL_CollaborationInfo.key), "source": atr_share});
+        items_to_push["items"].push(aes_encrypt(JSON.stringify({
+          "name": element.SLI_Name,
+        "id": element.SLI_Id,
+        "cost": element.SLI_Cost,
+        "amount": element.SLI_Amount,
+        "checked": element.SLI_Checked}), hub.get_current_list().SL_CollaborationInfo.key));
       });
 
       let r = await fetch('assets/server/collaborate_push_items.php', {
@@ -320,7 +327,7 @@ async function event_load() {
                                  "source": invite};
       json?.forEach(sl_ite => {
         let sl_item = JSON.parse(aes_decrypt(sl_ite, key));
-        sl.SL_Items.push(new ShoppingListItem(sl_item.SLI_Name, sl_item.SLI_Cost, sl_item.SLI_Amount, sl_item.SLI_Checked, sl.SL_LastID++));
+        sl.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
       });
 
       UI.draw_list(sl, false);
