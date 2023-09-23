@@ -171,13 +171,8 @@ async function collaborate_list(isOn) {
         "items": [],
         "source": atr_share
       };
-      hub.get_current_list().SL_Items.forEach(element => {
-        items_to_push["items"].push(aes_encrypt(JSON.stringify({
-          "name": element.SLI_Name,
-        "id": element.SLI_Id,
-        "cost": element.SLI_Cost,
-        "amount": element.SLI_Amount,
-        "checked": element.SLI_Checked}), hub.get_current_list().SL_CollaborationInfo.key));
+      hub.get_current_list().SL_Items.forEach(sl_item => {
+        items_to_push["items"].push(aes_encrypt(JSON.stringify(sl_item.to_json()), hub.get_current_list().SL_CollaborationInfo.key));
       });
 
       let r = await fetch('assets/server/collaborate_push_items.php', {

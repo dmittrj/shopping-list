@@ -58,12 +58,7 @@ class VirtualShoppingList extends ShoppingList {
     this.SL_Items.push(sl_item);
     fetch('assets/server/collaborate_push_item.php', {
       method: 'POST',
-      body: JSON.stringify({ "item": aes_encrypt(JSON.stringify({
-        "name": sl_item.SLI_Name,
-      "id": sl_item.SLI_Id,
-      "cost": sl_item.SLI_Cost,
-      "amount": sl_item.SLI_Amount,
-      "checked": sl_item.SLI_Checked}), this.SL_CollaborationInfo.key), "source": this.SL_CollaborationInfo.source})
+      body: JSON.stringify({ "item": aes_encrypt(JSON.stringify(sl_item.to_json()), this.SL_CollaborationInfo.key), "source": this.SL_CollaborationInfo.source})
     })
     .then(response => response.text())
     .then(atr_share => console.log(atr_share))
@@ -102,12 +97,7 @@ class VirtualShoppingList extends ShoppingList {
     let temp_shopping_list = [];
     this.SL_Items.forEach(sl_item => {
         if (!sl_item.SLI_Removed) {
-          temp_shopping_list.push({"name": sl_item.SLI_Name,
-                                   "id": sl_item.SLI_Id,
-                                   "cost": sl_item.SLI_Cost,
-                                   "amount": sl_item.SLI_Amount,
-                                   "checked": sl_item.SLI_Checked}
-          );
+          temp_shopping_list.push(sl_item.to_json());
         }
     });
     return temp_shopping_list;
@@ -136,6 +126,14 @@ class ShoppingListItem {
 
     edit_cost(new_cost) {
       this.SLI_Cost = new_cost;
+    }
+
+    to_json() {
+      return {"name": this.SLI_Name,
+              "id": this.SLI_Id,
+              "cost": this.SLI_Cost,
+              "amount": this.SLI_Amount,
+              "checked": this.SLI_Checked};
     }
 }
   
