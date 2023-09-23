@@ -277,6 +277,35 @@ class UI {
     }
 
 
+    static copy_in_clipboard(elem) {
+      const link = elem;
+      const range = document.createRange();
+      range.selectNode(link);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      selection.removeAllRanges();
+    }
+
+
+    static create_copied_pop_up() {
+      let eleCopyPopUp = document.createElement('div');
+      eleCopyPopUp.classList.add('shoplist-list-info-pop-up');
+      eleCopyPopUp.innerText = 'Copied';
+      eleCopyPopUp.addEventListener('animationend', () => {
+        setTimeout(() => {
+          eleCopyPopUp.style.animation = 'shoplist-ani-pop-up-fading .35s ease-out forwards'
+          eleCopyPopUp.addEventListener('animationend', () => {
+            eleCopyPopUp.remove();
+          })
+        }, 2000);
+      });
+
+      return eleCopyPopUp;
+    }
+
+
     static append_item(list_item, editable) {
       var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, !editable);
 

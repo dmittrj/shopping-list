@@ -175,42 +175,22 @@ async function collaborate_list(isOn) {
         items_to_push["items"].push(aes_encrypt(JSON.stringify(sl_item.to_json()), hub.get_current_list().SL_CollaborationInfo.key));
       });
 
-      let r = await fetch('assets/server/collaborate_push_items.php', {
+      await fetch('assets/server/collaborate_push_items.php', {
         method: 'POST',
         body: JSON.stringify(items_to_push)
       });
-      console.log(await r.text());
 
       let link_to_copy = window.location.href + '?invite=' + atr_share + '&key=' + hub.get_current_list().SL_CollaborationInfo.key;
       let ele_listInfoText = UI.create_info_block('Tap to copy this link and send it to your partner', link_to_copy);
       ele_listInfoText.id = 'shoplist-share-text';
       ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
-        const link = ele_listInfoText.querySelector('#sl-info-block-button');
-        const range = document.createRange();
-        range.selectNode(link);
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-        document.execCommand('copy');
-        selection.removeAllRanges();
+        UI.copy_in_clipboard(ele_listInfoText.querySelector('#sl-info-block-button'));
 
         if (document.querySelector('.shoplist-list-info-pop-up')) {
           document.querySelector('.shoplist-list-info-pop-up').remove();
         }
 
-        let eleCopyPopUp = document.createElement('div');
-        eleCopyPopUp.classList.add('shoplist-list-info-pop-up');
-        eleCopyPopUp.innerText = 'Copied';
-        eleCopyPopUp.addEventListener('animationend', () => {
-          setTimeout(() => {
-            eleCopyPopUp.style.animation = 'shoplist-ani-pop-up-fading .35s ease-out forwards'
-            eleCopyPopUp.addEventListener('animationend', () => {
-              eleCopyPopUp.remove();
-            })
-          }, 2000);
-        });
-
-        document.querySelector('#shoplist-list').appendChild(eleCopyPopUp);
+        document.querySelector('#shoplist-list').appendChild(UI.create_copied_pop_up());
       });
       document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
       
@@ -312,7 +292,7 @@ async function event_load() {
     let text = await response.text();
     let actual_list = JSON.parse(text).list_items;
     let variation = JSON.parse(text).variation;
-    let decrypted_list = actual_list;//aes_decrypt(actual_list, key);
+    let decrypted_list = actual_list;
     console.log('GOT:' + JSON.parse(text).list_items);
     if (decrypted_list) {
       let json = JSON.parse(decrypted_list);
