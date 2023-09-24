@@ -984,6 +984,7 @@ class Hub {
 
     async fetch_updates() {
       if (this.get_current_list()?.is_list_virtual()) {
+        clearInterval(this.UpdateTimer);
         this.UpdateTimer = setInterval(async () => {
           if (!(await this.get_current_list().is_last_version())) {
             await this.get_current_list().pull_updates();
@@ -992,11 +993,13 @@ class Hub {
         }, 1000);
       } else {
         clearInterval(this.UpdateTimer);
+        this.UpdateTimer = null;
       }
     }
 
     switch_list(id) {
       this.CurrentList = id;
+      UI.toggle_collaborate_list_switcher();
       this.fetch_updates();
     }
 
