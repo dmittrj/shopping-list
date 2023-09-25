@@ -66,6 +66,18 @@ class VirtualShoppingList extends ShoppingList {
     return sl_item;
   }
 
+  drop_item(id) {
+    this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id !== id);
+    console.log('Removed!');
+    fetch('assets/server/collaborate_drop_item.php', {
+      method: 'POST',
+      body: JSON.stringify({ "item_id": id, "source": this.SL_CollaborationInfo.source})
+    })
+    .then(response => response.text())
+    .then(atr_share => console.log(atr_share))
+    .catch(error => console.error(error));
+  }
+
 
   async is_last_version() {
     let response = await fetch(`assets/server/collaborate_check_version.php?id=${this.SL_CollaborationInfo.source}`, {
