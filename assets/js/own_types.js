@@ -61,7 +61,7 @@ class VirtualShoppingList extends ShoppingList {
       body: JSON.stringify({ "item": aes_encrypt(JSON.stringify(sl_item.to_json()), this.SL_CollaborationInfo.key), "source": this.SL_CollaborationInfo.source})
     })
     .then(response => response.text())
-    .then(atr_share => console.log(atr_share))
+    .then(atr_share => console.log('ASSIGNED_ID: ' + atr_share))
     .catch(error => console.error(error));
     return sl_item;
   }
