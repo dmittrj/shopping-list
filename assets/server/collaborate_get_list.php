@@ -11,7 +11,8 @@
 
     if (mysqli_num_rows($result) > 0) {
         while ($row = mysqli_fetch_assoc($result)) {
-            $list_item = $row["list_item"];
+            $list_item["list_item"] = $row["list_item"];
+            $list_item["item_id"] = $row["item_id"];
             $list_items[] = $list_item;
         }
     }

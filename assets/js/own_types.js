@@ -61,7 +61,10 @@ class VirtualShoppingList extends ShoppingList {
       body: JSON.stringify({ "item": aes_encrypt(JSON.stringify(sl_item.to_json()), this.SL_CollaborationInfo.key), "source": this.SL_CollaborationInfo.source})
     })
     .then(response => response.text())
-    .then(atr_share => console.log('ASSIGNED_ID: ' + atr_share))
+    .then(atr_share => {
+      console.log('ASSIGNED_ID: ' + atr_share);
+      console.log(sl_item);
+    })
     .catch(error => console.error(error));
     return sl_item;
   }
@@ -99,8 +102,9 @@ class VirtualShoppingList extends ShoppingList {
     this.SL_Items = [];
 
     for (let i = 0; i < updated_list.length; i++) {
-      const sl_item = JSON.parse(aes_decrypt(updated_list[i], this.SL_CollaborationInfo.key));
-      this.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, this.SL_LastID++));
+      const sl_item = JSON.parse(aes_decrypt(updated_list[i].list_item, this.SL_CollaborationInfo.key));
+      console.log(updated_list[i]);
+      this.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, updated_list[i].item_id));
     }
   }
 
@@ -409,8 +413,9 @@ class UI {
               UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
             } else {
               let new_item_content = parse_item(ele_ListItemTextInput.value);
-              let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
+              let new_item = new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++);
               UI.append_item(new_item, true);
+              hub.get_current_list().append(new_item);
               hub.save();
             }
           }
@@ -421,8 +426,9 @@ class UI {
             UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
           } else {
             let new_item_content = parse_item(ele_ListItemTextInput.value);
-            let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
+            let new_item = new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++);
             UI.append_item(new_item, true);
+            hub.get_current_list().append(new_item);
             hub.save();
             if (document.querySelector('#shoplist-add-pseudoitem')) {
               document.querySelector('#shoplist-add-pseudoitem input').onblur = null;
