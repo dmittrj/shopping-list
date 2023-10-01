@@ -195,12 +195,11 @@ async function collaborate_list(isOn) {
       document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
       
     }
-
-    hub.save();
   } else {
     hub.get_current_list().SL_CollaborationStatus = 'Off';
-    hub.save();
   }
+  hub.fetch_updates();
+  hub.save();
 }
 
 
@@ -299,8 +298,8 @@ async function event_load() {
                                  "version": version,
                                  "source": invite};
       json?.forEach(sl_item_encrypted => {
-        let sl_item = JSON.parse(aes_decrypt(sl_item_encrypted, key));
-        sl.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
+        let sl_item = JSON.parse(aes_decrypt(sl_item_encrypted.list_item, key));
+        sl.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl_item_encrypted.item_id));
       });
 
       UI.draw_list(sl, false);

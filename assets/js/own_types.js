@@ -19,7 +19,7 @@ class ShoppingList {
     }
 
     get_item_by_id(id) {
-      return this.SL_Items.find((w) => w.SLI_Id === id);
+      return this.SL_Items.find((w) => w.SLI_Id == id);
     }
 
     get_checked() {
