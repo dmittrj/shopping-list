@@ -1007,6 +1007,7 @@ class Hub {
           if (!(await this.get_current_list().is_last_version())) {
             await this.get_current_list().pull_updates();
             UI.draw_list(this.get_current_list(), true);
+            hub.save();
           }
         }, 1000);
       } else {
