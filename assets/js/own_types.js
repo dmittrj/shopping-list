@@ -1002,8 +1002,10 @@ class Hub {
 
     async fetch_updates() {
       if (this.get_current_list()?.is_list_virtual()) {
+        console.log('Updating is on');
         clearInterval(this.UpdateTimer);
         this.UpdateTimer = setInterval(async () => {
+          console.log('Updating list...');
           if (!(await this.get_current_list().is_last_version())) {
             await this.get_current_list().pull_updates();
             UI.draw_list(this.get_current_list(), true);
@@ -1011,6 +1013,7 @@ class Hub {
           }
         }, 1000);
       } else {
+        console.log('Updating is off');
         clearInterval(this.UpdateTimer);
         this.UpdateTimer = null;
       }

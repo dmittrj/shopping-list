@@ -314,6 +314,7 @@ async function event_load() {
         UI.draw_list_of_lists();
         UI.draw_list(hub.get_current_list(), true);
         hub.save();
+        hub.fetch_updates();
       });
       document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
     }
