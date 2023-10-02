@@ -7,7 +7,7 @@
     
     $conn = connect();
 
-    $sql = "DELETE FROM collaborations_items WHERE `list_id` = $source AND `item_id` = $item";
+    $sql = "DELETE FROM collaborations_items WHERE `list_id` = $source AND `list_item_id` = $item";
     $conn->query($sql);
 
     $sql = "UPDATE collaborations_lists SET `list_version` = `list_version` + 1 WHERE `list_id` = $source";

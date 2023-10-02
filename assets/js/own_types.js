@@ -70,8 +70,8 @@ class VirtualShoppingList extends ShoppingList {
   }
 
   drop_item(id) {
-    this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id !== id);
-    console.log('Removed!');
+    this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id != id);
+    console.log('Removed! ' + id);
     fetch('assets/server/collaborate_drop_item.php', {
       method: 'POST',
       body: JSON.stringify({ "item_id": id, "source": this.SL_CollaborationInfo.source})
