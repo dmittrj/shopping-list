@@ -653,6 +653,7 @@ class UI {
 
 
     static async draw_list(list, editable) {
+      console.log(list);
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
 
       let ele_listTitle_span = document.createElement('span');
@@ -919,7 +920,7 @@ class Hub {
         //this.CurrentList = this.LastID - 1;
         new_item.SL_CollaborationStatus = sl.co_status;
         sl.items.forEach(sl_item => {
-          new_item.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
+          new_item.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, (sl_item.id ? sl_item.id : new_item.SL_LastID++)));
         });
       });
 
