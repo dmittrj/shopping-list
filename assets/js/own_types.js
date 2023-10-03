@@ -74,7 +74,17 @@ class VirtualShoppingList extends ShoppingList {
   }
 
   edit_name(id, new_name) {
+    console.log('Now you\'re editing virtual item');
     this.get_item_by_id(id).SLI_Name = new_name;
+    fetch('assets/server/collaborate_edit_item.php', {
+      method: 'POST',
+      body: JSON.stringify({ "item_id": id, 
+                             "source": this.SL_CollaborationInfo.source,
+                             "item": aes_encrypt(JSON.stringify(this.get_item_by_id(id).to_json()), this.SL_CollaborationInfo.key)})
+    })
+    .then(response => response.text())
+    .then(atr_share => console.log(atr_share))
+    .catch(error => console.error(error));
   }
 
   drop_item(id) {
