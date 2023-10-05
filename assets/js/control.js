@@ -283,11 +283,14 @@ async function event_load() {
       method: 'GET'
     });
     let text = await response.text();
+
     let actual_list = JSON.parse(text).list_items;
     let version = JSON.parse(text).version;
+    let list_title = aes_decrypt(JSON.parse(text).title, key);
+
     if (actual_list) {
       let json = JSON.parse(actual_list);
-      let sl = new VirtualShoppingList(aes_decrypt(JSON.parse(text).title, key), 0);
+      let sl = new VirtualShoppingList(list_title, -1);
       sl.SL_CollaborationInfo = {"key": key,
                                  "version": version,
                                  "source": invite};
