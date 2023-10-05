@@ -159,7 +159,7 @@ async function collaborate_list(isOn) {
     hub.get_current_list().SL_CollaborationStatus = 'Owner';
     if (hub.turn_list_to_virtual(hub.get_current_list().SL_Id)) {
       hub.get_current_list().SL_CollaborationInfo.key = generate_key(16);
-      const collabor_title = aes_encrypt(hub.get_current_list().SL_Name, hub.get_current_list().SL_CollaborationInfo.key);
+      const collabor_title = aes_encrypt(hub.get_current_list().SL_Name, hub.get_current_list().get_key());
 
       let response = await fetch('assets/server/collaborate_start.php', {
         method: 'POST',
@@ -168,32 +168,26 @@ async function collaborate_list(isOn) {
       let atr_share = await response.text();
       hub.get_current_list().SL_CollaborationInfo.source = atr_share;
       let items_to_push = {
-        "items": [],
+        "items": hub.get_current_list().to_ejson(),
         "source": atr_share
       };
-      hub.get_current_list().SL_Items.forEach(sl_item => {
-        items_to_push["items"].push(aes_encrypt(JSON.stringify(sl_item.to_json()), hub.get_current_list().SL_CollaborationInfo.key));
-      });
 
       await fetch('assets/server/collaborate_push_items.php', {
         method: 'POST',
         body: JSON.stringify(items_to_push)
       });
 
-      let link_to_copy = window.location.href + '?invite=' + atr_share + '&key=' + hub.get_current_list().SL_CollaborationInfo.key;
+      let link_to_copy = window.location.href + '?invite=' + atr_share + '&key=' + hub.get_current_list().get_key();
       let ele_listInfoText = UI.create_info_block('Tap to copy this link and send it to your partner', link_to_copy);
       ele_listInfoText.id = 'shoplist-share-text';
       ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
         UI.copy_in_clipboard(ele_listInfoText.querySelector('#sl-info-block-button'));
-
         if (document.querySelector('.shoplist-list-info-pop-up')) {
           document.querySelector('.shoplist-list-info-pop-up').remove();
         }
-
         document.querySelector('#shoplist-list').appendChild(UI.create_copied_pop_up());
       });
       document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
-      
     }
   } else {
     hub.get_current_list().SL_CollaborationStatus = 'Off';

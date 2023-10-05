@@ -137,8 +137,23 @@ class VirtualShoppingList extends ShoppingList {
     return temp_shopping_list;
   }
 
+  to_ejson() {
+    let temp_shopping_list = [];
+    this.SL_Items.forEach(sl_item => {
+        if (!sl_item.SLI_Removed) {
+          temp_shopping_list.push(sl_item.to_ejson(this.get_key()));
+        }
+    });
+    return temp_shopping_list;
+  }
+
   is_list_virtual() {
     return true;
+  }
+
+
+  get_key() {
+    return this.SL_CollaborationInfo.key;
   }
 }
   
@@ -164,6 +179,10 @@ class ShoppingListItem {
               "cost": this.SLI_Cost,
               "amount": this.SLI_Amount,
               "checked": this.SLI_Checked};
+    }
+
+    to_ejson(key) {
+      return aes_encrypt(JSON.stringify(this.to_json()), key);
     }
 }
   
