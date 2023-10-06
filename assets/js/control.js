@@ -55,7 +55,7 @@ function parse_item(inputString) {
 function toggle_mark_item(item) {
   let item_id = get_id_by_ui_item(item);
   let checked_status = hub.get_current_list().get_item_by_id(item_id).SLI_Checked;
-  hub.get_current_list().get_item_by_id(item_id).SLI_Checked = !checked_status;
+  hub.get_current_list().tick(item_id, !checked_status);
   UI.mark_item(item, !checked_status);
 }
 

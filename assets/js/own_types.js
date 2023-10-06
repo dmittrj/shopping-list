@@ -18,6 +18,10 @@ class ShoppingList {
       this.get_item_by_id(id).SLI_Name = new_name;
     }
 
+    tick(id, checked) {
+      this.get_item_by_id(id).SLI_Checked = checked;
+    } 
+
     drop_item(id) {
       this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id !== id);
     }
@@ -49,6 +53,7 @@ class ShoppingList {
     }
 }
 
+
 class VirtualShoppingList extends ShoppingList {
   constructor(name, id) {
     super(name, id);
@@ -62,7 +67,8 @@ class VirtualShoppingList extends ShoppingList {
     this.SL_Items.push(sl_item);
     fetch('assets/server/collaborate_push_item.php', {
       method: 'POST',
-      body: JSON.stringify({ "item": aes_encrypt(JSON.stringify(sl_item.to_json()), this.SL_CollaborationInfo.key), "source": this.SL_CollaborationInfo.source})
+      body: JSON.stringify({ "item": sl_item.to_ejson(this.get_key()), 
+                             "source": this.SL_CollaborationInfo.source})
     })
     .then(response => response.text())
     .then(atr_share => {
@@ -80,25 +86,38 @@ class VirtualShoppingList extends ShoppingList {
       method: 'POST',
       body: JSON.stringify({ "item_id": id, 
                              "source": this.SL_CollaborationInfo.source,
-                             "item": aes_encrypt(JSON.stringify(this.get_item_by_id(id).to_json()), this.SL_CollaborationInfo.key)})
+                             "item": this.get_item_by_id(id).to_ejson(this.get_key())})
     })
     .then(response => response.text())
     .then(atr_share => console.log(atr_share))
     .catch(error => console.error(error));
   }
+
+  tick(id, checked) {
+    this.get_item_by_id(id).SLI_Checked = checked;
+    fetch('assets/server/collaborate_edit_item.php', {
+      method: 'POST',
+      body: JSON.stringify({ "item_id": id, 
+                             "source": this.SL_CollaborationInfo.source,
+                             "item": this.get_item_by_id(id).to_ejson(this.get_key())})
+    })
+    .then(response => response.text())
+    .then(atr_share => console.log(atr_share))
+    .catch(error => console.error(error));
+  } 
 
   drop_item(id) {
     this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id != id);
     console.log('Removed! ' + id);
     fetch('assets/server/collaborate_drop_item.php', {
       method: 'POST',
-      body: JSON.stringify({ "item_id": id, "source": this.SL_CollaborationInfo.source})
+      body: JSON.stringify({ "item_id": id, 
+                             "source": this.SL_CollaborationInfo.source})
     })
     .then(response => response.text())
     .then(atr_share => console.log(atr_share))
     .catch(error => console.error(error));
   }
-
 
   async is_last_version() {
     let response = await fetch(`assets/server/collaborate_check_version.php?id=${this.SL_CollaborationInfo.source}`, {
@@ -107,7 +126,6 @@ class VirtualShoppingList extends ShoppingList {
     let text = await response.text();
     return text == this.SL_CollaborationInfo.version;
   }
-
 
   async pull_updates() {
     let response = await fetch(`assets/server/collaborate_get_list.php?id=${this.SL_CollaborationInfo.source}`, {
@@ -125,7 +143,6 @@ class VirtualShoppingList extends ShoppingList {
       this.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, updated_list[i].item_id));
     }
   }
-
 
   to_json() {
     let temp_shopping_list = [];
@@ -150,7 +167,6 @@ class VirtualShoppingList extends ShoppingList {
   is_list_virtual() {
     return true;
   }
-
 
   get_key() {
     return this.SL_CollaborationInfo.key;
