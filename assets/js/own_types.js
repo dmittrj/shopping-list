@@ -4,8 +4,13 @@ class ShoppingList {
         this.SL_Id = id;
         this.SL_Items = [];
         this.SL_LastID = 0;
+        this.SL_CollaborationStatus = 'Off';
 
         this.SL_Removed = false;
+    }
+
+    edit_title(new_title) {
+      this.SL_Name = new_title;
     }
 
     append(sl_item) {
@@ -13,12 +18,20 @@ class ShoppingList {
         return sl_item;
     }
 
+    edit_name(id, new_name) {
+      this.get_item_by_id(id).SLI_Name = new_name;
+    }
+
+    tick(id, checked) {
+      this.get_item_by_id(id).SLI_Checked = checked;
+    } 
+
     drop_item(id) {
       this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id !== id);
     }
 
     get_item_by_id(id) {
-      return this.SL_Items.find((w) => w.SLI_Id === id);
+      return this.SL_Items.find((w) => w.SLI_Id == id);
     }
 
     get_checked() {
@@ -38,6 +51,141 @@ class ShoppingList {
         });
         return temp_shopping_list;
     }
+
+    is_list_virtual() {
+      return false;
+    }
+}
+
+
+class VirtualShoppingList extends ShoppingList {
+  constructor(name, id) {
+    super(name, id);
+    this.SL_CollaborationInfo = {"key": null,
+                                 "version": 0,
+                                 "source": null};
+    console.log('Virtual List Created!');
+  }
+
+  edit_title(new_title) {
+    this.SL_Name = new_title;
+
+    fetch('assets/server/collaborate_edit_title.php', {
+      method: 'POST',
+      body: JSON.stringify({ "source": this.SL_CollaborationInfo.source,
+                             "new_title": aes_encrypt(new_title, this.get_key())})
+    });
+  }
+
+  append(sl_item) {
+    this.SL_Items.push(sl_item);
+    fetch('assets/server/collaborate_push_item.php', {
+      method: 'POST',
+      body: JSON.stringify({ "item": sl_item.to_ejson(this.get_key()), 
+                             "source": this.SL_CollaborationInfo.source})
+    })
+    .then(response => response.text())
+    .then(atr_share => {
+      console.log('ASSIGNED_ID: ' + atr_share);
+      console.log(sl_item);
+    })
+    .catch(error => console.error(error));
+    return sl_item;
+  }
+
+  edit_name(id, new_name) {
+    console.log('Now you\'re editing virtual item');
+    this.get_item_by_id(id).SLI_Name = new_name;
+    fetch('assets/server/collaborate_edit_item.php', {
+      method: 'POST',
+      body: JSON.stringify({ "item_id": id, 
+                             "source": this.SL_CollaborationInfo.source,
+                             "item": this.get_item_by_id(id).to_ejson(this.get_key())})
+    })
+    .then(response => response.text())
+    .then(atr_share => console.log(atr_share))
+    .catch(error => console.error(error));
+  }
+
+  tick(id, checked) {
+    this.get_item_by_id(id).SLI_Checked = checked;
+    fetch('assets/server/collaborate_edit_item.php', {
+      method: 'POST',
+      body: JSON.stringify({ "item_id": id, 
+                             "source": this.SL_CollaborationInfo.source,
+                             "item": this.get_item_by_id(id).to_ejson(this.get_key())})
+    })
+    .then(response => response.text())
+    .then(atr_share => console.log(atr_share))
+    .catch(error => console.error(error));
+  } 
+
+  drop_item(id) {
+    this.SL_Items = this.SL_Items.filter((w) => w.SLI_Id != id);
+    console.log('Removed! ' + id);
+    fetch('assets/server/collaborate_drop_item.php', {
+      method: 'POST',
+      body: JSON.stringify({ "item_id": id, 
+                             "source": this.SL_CollaborationInfo.source})
+    })
+    .then(response => response.text())
+    .then(atr_share => console.log(atr_share))
+    .catch(error => console.error(error));
+  }
+
+  async is_last_version() {
+    let response = await fetch(`assets/server/collaborate_check_version.php?id=${this.SL_CollaborationInfo.source}`, {
+      method: 'GET'
+    });
+    let text = await response.text();
+    return text == this.SL_CollaborationInfo.version;
+  }
+
+  async pull_updates() {
+    let response = await fetch(`assets/server/collaborate_get_list.php?id=${this.SL_CollaborationInfo.source}`, {
+      method: 'GET'
+    });
+    let text = await response.text();
+    let updated_list = JSON.parse(JSON.parse(text).list_items);
+    this.SL_Name = aes_decrypt(JSON.parse(text).title, this.get_key());
+    this.SL_CollaborationInfo.version = JSON.parse(text).version;
+
+    this.SL_Items = [];
+
+    for (let i = 0; i < updated_list.length; i++) {
+      const sl_item = JSON.parse(aes_decrypt(updated_list[i].list_item, this.SL_CollaborationInfo.key));
+      console.log(updated_list[i]);
+      this.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, updated_list[i].item_id));
+    }
+  }
+
+  to_json() {
+    let temp_shopping_list = [];
+    this.SL_Items.forEach(sl_item => {
+        if (!sl_item.SLI_Removed) {
+          temp_shopping_list.push(sl_item.to_json());
+        }
+    });
+    return temp_shopping_list;
+  }
+
+  to_ejson() {
+    let temp_shopping_list = [];
+    this.SL_Items.forEach(sl_item => {
+        if (!sl_item.SLI_Removed) {
+          temp_shopping_list.push(sl_item.to_ejson(this.get_key()));
+        }
+    });
+    return temp_shopping_list;
+  }
+
+  is_list_virtual() {
+    return true;
+  }
+
+  get_key() {
+    return this.SL_CollaborationInfo.key;
+  }
 }
   
 
@@ -52,12 +200,20 @@ class ShoppingListItem {
       this.SLI_Removed = false;
     }
 
-    edit_name(new_name) {
-      this.SLI_Name = new_name;
-    }
-
     edit_cost(new_cost) {
       this.SLI_Cost = new_cost;
+    }
+
+    to_json() {
+      return {"name": this.SLI_Name,
+              "id": this.SLI_Id,
+              "cost": this.SLI_Cost,
+              "amount": this.SLI_Amount,
+              "checked": this.SLI_Checked};
+    }
+
+    to_ejson(key) {
+      return aes_encrypt(JSON.stringify(this.to_json()), key);
     }
 }
   
@@ -201,6 +357,35 @@ class UI {
     }
 
 
+    static copy_in_clipboard(elem) {
+      const link = elem;
+      const range = document.createRange();
+      range.selectNode(link);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      document.execCommand('copy');
+      selection.removeAllRanges();
+    }
+
+
+    static create_copied_pop_up() {
+      let eleCopyPopUp = document.createElement('div');
+      eleCopyPopUp.classList.add('shoplist-list-info-pop-up');
+      eleCopyPopUp.innerText = 'Copied';
+      eleCopyPopUp.addEventListener('animationend', () => {
+        setTimeout(() => {
+          eleCopyPopUp.style.animation = 'shoplist-ani-pop-up-fading .35s ease-out forwards'
+          eleCopyPopUp.addEventListener('animationend', () => {
+            eleCopyPopUp.remove();
+          })
+        }, 2000);
+      });
+
+      return eleCopyPopUp;
+    }
+
+
     static append_item(list_item, editable) {
       var ele_ListItem = UI.create_item(list_item.SLI_Name, list_item.SLI_Cost, list_item.SLI_Amount, list_item.SLI_Checked, 'shopping-list-item-' + list_item.SLI_Id, !editable);
 
@@ -292,8 +477,10 @@ class UI {
               UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
             } else {
               let new_item_content = parse_item(ele_ListItemTextInput.value);
-              let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
+              let new_item = new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++);
               UI.append_item(new_item, true);
+              hub.get_current_list().append(new_item);
+              hub.save();
             }
           }
         });
@@ -303,8 +490,10 @@ class UI {
             UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
           } else {
             let new_item_content = parse_item(ele_ListItemTextInput.value);
-            let new_item = hub.get_current_list().append(new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++));
+            let new_item = new ShoppingListItem(new_item_content.name, new_item_content.cost, new_item_content.amount, false, hub.get_current_list().SL_LastID++);
             UI.append_item(new_item, true);
+            hub.get_current_list().append(new_item);
+            hub.save();
             if (document.querySelector('#shoplist-add-pseudoitem')) {
               document.querySelector('#shoplist-add-pseudoitem input').onblur = null;
               document.querySelector('#shoplist-add-pseudoitem').remove();
@@ -323,7 +512,7 @@ class UI {
               UI.get_list_item_by_its_input(ele_ListItemTextInput).remove();
             } else {
               let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTextInput));
-              hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_name(ele_ListItemTextInput.value);
+              hub.get_current_list().edit_name(+edited_item.id.substring(19), ele_ListItemTextInput.value);
               hub.save();
             }
           }
@@ -336,7 +525,7 @@ class UI {
             UI.get_list_item_by_its_input(ele_ListItemTextInput).remove();
           } else {
             let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTextInput));
-            hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_name(ele_ListItemTextInput.value);
+            hub.get_current_list().edit_name(+edited_item.id.substring(19), ele_ListItemTextInput.value);
             hub.save();
           }
         };
@@ -455,7 +644,7 @@ class UI {
         }
         document.querySelector('#shoplist-title').value = hub.get_current_list().SL_Name;
       }
-      hub.get_current_list().SL_Name = document.querySelector('#shoplist-title').value;
+      hub.get_current_list().edit_title(document.querySelector('#shoplist-title').value);
 
       let eleTitle_input = document.createElement('h1');
       eleTitle_input.classList.add('shoplist-title');
@@ -510,7 +699,25 @@ class UI {
     }
 
 
-    static draw_list(list, editable) {
+    static toggle_collaborate_list_switcher() {
+      if (hub.get_current_list()?.SL_CollaborationStatus == 'Editor') {
+        document.querySelector('#pop-up-collaborate').style.display = 'none';
+        return;
+      }
+      document.querySelector('#pop-up-collaborate').style.display = 'list-item';
+      if (hub.get_current_list()?.SL_CollaborationStatus == 'Off') {
+        document.querySelector('#pop-up-collaborate-toggle').checked = false;
+        return;
+      }
+      if (hub.get_current_list()?.SL_CollaborationStatus == 'Owner') {
+        document.querySelector('#pop-up-collaborate-toggle').checked = true;
+        return;
+      }
+    }
+
+
+    static async draw_list(list, editable) {
+      console.log(list);
       document.querySelector('#shoplist-title').innerText = list.SL_Name;
 
       let ele_listTitle_span = document.createElement('span');
@@ -540,6 +747,48 @@ class UI {
         return;
       }
 
+      if (list.SL_CollaborationStatus != 'Off') {
+        let link_to_copy = window.location.href + '?invite=' + list.SL_CollaborationInfo.source + '&key=' + list.SL_CollaborationInfo.key;
+        let ele_listInfoText = UI.create_info_block('Collaboration link', link_to_copy);
+        ele_listInfoText.id = 'shoplist-share-text';
+        ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
+          const link = ele_listInfoText.querySelector('#sl-info-block-button');
+          const range = document.createRange();
+          range.selectNode(link);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          document.execCommand('copy');
+          selection.removeAllRanges();
+
+          if (document.querySelector('.shoplist-list-info-pop-up')) {
+            document.querySelector('.shoplist-list-info-pop-up').remove();
+          }
+
+          let eleCopyPopUp = document.createElement('div');
+          eleCopyPopUp.classList.add('shoplist-list-info-pop-up');
+          eleCopyPopUp.innerText = 'Copied';
+          eleCopyPopUp.addEventListener('animationend', () => {
+            setTimeout(() => {
+              eleCopyPopUp.style.animation = 'shoplist-ani-pop-up-fading .35s ease-out forwards'
+              eleCopyPopUp.addEventListener('animationend', () => {
+                eleCopyPopUp.remove();
+              })
+            }, 2000);
+          });
+
+          document.querySelector('#shoplist-list').appendChild(eleCopyPopUp);
+        });
+        document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+      
+        //let is_last_version = await list.is_last_version();
+        // if (!is_last_version) {
+        //   //list.pull_updates();
+        //   //UI.draw_list(hub.get_current_list(), true);
+        //   return;
+        // }
+      }
+
       for (let i = 0; i < list.SL_Items.length; i++) {
         const list_item = list.SL_Items[i];
         UI.append_item(list_item, editable);
@@ -565,6 +814,7 @@ class UI {
             UI.draw_list(hub.get_current_list(), true);
             UI.toggle_lists_list_display();
             UI.toggle_delete_list_action();
+            UI.toggle_collaborate_list_switcher();
             hub.save();
           });
         }
@@ -601,7 +851,7 @@ class UI {
           UI.get_list_item_by_its_input(ele_ListItemTB).remove();
         } else {
           let edited_item = UI.turn_input_to_item(UI.get_list_item_by_its_input(ele_ListItemTB));
-          hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_name(ele_ListItemTB.value);
+          hub.get_current_list().edit_name(+edited_item.id.substring(19), ele_ListItemTB.value);
           hub.save();
         }
       }
@@ -662,6 +912,7 @@ class Hub {
       this.ShoppingLists = [];
       this.CurrentList = 0;
       this.LastID = 0;
+      this.UpdateTimer = null;
 
       this.DarkMode = false;
     }
@@ -705,7 +956,10 @@ class Hub {
         }
         i++;
         temp_shopping_lists.push({"name": sl.SL_Name,
-                                  "items": sl.to_json()});
+                                  "items": sl.to_json(),
+                                  "co_status": sl.SL_CollaborationStatus,
+                                  "co_info": sl.SL_CollaborationInfo ? sl.SL_CollaborationInfo : null});
+        
       });
       let cookie_to_save = {
         "version": 'v1.1',
@@ -720,10 +974,17 @@ class Hub {
     open_v1(cookies) {
       this.CurrentList = cookies?.current_list;
       cookies?.content.forEach(sl => {
-        let new_item = this.add_list(sl.name);
+        let new_item;
+        if (sl?.co_status == 'Off' || sl?.co_status == undefined) {
+          new_item = this.add_list(sl.name);
+        } else {
+          new_item = this.add_virtual_list(sl.name, sl.co_info);
+        }
+        
         //this.CurrentList = this.LastID - 1;
+        new_item.SL_CollaborationStatus = sl.co_status;
         sl.items.forEach(sl_item => {
-          new_item.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, new_item.SL_LastID++));
+          new_item.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, (sl_item.id ? sl_item.id : new_item.SL_LastID++)));
         });
       });
 
@@ -791,11 +1052,57 @@ class Hub {
       return new_list;
     }
 
+    add_virtual_list(name, co_info) {
+      let new_list = new VirtualShoppingList(name, this.LastID++);
+      new_list.SL_CollaborationInfo = {"key": co_info?.key,
+                                       "version": co_info?.version,
+                                       "source": co_info?.source};
+      this.ShoppingLists.push(new_list);
+      return new_list;
+    }
+
     get_current_list() {
       return this.ShoppingLists.find((w) => w.SL_Id === this.CurrentList);
     }
 
+    async fetch_updates() {
+      if (this.get_current_list()?.is_list_virtual()) {
+        console.log('Updating is on');
+        clearInterval(this.UpdateTimer);
+        this.UpdateTimer = setInterval(async () => {
+          console.log('Updating list...');
+          if (!(await this.get_current_list().is_last_version())) {
+            await this.get_current_list().pull_updates();
+            UI.draw_list(this.get_current_list(), true);
+            hub.save();
+          }
+        }, 1000);
+      } else {
+        console.log('Updating is off');
+        clearInterval(this.UpdateTimer);
+        this.UpdateTimer = null;
+      }
+    }
+
     switch_list(id) {
       this.CurrentList = id;
+      UI.toggle_collaborate_list_switcher();
+      this.fetch_updates();
+    }
+
+    turn_list_to_virtual(id) {
+      let old_list = this.ShoppingLists.find((w) => w.SL_Id === id);
+      if (old_list.is_list_virtual()) {
+        return false;
+      }
+      let new_list = new VirtualShoppingList(old_list.SL_Name, old_list.SL_Id);
+      new_list.SL_CollaborationStatus = old_list.SL_CollaborationStatus;
+      for (let i = 0; i < old_list.SL_Items.length; i++) {
+        const sl_item = old_list.SL_Items[i];
+        new_list.SL_Items.push(sl_item);
+      }
+      this.ShoppingLists.splice(this.ShoppingLists.findIndex(item => item.SL_Id === id), 1, new_list);
+
+      return true;
     }
 }

@@ -55,7 +55,7 @@ function parse_item(inputString) {
 function toggle_mark_item(item) {
   let item_id = get_id_by_ui_item(item);
   let checked_status = hub.get_current_list().get_item_by_id(item_id).SLI_Checked;
-  hub.get_current_list().get_item_by_id(item_id).SLI_Checked = !checked_status;
+  hub.get_current_list().tick(item_id, !checked_status);
   UI.mark_item(item, !checked_status);
 }
 
@@ -154,6 +154,48 @@ async function share_list() {
   document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
 }
 
+async function collaborate_list(isOn) {
+  if (isOn) {
+    hub.get_current_list().SL_CollaborationStatus = 'Owner';
+    if (hub.turn_list_to_virtual(hub.get_current_list().SL_Id)) {
+      hub.get_current_list().SL_CollaborationInfo.key = generate_key(16);
+      const collabor_title = aes_encrypt(hub.get_current_list().SL_Name, hub.get_current_list().get_key());
+
+      let response = await fetch('assets/server/collaborate_start.php', {
+        method: 'POST',
+        body: collabor_title
+      });
+      let atr_share = await response.text();
+      hub.get_current_list().SL_CollaborationInfo.source = atr_share;
+      let items_to_push = {
+        "items": hub.get_current_list().to_ejson(),
+        "source": atr_share
+      };
+
+      await fetch('assets/server/collaborate_push_items.php', {
+        method: 'POST',
+        body: JSON.stringify(items_to_push)
+      });
+
+      let link_to_copy = window.location.href + '?invite=' + atr_share + '&key=' + hub.get_current_list().get_key();
+      let ele_listInfoText = UI.create_info_block('Tap to copy this link and send it to your partner', link_to_copy);
+      ele_listInfoText.id = 'shoplist-share-text';
+      ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
+        UI.copy_in_clipboard(ele_listInfoText.querySelector('#sl-info-block-button'));
+        if (document.querySelector('.shoplist-list-info-pop-up')) {
+          document.querySelector('.shoplist-list-info-pop-up').remove();
+        }
+        document.querySelector('#shoplist-list').appendChild(UI.create_copied_pop_up());
+      });
+      document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+    }
+  } else {
+    hub.get_current_list().SL_CollaborationStatus = 'Off';
+  }
+  hub.fetch_updates();
+  hub.save();
+}
+
 
 async function event_load() {
   hub = new Hub();
@@ -180,6 +222,9 @@ async function event_load() {
     UI.close_options_popup();
     share_list();
   });
+  document.querySelector('#pop-up-collaborate-toggle').addEventListener('change', () => {
+    collaborate_list(document.querySelector('#pop-up-collaborate-toggle').checked);
+  })
   document.querySelector('#pop-up-mode-switch').addEventListener('click', () => {
     UI.close_options_popup();
     document.querySelector('#pop-up-mode-switch a').innerText = 'Turn to ' + (hub.DarkMode ? 'dark' : 'light') + ' mode';
@@ -197,6 +242,7 @@ async function event_load() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const share = urlParams.get('share');
+  const invite = urlParams.get('invite');
   const key = urlParams.get('key');
   if (share && key) {
     let response = await fetch(`assets/server/p2p_get.php?id=${share}`, {
@@ -208,7 +254,7 @@ async function event_load() {
       let json = JSON.parse(decrypted_list);
       let sl = new ShoppingList(json?.title, 0);
       json?.list.forEach(sl_item => {
-        sl.append(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
+        sl.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl.SL_LastID++));
       });
 
       UI.draw_list(sl, false);
@@ -232,7 +278,54 @@ async function event_load() {
     window.history.replaceState(null, null, cleanUrl);
   }
 
+  if (invite && key) {
+    let response = await fetch(`assets/server/collaborate_get_list.php?id=${invite}`, {
+      method: 'GET'
+    });
+    let text = await response.text();
+
+    let actual_list = JSON.parse(text).list_items;
+    let version = JSON.parse(text).version;
+    let list_title = aes_decrypt(JSON.parse(text).title, key);
+
+    if (actual_list) {
+      let json = JSON.parse(actual_list);
+      let sl = new VirtualShoppingList(list_title, -1);
+      sl.SL_CollaborationInfo = {"key": key,
+                                 "version": version,
+                                 "source": invite};
+      json?.forEach(sl_item_encrypted => {
+        let sl_item = JSON.parse(aes_decrypt(sl_item_encrypted.list_item, key));
+        sl.SL_Items.push(new ShoppingListItem(sl_item.name, sl_item.cost, sl_item.amount, sl_item.checked, sl_item_encrypted.item_id));
+      });
+
+      UI.draw_list(sl, false);
+      hub.CurrentList = null;
+
+      let ele_listInfoText = UI.create_info_block('You have been invited to&nbsp;work together on&nbsp;the list', 'Accept invitation');
+
+      ele_listInfoText.querySelector('#sl-info-block-button').addEventListener('click', () => {
+        sl.SL_Id = hub.LastID++;
+        hub.ShoppingLists.push(sl);
+        hub.CurrentList = sl.SL_Id;
+        UI.draw_list_of_lists();
+        UI.draw_list(hub.get_current_list(), true);
+        hub.save();
+        hub.fetch_updates();
+      });
+      document.querySelector('#shoplist-list').insertBefore(ele_listInfoText, document.querySelector('#shoplist-list').firstElementChild);
+    }
+    
+    const url = window.location.href;
+    const cleanUrl = url.split('?')[0];
+    window.history.replaceState(null, null, cleanUrl);
+  }
+
   UI.draw_list_of_lists();
+
+  UI.toggle_collaborate_list_switcher();
+
+  hub.fetch_updates();
 }
 
 

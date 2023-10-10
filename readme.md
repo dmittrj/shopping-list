@@ -50,6 +50,8 @@ It's secure: the list is stored on the server in encrypted form, and only you an
   </tr>
 </table>
 
+### List collaborating
+
 ### Beautiful Dark Mode
 You can switch your interface to Dark mode
 
