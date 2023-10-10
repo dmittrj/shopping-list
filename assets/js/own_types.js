@@ -9,6 +9,10 @@ class ShoppingList {
         this.SL_Removed = false;
     }
 
+    edit_title(new_title) {
+      this.SL_Name = new_title;
+    }
+
     append(sl_item) {
         this.SL_Items.push(sl_item);
         return sl_item;
@@ -61,6 +65,16 @@ class VirtualShoppingList extends ShoppingList {
                                  "version": 0,
                                  "source": null};
     console.log('Virtual List Created!');
+  }
+
+  edit_title(new_title) {
+    this.SL_Name = new_title;
+
+    fetch('assets/server/collaborate_edit_title.php', {
+      method: 'POST',
+      body: JSON.stringify({ "source": this.SL_CollaborationInfo.source,
+                             "new_title": aes_encrypt(new_title, this.get_key())})
+    });
   }
 
   append(sl_item) {
@@ -133,6 +147,7 @@ class VirtualShoppingList extends ShoppingList {
     });
     let text = await response.text();
     let updated_list = JSON.parse(JSON.parse(text).list_items);
+    this.SL_Name = aes_decrypt(JSON.parse(text).title, this.get_key());
     this.SL_CollaborationInfo.version = JSON.parse(text).version;
 
     this.SL_Items = [];
@@ -629,7 +644,7 @@ class UI {
         }
         document.querySelector('#shoplist-title').value = hub.get_current_list().SL_Name;
       }
-      hub.get_current_list().SL_Name = document.querySelector('#shoplist-title').value;
+      hub.get_current_list().edit_title(document.querySelector('#shoplist-title').value);
 
       let eleTitle_input = document.createElement('h1');
       eleTitle_input.classList.add('shoplist-title');
