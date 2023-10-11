@@ -51,6 +51,7 @@ It's secure: the list is stored on the server in encrypted form, and only you an
 </table>
 
 ### List collaborating
+You can work on the same list with your partners — just turn on collaboration mode
 
 ### Beautiful Dark Mode
 You can switch your interface to Dark mode
@@ -70,6 +71,7 @@ If you have shared the list, it is stored on the server in encrypted form. Only 
 |One list, 10 items or more  |Local Storage|
 |Multiple lists              |Local Storage|
 |Shared list                 |Server (encrypted)|
+|Collaborated list           |Server (encrypted)|
 
 ## Technology stack
 * _Frontend languages:_ HTML, CSS, JavaScript
