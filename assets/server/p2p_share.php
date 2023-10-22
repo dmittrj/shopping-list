@@ -1,11 +1,11 @@
 <?php
+    require 'database.php';
     $json_str = file_get_contents('php://input');
     
-    $servername = "localhost";
-    $username = "username";
-    $password = "password";
-    $dbname = "database";
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    create_table('links', ["`id` INT(8) UNSIGNED NOT NULL AUTO_INCREMENT",
+                           "`shopping_list` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL"]);
+    $conn = connect();
+
 
     $sql = "INSERT INTO links (shopping_list) VALUES ('$json_str')";
     if ($conn->query($sql) === TRUE) {
