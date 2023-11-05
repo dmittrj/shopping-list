@@ -1066,7 +1066,7 @@ class Hub {
     }
 
     async fetch_updates() {
-      if (this.get_current_list()?.is_list_virtual()) {
+      if (this.get_current_list()?.is_list_virtual() && this.get_current_list().SL_CollaborationStatus != 'Off') {
         console.log('Updating is on');
         clearInterval(this.UpdateTimer);
         this.UpdateTimer = setInterval(async () => {
