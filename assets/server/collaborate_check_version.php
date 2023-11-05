@@ -2,7 +2,7 @@
     require 'database.php';
     $id = base_convert($_GET['id'], 36, 10);
 
-    create_table('collaborations_lists', [TABLE_COLLABOR_LISTS]);
+    create_table('collaborations_lists', TABLE_COLLABOR_LISTS);
 
     $conn = connect();
 

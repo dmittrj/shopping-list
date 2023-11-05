@@ -6,8 +6,8 @@
     $items = $obj["items"];
     $source = base_convert($obj["source"], 36, 10);
 
-    create_table('collaborations_lists', [TABLE_COLLABOR_LISTS]);
-    create_table('collaborations_items', [TABLE_COLLABOR_ITEMS]);
+    create_table('collaborations_lists', TABLE_COLLABOR_LISTS);
+    create_table('collaborations_items', TABLE_COLLABOR_ITEMS);
     
     $conn = connect();
     $items_count = count($items);

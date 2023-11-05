@@ -2,7 +2,7 @@
     require 'database.php';
     $json_str = file_get_contents('php://input');
 
-    create_table('collaborations_lists', [TABLE_COLLABOR_LISTS]);
+    create_table('collaborations_lists', TABLE_COLLABOR_LISTS);
     
     $conn = connect();
 

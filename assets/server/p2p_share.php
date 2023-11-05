@@ -2,7 +2,7 @@
     require 'database.php';
     $json_str = file_get_contents('php://input');
     
-    create_table('links', [TABLE_LINKS]);
+    create_table('links', TABLE_LINKS);
     $conn = connect();
 
 
