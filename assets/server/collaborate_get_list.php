@@ -3,6 +3,9 @@
     
     $id = base_convert($_GET['id'], 36, 10);
 
+    create_table('collaborations_lists', [TABLE_COLLABOR_LISTS]);
+    create_table('collaborations_items', [TABLE_COLLABOR_ITEMS]);
+
     $conn = connect();
 
     $sql = "SELECT `item_id`, `list_item`, `list_item_id` FROM `collaborations_items` WHERE `list_id` = $id ORDER BY `item_id`";
