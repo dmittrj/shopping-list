@@ -10,14 +10,11 @@
     
     $conn = connect();
 
-    $sql = "SELECT (list_last_id) FROM collaborations_lists WHERE `list_id` = $source";
+    $sql = "SELECT `list_item_id` FROM `collaborations_lists` JOIN `collaborations_items` ON `collaborations_lists`.`list_id` = `collaborations_items`.`list_id` WHERE `collaborations_items`.`list_id` = $source ORDER BY `list_item_id` DESC LIMIT 1";
     $result = $conn->query($sql);
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
-        $last_id = $row["list_last_id"];
-
-        $sql = "UPDATE collaborations_lists SET `list_last_id` = `list_last_id` + 1 WHERE `list_id` = $source";
-        $conn->query($sql);
+        $last_id = $row["list_item_id"] + 1;
     } else {
         $last_id = 0;
     }
@@ -25,7 +22,6 @@
     $sql = "INSERT INTO collaborations_items (list_id, list_item_id, list_item) VALUES ($source, $last_id, '$item')";
     $conn->query($sql);
 
-    $sql = "UPDATE collaborations_lists SET `list_version` = `list_version` + 1 WHERE `list_id` = $source";
     $conn->query($sql);
 
     $conn->close();
