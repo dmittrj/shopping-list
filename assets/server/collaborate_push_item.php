@@ -22,8 +22,6 @@
     $sql = "INSERT INTO collaborations_items (list_id, list_item_id, list_item) VALUES ($source, $last_id, '$item')";
     $conn->query($sql);
 
-    $conn->query($sql);
-
     $conn->close();
     echo $last_id;
 ?>
