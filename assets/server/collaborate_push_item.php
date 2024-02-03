@@ -21,6 +21,8 @@
 
     $sql = "INSERT INTO collaborations_items (list_id, list_item_id, list_item) VALUES ($source, $last_id, '$item')";
     $conn->query($sql);
+    $sql = "UPDATE collaborations_lists SET `list_version` = `list_version` + 1 WHERE `list_id` = $source";
+    $conn->query($sql);
 
     $conn->close();
     echo $last_id;
