@@ -473,6 +473,7 @@ class UI {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             ele_ListItemTextInput.onblur = null;
+            hub.fetch_updates();
             if (ele_ListItemTextInput.value === '') {
               UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
             } else {
@@ -486,6 +487,7 @@ class UI {
         });
 
         ele_ListItemTextInput.onblur = function() {
+          hub.fetch_updates();
           if (ele_ListItemTextInput.value === '') {
             UI.turn_input_to_add(UI.get_list_item_by_its_input(ele_ListItemTextInput));
           } else {
@@ -506,6 +508,7 @@ class UI {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             ele_ListItemTextInput.onblur = null;
+            hub.fetch_updates();
             if (ele_ListItemTextInput.value === '') {
               hub.get_current_list().drop_item(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
               hub.save();
@@ -519,6 +522,7 @@ class UI {
         });
 
         ele_ListItemTextInput.onblur = function() {
+          hub.fetch_updates();
           if (ele_ListItemTextInput.value === '') {
             hub.get_current_list().drop_item(+UI.get_list_item_by_its_input(ele_ListItemTextInput).id.substring(19));
             hub.save();
@@ -533,6 +537,7 @@ class UI {
         ele_ListItemTextInput.addEventListener('keydown', (event) => {
           if (event.key === 'Enter') {
             ele_ListItemTextInput.onblur = null;
+            hub.fetch_updates();
             let edited_item = UI.turn_input_to_cost(UI.get_list_item_by_its_input(ele_ListItemTextInput));
             hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_cost(ele_ListItemTextInput.value);
             hub.save();
@@ -541,6 +546,7 @@ class UI {
 
         ele_ListItemTextInput.onblur = function() {
           ele_ListItemTextInput.onblur = null;
+          hub.fetch_updates();
           let edited_item = UI.turn_input_to_cost(UI.get_list_item_by_its_input(ele_ListItemTextInput));
           hub.get_current_list().get_item_by_id(+edited_item.id.substring(19)).edit_cost(ele_ListItemTextInput.value);
           hub.save();
@@ -564,7 +570,7 @@ class UI {
       
       const ele_ListItemTextInput = UI.create_input('add');
       ele_ListItemAdd.style.opacity = '1';
-    
+      clearInterval(hub.UpdateTimer);
       ele_ListItemAddText.replaceWith(ele_ListItemTextInput);
       ele_ListItemTextInput.focus();
     }
@@ -575,6 +581,7 @@ class UI {
       
       const ele_ListItemTextInput = UI.create_input('edit-name');
       ele_ListItemTextInput.value = ele_ListItemText.innerText;
+      clearInterval(hub.UpdateTimer);
     
       ele_ListItemText.replaceWith(ele_ListItemTextInput);
       ele_ListItemTextInput.focus();
@@ -587,6 +594,7 @@ class UI {
       const ele_ListItemTextInput = UI.create_input('edit-cost');
       ele_ListItemTextInput.value = ele_ListItemText.innerText;
       ele_ListItemTextInput.style.textAlign = 'right';
+      clearInterval(hub.UpdateTimer);
     
       ele_ListItemText.replaceWith(ele_ListItemTextInput);
       ele_ListItemTextInput.focus();
