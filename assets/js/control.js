@@ -309,8 +309,8 @@ async function event_load() {
         hub.ShoppingLists.push(sl);
         hub.CurrentList = sl.SL_Id;
         UI.draw_list_of_lists();
-        UI.draw_list(hub.get_current_list(), true);
         hub.get_current_list().SL_CollaborationStatus = 'Editor';
+        UI.draw_list(hub.get_current_list(), true);
         hub.save();
         hub.fetch_updates();
       });
