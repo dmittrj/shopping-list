@@ -310,6 +310,7 @@ async function event_load() {
         hub.CurrentList = sl.SL_Id;
         UI.draw_list_of_lists();
         UI.draw_list(hub.get_current_list(), true);
+        hub.get_current_list().SL_CollaborationStatus = 'Editor';
         hub.save();
         hub.fetch_updates();
       });
