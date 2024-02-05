@@ -8,7 +8,7 @@
 
     $conn = connect();
 
-    $sql = "SELECT `item_id`, `list_item`, `list_item_id` FROM `collaborations_items` WHERE `list_id` = $id ORDER BY `item_id`";
+    $sql = "SELECT `item_id`, `list_item`, `list_item_id` FROM `collaborations_items` JOIN `collaborations_lists` ON `collaborations_items`.`list_id` = `collaborations_lists`.`list_id` WHERE `collaborations_lists`.`list_id` = $id AND `list_status` = 1 ORDER BY `item_id`";
     $result = $conn->query($sql);
     $list_items = array();
 

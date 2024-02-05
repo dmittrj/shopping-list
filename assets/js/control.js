@@ -191,6 +191,9 @@ async function collaborate_list(isOn) {
     }
   } else {
     hub.get_current_list().SL_CollaborationStatus = 'Off';
+    await fetch(`assets/server/collaborate_pause.php?id=${hub.get_current_list().SL_CollaborationInfo["source"]}`, {
+      method: 'GET'
+    });
   }
   hub.fetch_updates();
   hub.save();
