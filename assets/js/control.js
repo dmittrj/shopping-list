@@ -157,6 +157,9 @@ async function share_list() {
 async function collaborate_list(isOn) {
   if (isOn) {
     hub.get_current_list().SL_CollaborationStatus = 'Owner';
+    await fetch(`assets/server/collaborate_resume.php?id=${hub.get_current_list().SL_CollaborationInfo["source"]}`, {
+      method: 'GET'
+    });
     if (hub.turn_list_to_virtual(hub.get_current_list().SL_Id)) {
       hub.get_current_list().SL_CollaborationInfo.key = generate_key(16);
       const collabor_title = aes_encrypt(hub.get_current_list().SL_Name, hub.get_current_list().get_key());
