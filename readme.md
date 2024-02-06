@@ -4,7 +4,8 @@ Simple free secure shopping list web application without registration
 
 ## Test, use
 
-Download files, upload them to your server and follow _index.html_
+1. Download files, upload them to your server and follow _index.html_
+2. If you want to use the **List Sharing** and **List Collaboration** features, configure your database credentials in the _/assets/server/database.php_ file (lines 6..9)
 
 ## Features
 
