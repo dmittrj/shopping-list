@@ -157,9 +157,11 @@ async function share_list() {
 async function collaborate_list(isOn) {
   if (isOn) {
     hub.get_current_list().SL_CollaborationStatus = 'Owner';
-    await fetch(`assets/server/collaborate_resume.php?id=${hub.get_current_list().SL_CollaborationInfo["source"]}`, {
-      method: 'GET'
-    });
+    if (hub.get_current_list().SL_CollaborationInfo) {
+      await fetch(`assets/server/collaborate_resume.php?id=${hub.get_current_list().SL_CollaborationInfo["source"]}`, {
+        method: 'GET'
+      });
+    }
     if (hub.turn_list_to_virtual(hub.get_current_list().SL_Id)) {
       hub.get_current_list().SL_CollaborationInfo.key = generate_key(16);
       const collabor_title = aes_encrypt(hub.get_current_list().SL_Name, hub.get_current_list().get_key());
@@ -219,6 +221,10 @@ async function event_load() {
   });
   document.querySelector('#pop-up-delete').addEventListener('click', () => {
     UI.close_options_popup();
+    if (hub.get_current_list().is_list_virtual()) {
+      document.querySelector('#pop-up-collaborate-toggle').checked = false;
+      collaborate_list(false);
+    }
     hub.get_current_list().SL_Removed = !hub.get_current_list().SL_Removed;
     UI.toggle_delete_list_action();
     UI.draw_list(hub.get_current_list(), true);
